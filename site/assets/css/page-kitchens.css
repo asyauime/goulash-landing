@@ -1147,9 +1147,8 @@
   padding: var(--space-5);
   overflow: hidden;
   background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
+  border: 0;
   border-radius: var(--radius-card);
-  transition: transform var(--dur) var(--ease-out), border-color var(--dur) ease;
 }
 
 .bento__copy {
@@ -1192,17 +1191,6 @@
 
 .bento__card--accent .bento__text {
   color: color-mix(in srgb, var(--color-button-text) 80%, var(--color-accent));
-}
-
-@media (hover: hover) and (prefers-reduced-motion: no-preference) {
-  .bento__card:hover {
-    transform: translateY(-4px);
-    border-color: var(--color-border-strong);
-  }
-
-  .bento__card--accent:hover {
-    border-color: var(--color-accent);
-  }
 }
 
 @media (min-width: 560px) {
@@ -1299,9 +1287,7 @@
 .md {
   margin-top: auto;
   background-color: var(--color-bg);
-  background-image: var(--led-grid);
-  background-size: var(--led-step) var(--led-step);
-  border: 1px solid var(--color-border);
+  border: 0;
   border-radius: var(--radius-button);
 }
 
@@ -1325,7 +1311,8 @@
   min-height: 44px;
   padding: var(--space-2);
   background-color: var(--color-surface);
-  border: 1px dashed var(--color-border-strong);
+  border: 0;
+  background-color: var(--color-surface);
   border-radius: var(--radius-button);
 }
 
@@ -1403,9 +1390,10 @@
   gap: var(--space-3);
   padding-inline: var(--space-3);
   background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
+  border: 0;
+  background-color: var(--color-surface);
   border-radius: var(--radius-button);
-  transition: border-color var(--dur) ease, opacity var(--dur) ease;
+  transition: opacity var(--dur) ease;
 }
 
 .mq__row-icon {
@@ -1450,10 +1438,6 @@
   opacity: 0;
 }
 
-.bento__card.is-hover .mq__lane {
-  border-color: var(--color-accent-line);
-}
-
 @media (max-width: 419px) {
   .mq {
     padding: var(--space-3);
@@ -1492,7 +1476,7 @@
   height: 100%;
   padding: var(--space-4);
   background-color: color-mix(in srgb, var(--color-button-text) 7%, transparent);
-  border: 1px solid color-mix(in srgb, var(--color-button-text) 22%, transparent);
+  border: 0;
   border-radius: var(--radius-button);
 }
 
@@ -1670,10 +1654,6 @@
   width: 10px;
   height: 10px;
   background-color: var(--color-text-muted);
-}
-
-.bento__card.is-hover .mc__courier--idle {
-  background-color: var(--color-text);
 }
 
 /* --- Один кабинет (md): строки разделов загораются галочками --- */

@@ -216,16 +216,6 @@
     }
     watch(card, function (v) { visible = v; sync(); }, '0px 0px -10% 0px');
     onEnvChange(sync);
-    card.addEventListener('pointerenter', function (e) {
-      if (e.pointerType !== 'mouse') return;
-      hover = true;
-      card.classList.add('is-hover');
-      if (active()) { clearTimeout(timer); run(); }
-    });
-    card.addEventListener('pointerleave', function () {
-      hover = false;
-      card.classList.remove('is-hover');
-    });
   }
 
   function pixel(name) {

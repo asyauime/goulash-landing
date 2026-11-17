@@ -230,7 +230,7 @@
         delivered = idx === STEPS.length - 1;
         renderProgress();
         if (delivered) {
-          bonus.textContent = 'Начислено бонусов: ' + Math.round(total() * BONUS_PCT / 100) + ' (демо)';
+          bonus.textContent = 'Начислено бонусов: ' + Math.round(total() * BONUS_PCT / 100);
           bonus.hidden = false;
         }
         update();

@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Проба F16: заставка hero</title>
+  <link rel="icon" href="data:,">
+  <!-- Те же стили, что на сайте: после заставки первый экран выглядит как на проде -->
+  <link rel="stylesheet" href="../../site/assets/css/base.css">
+  <link rel="stylesheet" href="../../site/assets/css/components.css">
+  <link rel="stylesheet" href="../../site/assets/css/page-kitchens.css">
+  <style>
+    /* Пробная страница F16, на сайт не выкладывается. Цвета только из токенов base.css */
+    .probe-note { position: fixed; right: var(--space-2); bottom: var(--space-2); z-index: 50; display: flex; gap: var(--space-2); align-items: center;
+      padding: var(--space-2) var(--space-3); border-radius: var(--radius-button); background: var(--color-button-bg); color: var(--color-button-text); font-size: 13px; }
+    .probe-note button { font: inherit; padding: var(--space-2) var(--space-3); border: 0; border-radius: var(--radius-button);
+      background: var(--color-button-text); color: var(--color-button-bg); cursor: pointer; }
+
+    /* Заставка: слой между стеной и текстом */
+    .hero__intro { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+    /* своё появление первого экрана с сайта здесь выключено: его заменяет заставка */
+    .hero [data-intro-step], .hero .hero__wall { animation: none; }
+    .hero.is-intro .hero__wall { opacity: 0; }
+    .hero .hero__wall { transition: opacity 1.2s var(--ease-out); }
+    .hero.is-intro [data-intro-step] { opacity: 0; transform: translateY(18px); }
+    .hero [data-intro-step] { transition: opacity .7s var(--ease-out), transform .7s var(--ease-out); }
+
+    /* Приём 2 из первой пробы: светлые секции белыми листами (пока на решении) */
+    .sheets { background: var(--color-surface-light); color: var(--color-text-on-light); padding: var(--space-7) var(--gutter); }
+    .sheet { max-width: 1200px; margin: 0 auto var(--space-5); background: var(--color-bg-light); border-radius: calc(var(--radius-card) * 2);
+      padding: clamp(24px, 5vw, 64px); opacity: 0; transform: translateY(40px) scale(.98); transition: opacity .7s var(--ease-out), transform .7s var(--ease-out); }
+    .sheet.is-in { opacity: 1; transform: none; }
+    .sheet h2 { margin: 0 0 var(--space-3); font-size: clamp(26px, 4vw, 48px); }
+    .sheet p { margin: 0; color: var(--color-text-muted-on-light); max-width: 60ch; }
+
+    @media (prefers-reduced-motion: reduce) { .sheet { opacity: 1; transform: none; transition: none; } }
+  </style>
+</head>
+<body id="top">
+  <div class="probe-note">Проба F16, не сайт <button type="button" data-intro-replay>Повторить заставку</button></div>
+
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="#top">Goulash.tech</a>
+      <nav id="site-nav" class="site-nav" aria-label="Разделы страницы">
+        <ul class="site-nav__list">
+          <li><a href="#top">Демо</a></li>
+          <li><a href="#top">Как это работает</a></li>
+          <li><a href="#top">Своя доставка</a></li>
+          <li><a href="#top">Вопросы</a></li>
+        </ul>
+      </nav>
+      <a class="btn btn--primary site-header__cta" href="#top">Оставить заявку</a>
+      <button class="nav-toggle" type="button" aria-controls="site-nav" aria-expanded="false">
+        <span class="nav-toggle__icon" aria-hidden="true"></span>
+        Меню
+      </button>
+    </div>
+  </header>
+
+  <main id="main" class="page-lines">
+    <!-- Первый экран как на сайте + слой заставки hero__intro -->
+    <section class="hero is-intro" aria-labelledby="hero-title" data-led-wall>
+      <canvas class="hero__wall" aria-hidden="true"></canvas>
+      <canvas class="hero__intro" aria-hidden="true"></canvas>
+      <div class="container hero__content">
+        <h1 class="hero__title" id="hero-title" data-led-avoid><span class="hero__line" data-intro-step>Одна кухня.</span> <span class="hero__line" data-intro-step>Несколько брендов.</span> <span class="hero__line" data-intro-step>Один поток заказов.</span></h1>
+        <p class="lead hero__lead" data-led-avoid data-intro-step>Goulash.tech собирает заказы всех ваших брендов в&nbsp;одном контуре. Кухня работает по&nbsp;единой очереди, курьеры распределяются автоматически, <span class="hero__keep">стоп-листы</span> не&nbsp;расходятся</p>
+        <div class="hero__actions" data-intro-step>
+          <a class="btn btn--primary btn--lg" href="#top" data-led-target>Обсудить за&nbsp;15&nbsp;минут</a>
+          <a class="link-arrow" href="#top" data-led-target data-led-avoid>Посмотреть, как это выглядит</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="sheets">
+      <div class="sheet" data-sheet>
+        <h2>Кому подходит</h2>
+        <p>Приём «белые листы» из первой пробы, пока на решении: светлые секции лежат листами на светло-сером фоне</p>
+      </div>
+      <div class="sheet" data-sheet>
+        <h2>Что входит</h2>
+        <p>Единая очередь, общий стоп-лист, автораспределение курьеров, кабинет</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="../../site/assets/js/led.js"></script>
+  <script src="../../site/assets/js/main.js"></script>
+  <script>
+  /* Заставка: голубые точки слетаются в пиксельный значок кухни за текстом,
+     текст проявляется поверх, значок рассыпается по сетке и гаснет в LED-стену сайта.
+     После заставки слой убирается, остаётся первый экран как на проде.
+     prefers-reduced-motion: заставки нет, сразу первый экран. */
+  (function () {
+    var hero = document.querySelector('.hero');
+    var canvas = hero.querySelector('.hero__intro');
+    var ctx = canvas.getContext('2d');
+    var steps = [].slice.call(hero.querySelectorAll('[data-intro-step]'));
+    var ACCENT = getComputedStyle(document.documentElement).getPropertyValue('--color-accent').trim();
+    var KITCHEN = ['..##.##..', '.#######.', '#########', '#########', '.#######.', '..#####..', '..#...#..', '..#####..', '..#####..'];
+    var T_GATHER = 1300, T_HOLD = 300, T_SCATTER = 1300;
+    var dots, W, H, dpr, raf, timers = [], frozenAt = null;
+
+    function clamp(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
+    function easeInOut(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+    function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
+
+    function build() {
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      W = canvas.clientWidth; H = canvas.clientHeight;
+      canvas.width = W * dpr; canvas.height = H * dpr;
+      var step = W >= 1024 ? 14 : W >= 600 ? 12 : 10;   // шаг сетки как у стены led.js
+      var size = 3;                                     // клетка значка = 3×3 точки
+      var cell = Math.min(step, Math.min(W, H) * 0.62 / (9 * size));
+      var x0 = (W - 9 * size * cell) / 2, y0 = (H - 9 * size * cell) / 2;
+      dots = [];
+      KITCHEN.forEach(function (row, r) {
+        row.split('').forEach(function (ch, c) {
+          if (ch !== '#') return;
+          for (var i = 0; i < size; i++) for (var j = 0; j < size; j++) {
+            dots.push({
+              sx: Math.random() * W, sy: Math.random() * H,                       // откуда прилетает
+              tx: x0 + (c * size + j) * cell, ty: y0 + (r * size + i) * cell,     // место в значке
+              ex: Math.round(Math.random() * W / step) * step + step / 2,         // куда рассыпается
+              ey: Math.round(Math.random() * H / step) * step + step / 2,
+              d: Math.random() * 0.35, r: step * 0.28
+            });
+          }
+        });
+      });
+    }
+
+    function frame(start) {
+      return function tick(now) {
+        var t = now - start;
+        var g = clamp(t / T_GATHER), s = clamp((t - T_GATHER - T_HOLD) / T_SCATTER);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.clearRect(0, 0, W, H);
+        ctx.fillStyle = ACCENT;
+        for (var k = 0; k < dots.length; k++) {
+          var d = dots[k];
+          var gt = easeInOut(clamp((g - d.d) / (1 - 0.35)));
+          var st = easeOut(clamp((s - d.d * 0.5) / 0.8));
+          var x = d.sx + (d.tx - d.sx) * gt, y = d.sy + (d.ty - d.sy) * gt;
+          x += (d.ex - x) * st; y += (d.ey - y) * st;
+          // пока собирается — ярко; под текстом приглушается; при рассыпании гаснет
+          var a = (0.25 + 0.75 * gt) * (1 - 0.7 * clamp((t - T_GATHER) / 400)) * (1 - st);
+          ctx.globalAlpha = a;
+          ctx.beginPath(); ctx.arc(x, y, d.r, 0, 6.283); ctx.fill();
+        }
+        ctx.globalAlpha = 1;
+        if (t < T_GATHER + T_HOLD + T_SCATTER) raf = requestAnimationFrame(tick);
+        else { ctx.clearRect(0, 0, W, H); canvas.hidden = true; }
+      };
+    }
+
+    function play() {
+      cancelAnimationFrame(raf);
+      timers.forEach(clearTimeout); timers = [];
+      hero.classList.add('is-intro');
+      steps.forEach(function (el) { el.style.transitionDelay = ''; });
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { hero.classList.remove('is-intro'); return; }
+      canvas.hidden = false;
+      build();
+      // текст по очереди проявляется, когда значок собран; стена сайта зажигается при рассыпании
+      timers.push(setTimeout(function () {
+        steps.forEach(function (el, i) { el.style.transitionDelay = (i * 0.12) + 's'; });
+        hero.classList.remove('is-intro');
+      }, T_GATHER - 100));
+      // ?t=1500 — заморозить заставку на этой миллисекунде (для разглядывания кадров)
+      var freeze = /[?&]t=(\d+)/.exec(location.search);
+      if (freeze) {
+        var ft = +freeze[1];
+        timers.forEach(clearTimeout);
+        hero.querySelectorAll('[data-intro-step], .hero__wall').forEach(function (el) { el.style.transition = 'none'; });
+        hero.classList.toggle('is-intro', ft < T_GATHER - 100);
+        var tick = frame(0); var raf0 = requestAnimationFrame; window.requestAnimationFrame = function () {};
+        frozenAt = ft; tick(ft); window.requestAnimationFrame = raf0;
+        return;
+      }
+      raf = requestAnimationFrame(frame(performance.now()));
+    }
+
+    document.querySelector('[data-intro-replay]').addEventListener('click', function () {
+      window.scrollTo(0, 0);
+      // без transition, чтобы текст и стена мгновенно спрятались перед повтором
+      hero.querySelectorAll('[data-intro-step], .hero__wall').forEach(function (el) { el.style.transition = 'none'; });
+      hero.classList.add('is-intro');
+      void hero.offsetWidth;
+      hero.querySelectorAll('[data-intro-step], .hero__wall').forEach(function (el) { el.style.transition = ''; });
+      play();
+    });
+    window.addEventListener('resize', function () {
+      if (canvas.hidden) return;
+      build();
+      if (frozenAt !== null) { var r0 = window.requestAnimationFrame; window.requestAnimationFrame = function () {}; frame(0)(frozenAt); window.requestAnimationFrame = r0; }
+    });
+    play();
+
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } });
+    }, { threshold: 0.2 });
+    document.querySelectorAll('[data-sheet]').forEach(function (s) { io.observe(s); });
+  })();
+  </script>
+</body>
+</html>

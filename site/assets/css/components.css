@@ -566,33 +566,43 @@
   }
 }
 
-/* Загрузка страницы: строки H1 и текст появляются одной последовательностью, стена проявляется */
+/* Заставка (led.js, «Заставка hero»): пока html.hero-intro, текст и стена спрятаны, поверх
+   стены слой .hero__intro, где точки собираются в значок кухни. Класс снимается, когда значок
+   собран: текст проявляется по очереди, стена зажигается. Без JS и при reduced-motion класса нет. */
+.hero__intro {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
 @media (prefers-reduced-motion: no-preference) {
+  .hero__wall {
+    transition: opacity 1.2s var(--ease-out);
+  }
+
   .hero__line,
   .hero__lead,
   .hero__actions {
-    animation: hero-rise 0.9s var(--ease-out) backwards;
+    transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out);
   }
 
-  .hero__line:nth-child(2) { animation-delay: 0.08s; }
-  .hero__line:nth-child(3) { animation-delay: 0.16s; }
-  .hero__lead { animation-delay: 0.26s; }
-  .hero__actions { animation-delay: 0.34s; }
-
-  .hero__wall {
-    animation: hero-fade 1.2s var(--ease-out) 0.2s backwards;
-  }
+  .hero__line:nth-child(2) { transition-delay: 0.12s; }
+  .hero__line:nth-child(3) { transition-delay: 0.24s; }
+  .hero__lead { transition-delay: 0.36s; }
+  .hero__actions { transition-delay: 0.48s; }
 }
 
-@keyframes hero-rise {
-  from {
-    opacity: 0;
-    transform: translateY(0.5em);
-  }
+.hero-intro .hero__wall {
+  opacity: 0;
 }
 
-@keyframes hero-fade {
-  from { opacity: 0; }
+.hero-intro .hero__line,
+.hero-intro .hero__lead,
+.hero-intro .hero__actions {
+  opacity: 0;
+  transform: translateY(18px);
 }
 
 /* Счётчик вырос (используют демо) */

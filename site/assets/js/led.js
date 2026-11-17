@@ -416,7 +416,7 @@
     return vis;
   }
 
-  window.GLLed = { svg: ledSvg, set: ledSet, mount: ledMount };
+  window.GLLed = { svg: ledSvg, set: ledSet, mount: ledMount, font: FONT };
   Array.prototype.forEach.call(document.querySelectorAll('[data-led]'), ledMount);
 
 
@@ -902,7 +902,141 @@
   if ('ResizeObserver' in window) new ResizeObserver(relayout).observe(wall);
   else window.addEventListener('resize', relayout);
   wall.addEventListener('animationend', remeasure);
+  // текст hero проявляется переходом (заставка ниже): после него маска под текстом перемеряется
+  wall.addEventListener('transitionend', function (e) {
+    if (e.target.closest && e.target.closest('.hero__line, .hero__lead, .hero__actions') && e.propertyName === 'transform') remeasure();
+  });
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(remeasure);
 
   sync();
+})();
+
+
+/* ---------- Точки, собирающиеся в фигуру (window.GLDots) ----------
+   Общий движок для заставки hero и страницы 404. Фигура задаётся строками из «#» и «.»,
+   каждая клетка рисуется блоком size×size точек на сетке стены (шаг 14/12/10 px, как у LED-стены).
+   draw(g, s, alpha, jitter): g 0…1 — насколько точки собрались в фигуру, s 0…1 — насколько
+   рассыпались обратно по сетке, alpha — общая яркость, jitter — дрожание в px. Цвет: --color-accent. */
+(function () {
+  'use strict';
+  function clamp(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
+  function easeInOut(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+  function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
+
+  function create(canvas, opts) {
+    var ctx = canvas.getContext('2d');
+    var o = { size: 3, fitW: 0.62, fitH: 0.62, dy: 0 };
+    for (var k in opts) o[k] = opts[k];
+    var dots = [], W = 0, H = 0, dpr = 1, step = 12, color = '';
+
+    function scatter() {
+      dots.forEach(function (d) {
+        d.sx = Math.random() * W; d.sy = Math.random() * H;
+        d.ex = Math.round(Math.random() * W / step) * step + step / 2;
+        d.ey = Math.round(Math.random() * H / step) * step + step / 2;
+      });
+    }
+    function build() {
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      W = canvas.clientWidth; H = canvas.clientHeight;
+      canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+      step = W >= 1024 ? 14 : W >= 600 ? 12 : 10;
+      color = getComputedStyle(canvas).getPropertyValue('--color-accent').trim();
+      var rows = o.rows, cols = rows[0].length, n = o.size;
+      var cell = Math.min(step, W * o.fitW / (cols * n), H * o.fitH / (rows.length * n));
+      var x0 = (W - cols * n * cell) / 2 + cell / 2;
+      var y0 = (H - rows.length * n * cell) / 2 + cell / 2 + H * o.dy;
+      dots = [];
+      rows.forEach(function (row, r) {
+        for (var c = 0; c < row.length; c++) {
+          if (row.charAt(c) !== '#') continue;
+          for (var i = 0; i < n; i++) for (var j = 0; j < n; j++) {
+            dots.push({ tx: x0 + (c * n + j) * cell, ty: y0 + (r * n + i) * cell, d: Math.random() * 0.35 });
+          }
+        }
+      });
+      scatter();
+    }
+    function clear() {
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, W, H);
+    }
+    function draw(g, s, alpha, jitter) {
+      clear();
+      ctx.fillStyle = color;
+      var rad = step * 0.28;
+      for (var k = 0; k < dots.length; k++) {
+        var d = dots[k];
+        var gt = easeInOut(clamp((g - d.d) / 0.65));
+        var st = easeOut(clamp((s - d.d * 0.5) / 0.8));
+        var x = d.sx + (d.tx - d.sx) * gt, y = d.sy + (d.ty - d.sy) * gt;
+        x += (d.ex - x) * st; y += (d.ey - y) * st;
+        if (jitter) { x += (Math.random() - 0.5) * jitter; y += (Math.random() - 0.5) * jitter; }
+        ctx.globalAlpha = (0.25 + 0.75 * gt) * alpha * (1 - st);
+        ctx.beginPath(); ctx.arc(x, y, rad, 0, 6.283); ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+    }
+    return { build: build, scatter: scatter, draw: draw, clear: clear };
+  }
+
+  window.GLDots = { create: create, clamp: clamp };
+})();
+
+
+/* ---------- Заставка hero (section[data-hero-intro] > canvas.hero__intro) ----------
+   Пока страница грузится, голубые точки бесконечно пытаются собраться в пиксельный значок кухни
+   и разлетаются. Когда загрузка закончилась, собираются до конца, поверх по очереди проявляется
+   текст, значок рассыпается по сетке и гаснет, зажигается LED-стена: дальше первый экран как был.
+   Класс html.hero-intro ставит строчка в <head> (только без prefers-reduced-motion), она же
+   снимает его через 12 с, если скрипт не сработал. Без JS и при reduced-motion заставки нет. */
+(function () {
+  'use strict';
+  var root = document.documentElement;
+  var hero = document.querySelector('[data-hero-intro]');
+  var canvas = hero ? hero.querySelector('.hero__intro') : null;
+  function reveal() { root.classList.remove('hero-intro'); }
+  if (!canvas || !canvas.getContext || !window.GLDots || !root.classList.contains('hero-intro')) {
+    if (canvas) canvas.hidden = true;
+    reveal();
+    return;
+  }
+  var clamp = window.GLDots.clamp;
+  var KITCHEN = ['..##.##..', '.#######.', '#########', '#########', '.#######.', '..#####..', '..#...#..', '..#####..', '..#####..'];
+  var LOOP = 2000, TRY_MAX = 0.6;                  // попытка собраться, пока идёт загрузка
+  var T_GATHER = 1300, T_HOLD = 300, T_SCATTER = 1300, MAX_WAIT = 10000;
+  var fx = window.GLDots.create(canvas, { rows: KITCHEN });
+  fx.build();
+
+  // performance.now() считается от начала загрузки страницы, поэтому MAX_WAIT — от открытия, а не от запуска скрипта
+  var start = performance.now(), loaded = document.readyState === 'complete';
+  var finishAt = null, g0 = 0, gNow = 0, cycle = 0, revealed = false;
+  window.addEventListener('load', function () { loaded = true; });
+  window.addEventListener('resize', function () { if (!canvas.hidden) fx.build(); });
+  // Tab на кнопку hero во время заставки: показываем текст сразу, фокус не попадает на невидимое
+  hero.addEventListener('focusin', reveal);
+
+  function tick(now) {
+    var t = now - start, g, s = 0, alpha = 1;
+    // текст уже показан (страховка в <head> или фокус с клавиатуры): заставку сразу убираем
+    if (!root.classList.contains('hero-intro') && !revealed) { fx.clear(); canvas.hidden = true; return; }
+    if (finishAt === null && (loaded || now > MAX_WAIT)) { finishAt = now; g0 = gNow; }
+    if (finishAt === null) {
+      var c = Math.floor(t / LOOP);
+      if (c !== cycle) { cycle = c; fx.scatter(); }  // новая попытка из новых мест (точки в этот момент погашены)
+      g = TRY_MAX * (1 - Math.cos(2 * Math.PI * (t % LOOP) / LOOP)) / 2;
+      alpha = clamp(g / 0.15);
+      gNow = g;
+    } else {
+      var f = now - finishAt, gd = T_GATHER * (1 - g0);
+      g = g0 + (1 - g0) * clamp(f / gd);
+      if (!revealed && f > gd - 100) { revealed = true; reveal(); }
+      alpha = clamp(g / 0.15) * (1 - 0.7 * clamp((f - gd) / 400));
+      s = clamp((f - gd - T_HOLD) / T_SCATTER);
+      if (f > gd + T_HOLD + T_SCATTER) { fx.clear(); canvas.hidden = true; return; }
+    }
+    fx.draw(g, s, alpha);
+    window.requestAnimationFrame(tick);
+  }
+  window.requestAnimationFrame(tick);
 })();

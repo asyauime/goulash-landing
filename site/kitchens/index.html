@@ -6,9 +6,16 @@
   <title>Goulash.tech для гост-китченов и виртуальных брендов</title>
   <meta name="description" content="Goulash.tech собирает заказы всех ваших брендов в одном контуре. Кухня работает по единой очереди, курьеры распределяются автоматически, стоп-листы не расходятся.">
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="../assets/css/base.css?v=20261117c">
-  <link rel="stylesheet" href="../assets/css/components.css?v=20261117c">
-  <link rel="stylesheet" href="../assets/css/page-kitchens.css?v=20261117c">
+  <!-- Заставка первого экрана (led.js): прячем текст до первой отрисовки; через 12 с показываем в любом случае -->
+  <script>
+    if (window.matchMedia && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.documentElement.classList.add('hero-intro');
+      setTimeout(function () { document.documentElement.classList.remove('hero-intro'); }, 12000);
+    }
+  </script>
+  <link rel="stylesheet" href="../assets/css/base.css?v=20261117e">
+  <link rel="stylesheet" href="../assets/css/components.css?v=20261117e">
+  <link rel="stylesheet" href="../assets/css/page-kitchens.css?v=20261117e">
 </head>
 <body id="top">
   <a class="skip-link" href="#main">Перейти к&nbsp;содержанию</a>
@@ -33,10 +40,12 @@
   </header>
 
   <main id="main" class="page-lines">
-    <section class="hero" aria-labelledby="hero-title" data-led-wall>
+    <section class="hero" aria-labelledby="hero-title" data-led-wall data-hero-intro>
       <!-- LED-стена (led.js): курсор или палец зажигает светодиоды, от него заказы стекаются
            по сетке к кнопке. Только графика, поэтому aria-hidden. -->
       <canvas class="hero__wall" aria-hidden="true"></canvas>
+      <!-- Заставка (led.js): точки собираются в значок кухни, потом гаснут в стену -->
+      <canvas class="hero__intro" aria-hidden="true"></canvas>
       <div class="container hero__content">
         <h1 class="hero__title" id="hero-title" data-led-avoid><span class="hero__line">Одна кухня.</span> <span class="hero__line">Несколько брендов.</span> <span class="hero__line">Один поток заказов.</span></h1>
         <p class="lead hero__lead" data-led-avoid>Goulash.tech собирает заказы всех ваших брендов в&nbsp;одном контуре. Кухня работает по&nbsp;единой очереди, курьеры распределяются автоматически, <span class="hero__keep">стоп-листы</span> не&nbsp;расходятся</p>
@@ -592,16 +601,16 @@
     </div>
   </footer>
 
-  <script src="../assets/js/lead-form-logic.js?v=20261117c"></script>
-  <script src="../assets/js/demo-logic.js?v=20261117c"></script>
-  <script src="../assets/js/led.js?v=20261117c"></script>
-  <script src="../assets/js/main.js?v=20261117c"></script>
-  <script src="../assets/js/kitchens-blocks.js?v=20261117c"></script>
-  <script src="../assets/js/lead-form.js?v=20261117c"></script>
-  <script src="../assets/js/demo-board.js?v=20261117c"></script>
-  <script src="../assets/js/demo-stoplist.js?v=20261117c"></script>
-  <script src="../assets/js/demo-route.js?v=20261117c"></script>
-  <script src="../assets/js/demo-calculator.js?v=20261117c"></script>
-  <script src="../assets/js/demo-guest-app.js?v=20261117c"></script>
+  <script src="../assets/js/lead-form-logic.js?v=20261117e"></script>
+  <script src="../assets/js/demo-logic.js?v=20261117e"></script>
+  <script src="../assets/js/led.js?v=20261117e"></script>
+  <script src="../assets/js/main.js?v=20261117e"></script>
+  <script src="../assets/js/kitchens-blocks.js?v=20261117e"></script>
+  <script src="../assets/js/lead-form.js?v=20261117e"></script>
+  <script src="../assets/js/demo-board.js?v=20261117e"></script>
+  <script src="../assets/js/demo-stoplist.js?v=20261117e"></script>
+  <script src="../assets/js/demo-route.js?v=20261117e"></script>
+  <script src="../assets/js/demo-calculator.js?v=20261117e"></script>
+  <script src="../assets/js/demo-guest-app.js?v=20261117e"></script>
 </body>
 </html>

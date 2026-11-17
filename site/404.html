@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Страница не найдена · Goulash.tech</title>
+  <meta name="description" content="По этому адресу страницы нет. Вернитесь на главную Goulash.tech.">
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="data:,">
+  <!-- Хостинг отдаёт эту страницу по любому неверному адресу, на любой глубине. Чтобы стили
+       и скрипты находились, база ссылок — корень сайта: на GitHub Pages это /имя-репозитория/,
+       на другом хостинге и на локальном сервере, запущенном из папки site/, это /. -->
+  <script>
+    (function () {
+      if (location.protocol === 'file:') return;   // файл открыт с диска: относительные пути и так верны
+      var parts = location.pathname.split('/');
+      var base = /\.github\.io$/.test(location.hostname) && parts.length > 2 ? '/' + parts[1] + '/' : '/';
+      var el = document.createElement('base');
+      el.href = base;
+      document.head.appendChild(el);
+    })();
+  </script>
+  <link rel="stylesheet" href="assets/css/base.css?v=20261117e">
+  <link rel="stylesheet" href="assets/css/components.css?v=20261117e">
+  <link rel="stylesheet" href="assets/css/page-404.css?v=20261117e">
+</head>
+<body>
+  <a class="skip-link" href="404.html#main">Перейти к&nbsp;содержанию</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="kitchens/index.html">Goulash.tech</a>
+      <a class="btn btn--primary site-header__cta" href="kitchens/index.html#form">Оставить заявку</a>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="nf" aria-labelledby="nf-title">
+      <!-- Точки пытаются собраться в «404» (page-404.js). Только графика -->
+      <canvas class="nf__dots" data-404-dots aria-hidden="true"></canvas>
+      <div class="container nf__content">
+        <h1 class="nf__title" id="nf-title">Такой страницы нет</h1>
+        <p class="nf__text">Точки пытаются собраться в&nbsp;страницу, но&nbsp;по&nbsp;этому адресу ничего нет</p>
+        <a class="btn btn--primary btn--lg" href="kitchens/index.html">На&nbsp;главную</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <div class="site-footer__legal">
+        <p class="footnote">Тестовое задание. Это не&nbsp;официальный сайт Goulash.tech, демо-данные вымышлены.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/led.js?v=20261117e"></script>
+  <script src="assets/js/page-404.js?v=20261117e"></script>
+</body>
+</html>

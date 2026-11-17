@@ -57,6 +57,8 @@ const PAGES = [
   { id: 'kitchens', file: 'site/kitchens/index.html', copy: 'docs/copy-kitchens.md', demos: ['d1', 'd2', 'd3', 'd5', 'd4'] },
   // Вход в корне сайта: сразу переводит на kitchens/ (ТЗ 2.0, раздел 2)
   { id: 'root', file: 'site/index.html', demos: [], redirectTo: 'kitchens/index.html' },
+  // Страница «не найдено»: хостинг отдаёт её по любому неверному адресу
+  { id: '404', file: 'site/404.html', demos: [] },
 ];
 const FORM_FIELDS = ['name', 'phone', 'email', 'city', 'points', 'consent_pd', 'consent_ads'];
 

@@ -69,30 +69,18 @@
           setPain(card, btn.getAttribute('aria-expanded') !== 'true');
         });
       }
-      card.addEventListener('pointerenter', function (e) {
-        if (e.pointerType !== 'mouse' || !canHover()) return;
-        touched[i] = true;
-        setPain(card, true);
-      });
-      card.addEventListener('pointerleave', function (e) {
-        if (e.pointerType !== 'mouse' || !canHover()) return;
-        setPain(card, false);
-      });
     });
 
-    // Подсказка один раз: карточки по очереди показывают вторую сторону и возвращаются.
-    var wide = window.matchMedia ? window.matchMedia('(min-width: 720px)') : null;
+    // Карточки сами включаются по очереди, когда блок появился на экране; тронутые рукой не трогаем.
     if (hasIO && !reduced()) {
-      var hintObs = new IntersectionObserver(function (entries) {
+      var autoObs = new IntersectionObserver(function (entries) {
         if (!entries[0].isIntersecting) return;
-        hintObs.disconnect();
-        if (!wide || !wide.matches || reduced()) return;
+        autoObs.disconnect();
         cards.forEach(function (card, i) {
-          setTimeout(function () { if (!touched[i]) setPain(card, true); }, 900 + i * 450);
-          setTimeout(function () { if (!touched[i]) setPain(card, false); }, 2900 + i * 450);
+          setTimeout(function () { if (!touched[i] && !reduced()) setPain(card, true); }, 500 + i * 900);
         });
-      }, { threshold: 0.6 });
-      hintObs.observe(pains);
+      }, { threshold: 0.35 });
+      autoObs.observe(pains);
     }
   }
 

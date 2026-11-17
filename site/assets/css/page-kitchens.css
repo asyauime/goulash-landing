@@ -129,8 +129,9 @@
 .js .pain__switch {
   position: relative;
   z-index: 1;
-  justify-self: start;
-  display: inline-flex;
+  justify-self: stretch;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--space-1);
   margin: 0 var(--space-5) var(--space-5);
   padding: 0;
@@ -147,7 +148,8 @@
   color: var(--color-text-muted);
   font-size: 0.875rem;
   font-weight: 600;
-  white-space: nowrap;
+  line-height: 1.2;
+  text-align: center;
   transition: background-color var(--dur) ease, color var(--dur) ease;
 }
 
@@ -250,6 +252,18 @@
   .js .pain__switch {
     grid-area: 2 / 1;
     margin-inline: var(--space-6);
+  }
+}
+
+/* Узкие карточки в три колонки: переключатель делим пополам, подписи мельче */
+@media (min-width: 960px) and (max-width: 1199px) {
+  .js .pain__switch {
+    margin-inline: var(--space-4);
+  }
+
+  .js .pain__seg {
+    padding-inline: var(--space-2);
+    font-size: 0.8125rem;
   }
 }
 

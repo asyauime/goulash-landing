@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>Обложка для ссылки</title>
+  <!-- Шаблон обложки для превью ссылки (og:image). Снимается скриншотом 1200×630 в headless Chrome,
+       результат: site/assets/og-cover.jpg. Цвета и шрифт из base.css, текст — H1 из copy-kitchens.md. -->
+  <link rel="stylesheet" href="../../site/assets/css/base.css">
+  <style>
+    html, body { margin: 0; width: 1200px; height: 630px; overflow: hidden; }
+    body { position: relative; background-color: var(--color-surface); background-image: var(--led-grid); background-size: 12px 12px; font-family: var(--font-heading); }
+    .brand { position: absolute; top: 56px; left: 72px; color: var(--color-text); font-size: 28px; font-weight: 600; letter-spacing: -0.01em; }
+    h1 { position: absolute; left: 72px; bottom: 72px; margin: 0; color: var(--color-text); font-size: 84px; line-height: 0.98; letter-spacing: -0.045em; font-weight: 700; }
+    h1 span { display: block; }
+    .icon { position: absolute; right: 84px; top: 50%; transform: translateY(-58%); display: grid; grid-template-columns: repeat(9, 30px); gap: 0; }
+    .icon i { width: 30px; height: 30px; display: grid; place-items: center; }
+    .icon i::before { content: ""; width: 20px; height: 20px; border-radius: 50%; background: var(--color-led-off); }
+    .icon i.on::before { background: var(--color-accent); }
+    .fade { position: absolute; inset: 0; background: linear-gradient(90deg, var(--color-surface) 0 40%, transparent 75%); opacity: 0.85; }
+  </style>
+</head>
+<body>
+  <div class="fade"></div>
+  <div class="brand">Goulash.tech</div>
+  <h1><span>Одна кухня.</span><span>Несколько брендов.</span><span>Один поток заказов.</span></h1>
+  <div class="icon" id="icon"></div>
+  <script>
+    var rows = ['..##.##..', '.#######.', '#########', '#########', '.#######.', '..#####..', '..#...#..', '..#####..', '..#####..'];
+    var box = document.getElementById('icon');
+    rows.forEach(function (r) { r.split('').forEach(function (ch) { var i = document.createElement('i'); if (ch === '#') i.className = 'on'; box.appendChild(i); }); });
+  </script>
+</body>
+</html>

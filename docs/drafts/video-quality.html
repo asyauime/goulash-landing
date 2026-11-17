@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Проба: качество видео</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../site/assets/css/base.css">
+  <style>
+    /* Пробная страница, на сайт не выкладывается */
+    body { background: var(--color-bg); color: var(--color-text); padding: var(--space-6) var(--gutter); }
+    h1 { font-size: 1.5rem; margin-bottom: var(--space-3); }
+    .hint { color: var(--color-text-muted); margin-bottom: var(--space-6); max-width: 60rem; }
+    .row { display: grid; gap: var(--space-6); }
+    figure { margin: 0; }
+    figcaption { margin-bottom: var(--space-2); }
+    figcaption b { color: var(--color-accent); }
+    video { width: 100%; height: auto; display: block; border-radius: var(--radius-button); background: var(--color-surface); }
+    .controls { position: sticky; top: 0; z-index: 2; display: flex; gap: var(--space-2); padding: var(--space-3) 0; background: var(--color-bg); }
+    button { min-height: 44px; padding: 0 var(--space-4); border: 0; border-radius: var(--radius-button); background: var(--color-button-bg); color: var(--color-button-text); font: inherit; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>Качество видео: сравнение</h1>
+  <p class="hint">Все ролики идут синхронно без звука. Смотрите во весь экран (двойной клик по видео) на тёмных местах и плавных переходах света: там видно блоки и полосы</p>
+  <div class="controls">
+    <button type="button" data-all="play">Играть все</button>
+    <button type="button" data-all="pause">Пауза</button>
+    <button type="button" data-all="restart">С начала</button>
+  </div>
+  <div class="row">
+    <figure><figcaption><b>Сейчас на сайте</b> · 1280×720, 420 кбит/с · 1,67 МБ</figcaption><video src="media/q420.mp4" muted playsinline controls preload="auto"></video></figure>
+    <figure><figcaption><b>Максимум в лимите 2 МБ</b> · 1280×720, 490 кбит/с · 1,92 МБ</figcaption><video src="media/q500.mp4" muted playsinline controls preload="auto"></video></figure>
+    <figure><figcaption><b>Лимит поднять до 3,5 МБ</b> · 1280×720, 900 кбит/с · 3,34 МБ (сайт целиком около 4 МБ из 5)</figcaption><video src="media/q900.mp4" muted playsinline controls preload="auto"></video></figure>
+    <figure><figcaption><b>Оригинал draft12</b> · 1920×1080 · 52 МБ (для сравнения, на сайт не годится)</figcaption><video src="file:///Users/anastasia/Downloads/draft12.mp4" muted playsinline controls preload="auto"></video></figure>
+  </div>
+  <script>
+    var vids = [].slice.call(document.querySelectorAll('video'));
+    document.querySelectorAll('[data-all]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var a = b.getAttribute('data-all');
+        vids.forEach(function (v) {
+          if (a === 'restart') { v.currentTime = 0; v.play(); }
+          else if (a === 'play') v.play(); else v.pause();
+        });
+      });
+    });
+  </script>
+</body>
+</html>

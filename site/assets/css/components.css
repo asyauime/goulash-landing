@@ -13,8 +13,7 @@
     На узком экране: бренд, CTA и кнопка меню в одной строке, меню раскрывается строкой ниже.
   - Форма заявки: разметка и хуки в docs/snippets/lead-form.html (section.lead-section#form)
   - Секция: section.section > .container > .section__head (h2.section__title, p.lead) + содержимое
-  - Сетка: .grid.grid--3 (или --2, --4)
-  - Карточка: article.card > h3.card__title + p.card__text
+  - Карточка: article.card
   - Шаги: ol.steps > li.step > span.step__num + p
   - Факты: ul.facts > li.fact > span.fact__value + span.fact__label
   - FAQ: div.faq[data-faq] > div.faq__item > h3.faq__heading >
@@ -59,26 +58,6 @@
   letter-spacing: -0.035em;
 }
 
-/* Заголовок слева, вводный текст справа и ниже: асимметрия вместо центровки */
-@media (min-width: 960px) {
-  .section__head--split {
-    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
-    align-items: end;
-    column-gap: var(--space-8);
-  }
-
-  .section__head--split .lead {
-    padding-bottom: 0.4em;
-  }
-}
-
-.eyebrow {
-  color: var(--color-accent);
-  font-size: 0.875rem;
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
 
 /* Тонкие вертикальные линии сетки поверх фона секций, как на goulash.tech.
    Совпадают с краями контента контейнера; контент (.container) лежит выше линий. */
@@ -151,31 +130,6 @@
 
 .pixel__off {
   fill: var(--color-led-off);
-}
-
-/* ---------- Сетка ---------- */
-.grid {
-  display: grid;
-  gap: var(--space-5);
-  grid-template-columns: minmax(0, 1fr);
-}
-
-@media (min-width: 720px) {
-  .grid--2,
-  .grid--3,
-  .grid--4 {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (min-width: 1024px) {
-  .grid--3 {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .grid--4 {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
 }
 
 /* ---------- Шапка ---------- */
@@ -457,13 +411,6 @@
   opacity: 0.5;
 }
 
-.btn-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-4);
-}
-
 /* Вторичная текстовая ссылка (например, «к демо») */
 .link-arrow {
   display: inline-flex;
@@ -623,14 +570,6 @@
 
 .section--surface .card {
   background-color: var(--color-bg);
-}
-
-.card__title {
-  font-size: clamp(1.125rem, 1.8vw, 1.375rem);
-}
-
-.card__text {
-  color: var(--color-text-muted);
 }
 
 a.card {
@@ -1031,19 +970,34 @@ a.card:hover {
   transform-origin: top right;
 }
 
-/* ---------- Пиксельная шторка между тёмной и светлой секцией (kitchens-blocks.js) ----------
-   Полосу .pixel-curtain вставляет скрипт перед светлой секцией, если над ней тёмная.
-   Светлые светодиоды прорастают по пиксельному узору снизу вверх по мере прокрутки. */
+/* ---------- Пиксельная шторка между тёмной и светлой секцией (kitchens-blocks.js, раздел 6) ----------
+   Полосу вставляет скрипт перед светлой секцией, если над ней тёмная. Полоса высотой 160svh,
+   внутри сцена закреплена под шапкой: пока её прокручивают, светлые точки заливают экран целиком. */
 .pixel-curtain {
   position: relative;
-  height: clamp(120px, 28svh, 280px);
+  z-index: 2;
+  height: 160vh;
+  height: 160svh;
+}
+
+/* высота по большому экрану (lvh): на iPhone со свёрнутой адресной строкой под сценой не проглядывает тёмная полоса */
+.pixel-curtain__stage {
+  position: sticky;
+  top: var(--header-height);
+  height: calc(100vh - var(--header-height));
+  height: calc(100lvh - var(--header-height));
 }
 
 .pixel-curtain canvas {
-  position: absolute;
-  inset: 0;
+  display: block;
   width: 100%;
   height: 100%;
+}
+
+@media print {
+  .pixel-curtain {
+    display: none;
+  }
 }
 
 .steps--flow .step:hover .step__num {
@@ -1219,8 +1173,7 @@ a.card:hover {
   background-color: var(--color-hover);
 }
 
-.chip[aria-pressed="true"],
-.chip.is-active {
+.chip[aria-pressed="true"] {
   background-color: var(--color-button-bg);
   border-color: var(--color-button-bg);
   color: var(--color-button-text);
@@ -1819,14 +1772,6 @@ a.card:hover {
   gap: var(--space-2);
   padding-top: var(--space-4);
   color: var(--color-text-muted);
-}
-
-.lead-form__simulate {
-  color: var(--color-text-muted);
-}
-
-.lead-form__simulate:hover {
-  color: var(--color-accent);
 }
 
 .lead-form__hint {

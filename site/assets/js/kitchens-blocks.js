@@ -448,8 +448,8 @@
 /* 5. «Как это работает» [data-how-route]: шаги по маршруту. Секция получает .how-route и закрепляется,
       шаги во всю ширину едут влево по мере прокрутки, внизу LED-линия загорается за пиксельным
       курьером, на каждом шаге крупная точка-веха.
-   6. Пиксельная шторка: перед каждой светлой секцией, над которой тёмная, вставляется полоса
-      .pixel-curtain; светлые светодиоды прорастают по узору Байера снизу вверх по мере прокрутки.
+   6. Пиксельная шторка: перед каждой светлой секцией, над которой тёмная, вставляется закреплённая полоса
+      .pixel-curtain; светлые светодиоды разрастаются по узору Байера, пока экран не станет светлым.
    7. Видео [data-video-reveal]: раскрытие из карточки во весь экран, автозапуск без звука на экране, кнопка звука.
    prefers-reduced-motion и без JS: шагов-маршрута, шторок и раскрытия нет, видео с обычным плеером. */
 (function () {
@@ -529,7 +529,9 @@
     }
   }
 
-  /* 6. Пиксельные шторки */
+  /* 6. Пиксельные шторки (как в пробнике docs/drafts/scroll-preview.html): полоса закрепляется на экране,
+        светлые светодиоды разрастаются по узору Байера, пока экран целиком не станет цветом светлой секции.
+        В начале полоса целиком цвета тёмной секции, в конце — светлой, поэтому швов нет. */
   function bgOf(el) {
     while (el && el !== document.documentElement) {
       var c = window.getComputedStyle(el).backgroundColor;
@@ -545,41 +547,50 @@
     var band = document.createElement('div');
     band.className = 'pixel-curtain';
     band.setAttribute('aria-hidden', 'true');
+    var stage = document.createElement('div');
+    stage.className = 'pixel-curtain__stage';
     var cv = document.createElement('canvas');
-    band.appendChild(cv);
+    stage.appendChild(cv);
+    band.appendChild(stage);
     light.parentNode.insertBefore(band, light);
     if (!cv.getContext) return;
-    var ctx = sizeCanvas(cv);
+    var ctx = sizeCanvas(cv), stageTop = 0, lastP = -1;
     var from = bgOf(dark), to = bgOf(light);
+    var measureBand = function () {
+      ctx = sizeCanvas(cv);
+      lastP = -1;
+      stageTop = parseFloat(window.getComputedStyle(stage).top) || 0;
+    };
     var draw = function () {
-      var r = band.getBoundingClientRect(), vh = window.innerHeight;
-      if (r.bottom < 0 || r.top > vh) return;
-      var W = cv.clientWidth, H = cv.clientHeight, step = W < 600 ? 12 : 16;
-      // 0 — полоса целиком показалась снизу, 1 — её верх поднялся ещё на полэкрана
-      var boost = clamp((vh - r.bottom) / (vh * 0.5));
+      var r = band.getBoundingClientRect();
+      if (r.bottom < 0 || r.top > window.innerHeight) return;
+      var span = r.height - stage.offsetHeight;
+      // 0 — полоса закрепилась под шапкой, 1 — отпускается; первые и последние 5% держат чистый цвет
+      var p = span > 0 ? clamp(((stageTop - r.top) / span - 0.05) / 0.9) : 1;
+      if (Math.abs(p - lastP) < 0.002) return;   // ничего не изменилось: не перерисовываем
+      lastP = p;
+      var W = cv.clientWidth, H = cv.clientHeight, step = W < 600 ? 14 : 20;
       ctx.fillStyle = from; ctx.fillRect(0, 0, W, H);
       ctx.fillStyle = to;
-      for (var y = 0, row = 0; y < H + step; y += step, row++) {
-        // нижний край полосы всегда светлый (стык со светлой секцией без шва), верх догоняет при прокрутке
-        var fr = clamp(y / H);
-        // нижняя четверть полосы всегда сплошь светлая: стык со светлой секцией без шва
-        var base = clamp(fr / 0.75);
-        // верх полосы заполняется не до конца: стык с тёмной секцией всегда остаётся «пиксельным», без прямой линии
-        var cover = clamp(base * base + boost * 0.55 * (1 - base * base));
-        // полностью светлый ряд заливаем сплошь: на стыках кругов не остаётся щелей сглаживания
-        if (base >= 1) { ctx.fillRect(0, y, W, step + 1); continue; }
-        for (var x = 0, col = 0; x < W + step; x += step, col++) {
-          // узор сдвинут на строку: в первой строке Байера самые низкие пороги, край вышел бы сплошным
-          var th = BAYER[((row + 1) % 4) * 4 + (col % 4)] / 16;
-          var k = clamp((cover * 1.3 - th) / 0.15);   // к сплошной зоне точки уже полного размера, без редких тёмных дыр
+      if (p >= 1) { ctx.fillRect(0, 0, W, H); return; }
+      if (p <= 0) return;
+      // все точки одним контуром и одной заливкой за кадр; ряд и столбец «−1», чтобы у краёв не было зазубрин
+      ctx.beginPath();
+      for (var y = -step, row = 3; y < H + step; y += step, row++) {
+        for (var x = -step, col = 3; x < W + step; x += step, col++) {
+          var th = BAYER[(row % 4) * 4 + (col % 4)] / 16;
+          // переход растянут на всю прокрутку: последние точки загораются к p≈0.95,
+          // круги смыкаются (0.85 шага > половины диагонали клетки)
+          var k = clamp((p - th * 0.75) / 0.25);
           if (k <= 0) continue;
-          // вверху отдельные светодиоды, внизу точки крупнее и сливаются в светлый фон
-          // радиус до 0.85 шага, заметно больше половины диагонали клетки (0.707): внизу полосы точки смыкаются без щелей
-          ctx.beginPath(); ctx.arc(x + step / 2, y + step / 2, step * Math.min(0.85, 0.4 + 0.5 * base) * k, 0, 6.283); ctx.fill();
+          var cx = x + step / 2, cy = y + step / 2, rr = step * 0.85 * k;
+          ctx.moveTo(cx + rr, cy); ctx.arc(cx, cy, rr, 0, 6.283);
         }
       }
+      ctx.fill();
     };
-    drawers.push({ draw: draw, resize: function () { ctx = sizeCanvas(cv); } });
+    drawers.push({ draw: draw, resize: measureBand });
+    stageTop = parseFloat(window.getComputedStyle(stage).top) || 0;
   });
 
   /* 7. Видео [data-video-reveal]: убираем плеер, видео само идёт без звука, пока на экране.

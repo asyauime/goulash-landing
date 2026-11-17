@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Проба: анимации по прокрутке</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../site/assets/css/base.css">
+  <link rel="stylesheet" href="../../site/assets/css/components.css">
+  <style>
+    /* Пробная страница, на сайт не выкладывается. Цвета, шрифты, скругления только из токенов base.css */
+    body { background: var(--color-bg); }
+    .probe-note { position: fixed; right: var(--space-2); bottom: var(--space-2); z-index: 50; padding: var(--space-2) var(--space-3);
+      border-radius: var(--radius-button); background: var(--color-button-bg); color: var(--color-button-text); font-size: 13px; }
+    .xp-intro { min-height: 70svh; display: grid; place-content: center; gap: var(--space-4); text-align: center; padding: var(--space-7) var(--gutter); }
+    .xp-intro h1 { font-size: clamp(2rem, 6vw, 4.5rem); line-height: 1; letter-spacing: -0.03em; }
+    .xp-intro p { color: var(--color-text-muted); }
+    .xp-exp-label { position: absolute; top: var(--space-5); left: var(--gutter); z-index: 3; color: var(--color-text-muted); font-size: 0.875rem; }
+    .xp-pin { position: relative; }
+    .xp-pin__stage { position: sticky; top: 0; height: 100svh; overflow: hidden; }
+
+    /* 1. Всё в одну очередь */
+    .xp-queue { height: 260svh; }
+    .xp-queue__title { position: absolute; left: 50%; top: 12%; transform: translateX(-50%); width: min(90%, 760px); text-align: center;
+      font-size: clamp(1.375rem, 3.2vw, 2.5rem); line-height: 1.1; letter-spacing: -0.02em; z-index: 2; }
+    .xp-ticket { position: absolute; left: 0; top: 0; display: flex; align-items: center; gap: var(--space-2); height: 44px; padding: 0 var(--space-4);
+      border-radius: var(--radius-button); background: var(--color-surface); color: var(--color-text); font-size: 0.875rem; white-space: nowrap;
+      will-change: transform; }
+    .xp-ticket [data-pixel] { width: 22px; height: 22px; flex: none; color: var(--color-accent); }
+    .xp-ticket b { font-weight: 600; }
+    .xp-ticket.is-queued { background: var(--color-button-bg); color: var(--color-button-text); }
+    .xp-ticket.is-queued [data-pixel] { color: var(--color-button-text); }
+    .xp-queue__label { position: absolute; font-size: 0.875rem; color: var(--color-accent); opacity: 0; transition: opacity .4s var(--ease-out); }
+    .xp-queue__label.is-on { opacity: 1; }
+
+    /* 2. Шаги по маршруту */
+    .xp-route { height: 320svh; }
+    .xp-route__track { position: absolute; top: 0; left: 0; height: 100%; display: flex; will-change: transform; }
+    .xp-route__step { width: 100vw; flex: none; display: grid; align-content: center; gap: var(--space-4); padding: 0 max(var(--gutter), 8vw); }
+    .xp-route__num { font-size: clamp(4rem, 14vw, 11rem); line-height: 0.85; color: var(--color-accent); font-weight: 700; letter-spacing: -0.05em; }
+    .xp-route__text { max-width: 34rem; font-size: clamp(1.25rem, 2.6vw, 2.125rem); line-height: 1.3; letter-spacing: -0.01em; }
+    .xp-route__line { position: absolute; left: var(--gutter); right: var(--gutter); bottom: 14svh; height: 40px; }
+    .xp-route__line canvas { width: 100%; height: 100%; display: block; }
+    .xp-route__courier { position: absolute; bottom: calc(14svh + 26px); left: var(--gutter); width: 44px; height: 30px; color: var(--color-accent); will-change: transform; }
+
+    /* 3. Пиксельная шторка */
+    .xp-curtain { height: 200svh; }
+    .xp-curtain canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .xp-curtain__text { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; padding: 0 var(--gutter);
+      font-size: clamp(1.75rem, 5vw, 4rem); line-height: 1; letter-spacing: -0.03em; z-index: 1; }
+    .xp-after-light { min-height: 80svh; background: var(--color-bg-light); color: var(--color-text-on-light); display: grid; place-content: center;
+      text-align: center; padding: var(--space-7) var(--gutter); gap: var(--space-3); }
+    .xp-after-light p { color: var(--color-text-muted-on-light); }
+
+    @media (prefers-reduced-motion: reduce) {
+      .xp-route { height: auto; } .xp-route .xp-pin__stage { position: static; height: auto; }
+      .xp-route__track { position: static; flex-direction: column; } .xp-route__step { width: auto; padding-block: var(--space-7); }
+      .xp-route__line, .xp-route__courier { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="probe-note">Проба: анимации по прокрутке, не сайт</div>
+
+  <section class="xp-intro">
+    <h1>Три пробы анимаций по&nbsp;прокрутке</h1>
+    <p>Крутите вниз медленно и&nbsp;обратно: всё привязано к&nbsp;прокрутке ↓</p>
+  </section>
+
+  <!-- 1. Заказы трёх брендов вылетают из своих колонок и встают в одну очередь -->
+  <section class="xp-pin xp-queue" data-exp="queue">
+    <div class="xp-pin__stage">
+      <span class="xp-exp-label">Проба 1. Всё в&nbsp;одну очередь</span>
+      <h2 class="xp-queue__title">Заказы со&nbsp;всех каналов попадают в&nbsp;один контур</h2>
+      <div class="xp-ticket" data-brand="0"><span data-pixel="pot"></span><b>101</b><span class="xp-ticket__name">Медный котелок</span></div>
+      <div class="xp-ticket" data-brand="1"><span data-pixel="onion"></span><b>102</b><span class="xp-ticket__name">Луковый сад</span></div>
+      <div class="xp-ticket" data-brand="2"><span data-pixel="pancakes"></span><b>103</b><span class="xp-ticket__name">Сытая полка</span></div>
+      <div class="xp-ticket" data-brand="0"><span data-pixel="pot"></span><b>104</b><span class="xp-ticket__name">Медный котелок</span></div>
+      <div class="xp-ticket" data-brand="1"><span data-pixel="onion"></span><b>105</b><span class="xp-ticket__name">Луковый сад</span></div>
+      <div class="xp-ticket" data-brand="2"><span data-pixel="pancakes"></span><b>106</b><span class="xp-ticket__name">Сытая полка</span></div>
+      <span class="xp-queue__label">Единая очередь заказов</span>
+    </div>
+  </section>
+
+  <!-- 2. Шаги едут вбок, курьер катится по LED-линии -->
+  <section class="xp-pin xp-route" data-exp="route">
+    <div class="xp-pin__stage">
+      <span class="xp-exp-label">Проба 2. Шаги по&nbsp;маршруту</span>
+      <div class="xp-route__track">
+        <div class="xp-route__step"><div class="xp-route__num">1</div><p class="xp-route__text">Заказы со&nbsp;всех каналов попадают в&nbsp;один контур: сайт, приложение, оператор и&nbsp;агрегаторы</p></div>
+        <div class="xp-route__step"><div class="xp-route__num">2</div><p class="xp-route__text">Кухня видит единую очередь и&nbsp;работает по&nbsp;ней, без&nbsp;ручных костылей</p></div>
+        <div class="xp-route__step"><div class="xp-route__num">3</div><p class="xp-route__text">Система сама распределяет заказы между курьерами с&nbsp;учётом того, где они находятся и&nbsp;как&nbsp;доставляют</p></div>
+      </div>
+      <div class="xp-route__line" aria-hidden="true"><canvas></canvas></div>
+      <span class="xp-route__courier" data-pixel="courier" aria-hidden="true"></span>
+    </div>
+  </section>
+
+  <!-- 3. Светодиоды разрастаются по пиксельному узору, тёмная секция становится светлой -->
+  <section class="xp-pin xp-curtain" data-exp="curtain">
+    <div class="xp-pin__stage">
+      <span class="xp-exp-label">Проба 3. Пиксельная шторка</span>
+      <canvas aria-hidden="true"></canvas>
+      <p class="xp-curtain__text">Из&nbsp;тёмной секции в&nbsp;светлую</p>
+    </div>
+  </section>
+  <section class="xp-after-light">
+    <h2>Светлая секция</h2>
+    <p>Шторка заканчивается ровно цветом этой секции</p>
+  </section>
+
+  <script src="../../site/assets/js/led.js"></script>
+  <script>
+  (function () {
+    var css = getComputedStyle(document.documentElement);
+    var tok = function (n) { return css.getPropertyValue(n).trim(); };
+    var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var clamp = function (v) { return v < 0 ? 0 : v > 1 ? 1 : v; };
+    var ease = function (t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; };
+    // доля прокрутки закреплённой секции: 0 — секция только закрепилась, 1 — отпускается
+    function progress(el) { if (reduce) return 1; var r = el.getBoundingClientRect(); return clamp(-r.top / (r.height - innerHeight)); }
+
+    /* 1. Очередь */
+    var q = document.querySelector('[data-exp="queue"]');
+    var qStage = q.querySelector('.xp-pin__stage');
+    var tickets = [].slice.call(q.querySelectorAll('.xp-ticket'));
+    var qLabel = q.querySelector('.xp-queue__label');
+    var qLayout;
+    function layoutQueue() {
+      var W = qStage.clientWidth, H = qStage.clientHeight, narrow = W < 720;
+      tickets.forEach(function (t) { t.querySelector('.xp-ticket__name').hidden = narrow; t.style.width = ''; });
+      var tw = narrow ? Math.min(110, (W - 48) / 3) : 220, th = 44, gap = 10;
+      var counts = [0, 0, 0];
+      var colX = narrow ? [0, 1, 2].map(function (c) { return 16 + c * ((W - 32 - tw) / 2); })
+                        : [0, 1, 2].map(function (c) { return W * 0.08 + c * (tw + 24); });
+      var startY = narrow ? H * 0.3 : H * 0.36;
+      var endX = narrow ? (W - tw) / 2 : W * 0.92 - tw;
+      var endY0 = narrow ? H * 0.52 : H * 0.32;
+      qLayout = tickets.map(function (t, i) {
+        var b = +t.dataset.brand, row = counts[b]++;
+        t.style.width = tw + 'px';
+        return { sx: colX[b], sy: startY + row * (th + gap), ex: endX, ey: endY0 + i * (narrow ? 36 : th + gap) };
+      });
+      qLabel.style.left = endX + 'px';
+      qLabel.style.top = (endY0 - 28) + 'px';
+    }
+    function drawQueue() {
+      var p = progress(q);
+      tickets.forEach(function (t, i) {
+        var L = qLayout[i];
+        // по очереди: каждый заказ вылетает чуть позже предыдущего
+        var k = ease(clamp((p - 0.1 - i * 0.09) / 0.32));
+        var x = L.sx + (L.ex - L.sx) * k, y = L.sy + (L.ey - L.sy) * k;
+        var lift = Math.sin(k * Math.PI) * -30;   // дуга полёта
+        t.style.transform = 'translate(' + x + 'px,' + (y + lift) + 'px)';
+        t.classList.toggle('is-queued', k > 0.98);
+      });
+      qLabel.classList.toggle('is-on', p > 0.85);
+    }
+
+    /* 2. Маршрут */
+    var r = document.querySelector('[data-exp="route"]');
+    var track = r.querySelector('.xp-route__track');
+    var lineCanvas = r.querySelector('.xp-route__line canvas');
+    var lctx = lineCanvas.getContext('2d');
+    var courier = r.querySelector('.xp-route__courier');
+    function sizeLine() { var d = Math.min(devicePixelRatio || 1, 2); lineCanvas.width = lineCanvas.clientWidth * d; lineCanvas.height = lineCanvas.clientHeight * d; lctx.setTransform(d, 0, 0, d, 0, 0); }
+    function drawRoute() {
+      var p = progress(r);
+      var W = innerWidth;
+      track.style.transform = 'translateX(' + (-p * 2 * W) + 'px)';
+      var lw = lineCanvas.clientWidth, lh = lineCanvas.clientHeight, step = 12, n = Math.floor(lw / step);
+      lctx.clearRect(0, 0, lw, lh);
+      var head = p * (n - 1);
+      for (var i = 0; i < n; i++) {
+        var lit = i <= head;
+        // вехи шагов: три точки крупнее
+        var milestone = Math.abs(i - Math.round((n - 1) * 0)) < 0.5 || Math.abs(i - Math.round((n - 1) * 0.5)) < 0.5 || i === n - 1;
+        lctx.globalAlpha = lit ? 1 : 0.18;
+        lctx.fillStyle = lit ? tok('--color-accent') : tok('--color-text');
+        lctx.beginPath(); lctx.arc(i * step + step / 2, lh / 2, milestone ? 6 : 2.6, 0, 6.283); lctx.fill();
+      }
+      lctx.globalAlpha = 1;
+      courier.style.transform = 'translateX(' + (head * step + step / 2 - 22) + 'px)';
+    }
+
+    /* 3. Шторка: упорядоченный дизеринг (матрица Байера 4×4), точки растут, пока не закроют экран */
+    var c = document.querySelector('[data-exp="curtain"]');
+    var cc = c.querySelector('canvas'), cctx = cc.getContext('2d');
+    var cText = c.querySelector('.xp-curtain__text');
+    var BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
+    function sizeCurtain() { var d = Math.min(devicePixelRatio || 1, 2); cc.width = cc.clientWidth * d; cc.height = cc.clientHeight * d; cctx.setTransform(d, 0, 0, d, 0, 0); }
+    function drawCurtain() {
+      var p = progress(c), W = cc.clientWidth, H = cc.clientHeight, step = W < 600 ? 12 : 16;
+      cctx.fillStyle = tok('--color-bg'); cctx.fillRect(0, 0, W, H);
+      cctx.fillStyle = tok('--color-bg-light');
+      for (var y = 0, row = 0; y < H + step; y += step, row++) {
+        for (var x = 0, col = 0; x < W + step; x += step, col++) {
+          var th = BAYER[(row % 4) * 4 + (col % 4)] / 16;
+          var k = clamp((p * 1.25 - th * 0.75) / 0.25);      // каждая точка загорается в свой момент
+          if (k <= 0) continue;
+          var rad = step * 0.72 * k;                          // при k=1 круги перекрывают клетку целиком
+          cctx.beginPath(); cctx.arc(x + step / 2, y + step / 2, rad, 0, 6.283); cctx.fill();
+        }
+      }
+      // текст меняет цвет на середине, чтобы читаться и на тёмном, и на светлом
+      cText.style.color = p < 0.5 ? tok('--color-text') : tok('--color-text-on-light');
+      cText.style.opacity = p < 0.5 ? 1 - clamp((p - 0.15) / 0.25) : clamp((p - 0.75) / 0.2);
+    }
+
+    function all() { drawQueue(); drawRoute(); drawCurtain(); }
+    function relayout() { layoutQueue(); sizeLine(); sizeCurtain(); all(); }
+    var ticking = false;
+    addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(function () { ticking = false; all(); }); } }, { passive: true });
+    addEventListener('resize', relayout);
+    relayout();
+  })();
+  </script>
+</body>
+</html>

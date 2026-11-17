@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Проба: видео на сайте</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../site/assets/css/base.css">
+  <link rel="stylesheet" href="../../site/assets/css/components.css">
+  <style>
+    /* Пробная страница, на сайт не выкладывается. Цвета, шрифты, скругления только из токенов base.css */
+    body { background: var(--color-bg); }
+    .probe-note { position: fixed; right: var(--space-2); bottom: var(--space-2); z-index: 50; padding: var(--space-2) var(--space-3);
+      border-radius: var(--radius-button); background: var(--color-button-bg); color: var(--color-button-text); font-size: 13px; }
+    .variant { padding: var(--space-8) 0; border-top: 1px solid var(--color-border); }
+    .variant__label { margin-bottom: var(--space-5); color: var(--color-text-muted); font-size: 0.875rem; }
+    .variant__label b { color: var(--color-accent); font-weight: 600; }
+    video { display: block; width: 100%; height: auto; }
+
+    /* общая кнопка звука поверх видео */
+    .vbox { position: relative; overflow: hidden; border-radius: var(--radius-card); background: var(--color-surface); }
+    /* вверху справа: внизу кадра вшиты подписи видео */
+    .vsound { position: absolute; right: var(--space-4); top: var(--space-4); display: inline-flex; align-items: center; gap: var(--space-2);
+      min-height: 44px; padding: 0 var(--space-4); border: 0; border-radius: var(--radius-button); cursor: pointer;
+      background: var(--color-button-bg); color: var(--color-button-text); font: inherit; font-size: 0.9375rem; }
+    .vsound svg { width: 18px; height: 18px; }
+
+    /* A. Широкий блок */
+    .a-title { margin-bottom: var(--space-6); }
+
+    /* B. Обложка и кнопка «Смотреть» */
+    .b-poster { position: absolute; inset: 0; display: grid; place-items: center; border: 0; padding: 0; cursor: pointer; background: none; }
+    .b-poster img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .b-play { position: relative; display: inline-flex; align-items: center; gap: var(--space-3); min-height: 56px; padding: 0 var(--space-5);
+      border-radius: var(--radius-button); background: var(--color-button-bg); color: var(--color-button-text); font-size: 1.0625rem; font-weight: 600; }
+    .b-play svg { width: 18px; height: 18px; }
+    .b-wrap { aspect-ratio: 16 / 9; }
+    .b-wrap video { position: absolute; inset: 0; height: 100%; }
+
+    /* C. Рамка LED-табло: видео внутри «табло» из точек */
+    .c-grid { display: grid; gap: var(--space-6); align-items: center; }
+    @media (min-width: 960px) { .c-grid { grid-template-columns: 5fr 7fr; } }
+    .c-frame { position: relative; padding: 18px; border-radius: calc(var(--radius-card) + 6px);
+      background-color: var(--color-surface); background-image: var(--led-grid); background-size: 8px 8px; }
+    .c-frame .vbox { border-radius: var(--radius-button); }
+    .c-frame::after { content: ""; position: absolute; top: 7px; left: 50%; width: 6px; height: 6px; margin-left: -3px; border-radius: 50%;
+      background: var(--color-accent); }
+    .c-title { font-size: clamp(1.75rem, 3.6vw, 3rem); line-height: 1.05; letter-spacing: -0.03em; }
+    .c-text { margin-top: var(--space-4); color: var(--color-text-muted); max-width: 30rem; }
+
+    /* D. Раскрытие по прокрутке */
+    .d-pin { height: 220vh; height: 220svh; position: relative; }
+    .d-stage { position: sticky; top: 0; height: 100vh; height: 100svh; display: grid; place-items: center; overflow: hidden; }
+    .d-box { width: 100%; will-change: transform, border-radius; transform-origin: center; }
+    .d-box video { width: 100%; height: 100svh; object-fit: cover; }
+    .d-label { position: absolute; top: var(--space-6); left: var(--gutter); z-index: 2; }
+
+  </style>
+</head>
+<body>
+  <div class="probe-note">Проба: видео, не сайт</div>
+
+  <!-- A. Широкий блок: само идёт без звука, кнопка «Включить звук» -->
+  <section class="variant">
+    <div class="container">
+      <p class="variant__label"><b>Вариант A.</b> Широкий блок: видео само идёт без звука, пока на экране; кнопка включает музыку</p>
+      <h2 class="section__title section__title--xl a-title">Как&nbsp;это работает</h2>
+      <div class="vbox">
+        <video data-auto muted loop playsinline preload="metadata" poster="media/draft11-poster.jpg" src="media/draft11-web.mp4"></video>
+        <button class="vsound" type="button" data-sound aria-pressed="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path data-wave d="M16 9a4 4 0 0 1 0 6"/></svg>
+          <span>Включить звук</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- B. Обложка с кнопкой «Смотреть»: со звуком и обычными кнопками плеера -->
+  <section class="variant">
+    <div class="container">
+      <p class="variant__label"><b>Вариант B.</b> Обложка и кнопка «Смотреть»: по нажатию видео идёт со звуком и обычным плеером</p>
+      <div class="vbox b-wrap">
+        <video data-click playsinline preload="none" src="media/draft11-web.mp4" hidden></video>
+        <button class="b-poster" type="button" data-play aria-label="Смотреть видео">
+          <img src="media/draft11-poster.jpg" alt="" width="1280" height="720">
+          <span class="b-play"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4v16l13-8z"/></svg>Смотреть</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- C. В рамке LED-табло рядом с текстом -->
+  <section class="variant">
+    <div class="container c-grid">
+      <div>
+        <p class="variant__label"><b>Вариант C.</b> Видео в рамке LED-табло рядом с текстом из copy</p>
+        <h2 class="c-title">Одна кухня. Несколько брендов. Один поток заказов.</h2>
+        <p class="c-text">Goulash.tech собирает заказы всех ваших брендов в&nbsp;одном контуре</p>
+      </div>
+      <div class="c-frame">
+        <div class="vbox">
+          <video data-auto muted loop playsinline preload="metadata" poster="media/draft11-poster.jpg" src="media/draft11-web.mp4"></video>
+          <button class="vsound" type="button" data-sound aria-pressed="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path data-wave d="M16 9a4 4 0 0 1 0 6"/></svg>
+            <span>Включить звук</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- D. Раскрытие по прокрутке: из карточки во весь экран -->
+  <section class="variant" style="padding-bottom:0">
+    <div class="container"><p class="variant__label"><b>Вариант D.</b> Раскрытие по прокрутке: небольшая карточка вырастает во весь экран, потом блок отпускается</p></div>
+    <div class="d-pin" data-dpin>
+      <div class="d-stage">
+        <div class="d-box vbox" data-dbox>
+          <video data-auto muted loop playsinline preload="metadata" poster="media/draft11-poster.jpg" src="media/draft11-web.mp4"></video>
+          <button class="vsound" type="button" data-sound aria-pressed="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path data-wave d="M16 9a4 4 0 0 1 0 6"/></svg>
+            <span>Включить звук</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="variant"><div class="container"><p class="variant__label">Конец пробы</p></div></section>
+
+  <script>
+  (function () {
+    var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var autos = [].slice.call(document.querySelectorAll('video[data-auto]'));
+
+    // Автовидео играет, только пока на экране; при reduced-motion стоит на обложке
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        var v = e.target;
+        if (e.isIntersecting && !reduce) { var p = v.play(); if (p && p.catch) p.catch(function () {}); }
+        else v.pause();
+      });
+    }, { threshold: 0.35 });
+    autos.forEach(function (v) { io.observe(v); });
+
+    // «Включить звук»: звук только у одного видео, остальные приглушаются
+    document.querySelectorAll('[data-sound]').forEach(function (btn) {
+      var v = btn.parentNode.querySelector('video');
+      btn.addEventListener('click', function () {
+        var turnOn = v.muted;
+        document.querySelectorAll('video').forEach(function (o) { if (o !== v) { o.muted = true; } });
+        document.querySelectorAll('[data-sound]').forEach(function (b) { set(b, false); });
+        v.muted = !turnOn ? true : false;
+        set(btn, turnOn);
+        if (turnOn) {
+          v.currentTime = 0;
+          var pr = v.play();
+          // браузер не дал играть со звуком: продолжаем без звука, кнопка снова «Включить звук»
+          if (pr && pr.catch) pr.catch(function () { v.muted = true; set(btn, false); v.play().catch(function () {}); });
+        }
+      });
+      function set(b, onState) {
+        b.setAttribute('aria-pressed', String(onState));
+        b.querySelector('span').textContent = onState ? 'Выключить звук' : 'Включить звук';
+        b.querySelector('[data-wave]').style.opacity = onState ? 1 : 0.3;
+      }
+      set(btn, false);
+    });
+
+    // B: по нажатию прячем обложку, показываем плеер и запускаем со звуком
+    var playBtn = document.querySelector('[data-play]');
+    var clickVideo = document.querySelector('video[data-click]');
+    playBtn.addEventListener('click', function () {
+      autos.forEach(function (o) { o.muted = true; });
+      document.querySelectorAll('[data-sound]').forEach(function (b) { b.setAttribute('aria-pressed', 'false'); b.querySelector('span').textContent = 'Включить звук'; b.querySelector('[data-wave]').style.opacity = 0.3; });
+      clickVideo.muted = false;
+      clickVideo.hidden = false; clickVideo.controls = true; playBtn.hidden = true;
+      clickVideo.play(); clickVideo.focus();
+    });
+
+    // D: карточка 45% ширины со скруглением вырастает до полного экрана
+    var dpin = document.querySelector('[data-dpin]'), dbox = document.querySelector('[data-dbox]');
+    function drawD() {
+      var r = dpin.getBoundingClientRect();
+      var p = reduce ? 1 : Math.min(1, Math.max(0, -r.top / (r.height - innerHeight)));
+      var e = 1 - Math.pow(1 - Math.min(1, p / 0.7), 3);
+      var s = 0.45 + 0.55 * e;
+      dbox.style.transform = 'scale(' + s + ')';
+      dbox.style.borderRadius = (28 * (1 - e)) / s + 'px';
+    }
+    var t = false;
+    addEventListener('scroll', function () { if (!t) { t = true; requestAnimationFrame(function () { t = false; drawD(); }); } }, { passive: true });
+    addEventListener('resize', drawD);
+    drawD();
+  })();
+  </script>
+</body>
+</html>

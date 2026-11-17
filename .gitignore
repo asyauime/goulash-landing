@@ -3,3 +3,6 @@ __MACOSX/
 node_modules/
 *.log
 .impeccable/hook.cache.json
+
+# копии видео для пробников в docs/drafts (тяжёлые, исходники у Аси)
+docs/drafts/media/

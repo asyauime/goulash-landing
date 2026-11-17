@@ -101,6 +101,8 @@ function checkPage(page) {
   const html = read(file);
   const text = visibleText(html);
   const tags = html.match(/<[a-zA-Z][^>]*>/g) || [];
+  // AC-04: сломанный тег — непарные двойные кавычки (так однажды потерялась кавычка у src видео, и оно не грузилось)
+  for (const t of tags) if (((t.match(/"/g) || []).length % 2) !== 0) fail('AC-04', file, `непарные кавычки в теге: ${t.slice(0, 90)}`);
 
   // AC-02 основы страницы
   if (!/<html[^>]*\blang\s*=\s*["']?ru/i.test(html)) fail('AC-02', file, 'у <html> нет lang="ru"');

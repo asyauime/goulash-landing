@@ -67,16 +67,30 @@
       if (onBtn) onBtn.addEventListener('click', function () { touched[i] = true; setPain(card, true); });
     });
 
-    // Карточки сами включаются по очереди, когда блок появился на экране; тронутые рукой не трогаем.
+    // Каждая карточка сама переключается на «С Goulash.tech», только когда она хорошо видна
+    // и прошло 3 с (успеть прочитать «до»); карточки, видные одновременно, идут с шагом 1,5 с.
+    // Ушла с экрана раньше — таймер отменяется. Тронутые рукой не трогаем.
     if (hasIO && !reduced()) {
+      var PAIN_READ = 3000, PAIN_STEP = 1500, lastPlanned = 0;
+      var painTimers = [];
       var autoObs = new IntersectionObserver(function (entries) {
-        if (!entries[0].isIntersecting) return;
-        autoObs.disconnect();
-        cards.forEach(function (card, i) {
-          setTimeout(function () { if (!touched[i] && !reduced()) setPain(card, true); }, 500 + i * 900);
+        entries.forEach(function (e) {
+          var i = cards.indexOf(e.target);
+          if (i < 0 || touched[i]) return;
+          if (e.isIntersecting) {
+            if (painTimers[i]) return;
+            var at = Math.max(Date.now() + PAIN_READ, lastPlanned + PAIN_STEP);
+            lastPlanned = at;
+            painTimers[i] = setTimeout(function () {
+              autoObs.unobserve(cards[i]);
+              if (!touched[i] && !reduced()) setPain(cards[i], true);
+            }, at - Date.now());
+          } else if (painTimers[i]) {
+            clearTimeout(painTimers[i]); painTimers[i] = null;
+          }
         });
-      }, { threshold: 0.35 });
-      autoObs.observe(pains);
+      }, { threshold: 0.6 });
+      cards.forEach(function (card) { autoObs.observe(card); });
     }
   }
 

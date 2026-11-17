@@ -131,19 +131,18 @@
   z-index: 1;
   justify-self: start;
   display: inline-flex;
-  gap: 2px;
+  gap: var(--space-1);
   margin: 0 var(--space-5) var(--space-5);
-  padding: 3px;
-  border-radius: var(--radius-card);
-  background-color: var(--color-border);
+  padding: 0;
+  background: none;
 }
 
 /* Двухпозиционный переключатель «Без / С Goulash.tech»: активная половина залита */
 .js .pain__seg {
-  min-height: 40px;
+  min-height: 44px;
   padding: var(--space-2) var(--space-4);
   border: 0;
-  border-radius: calc(var(--radius-card) - 3px);
+  border-radius: var(--radius-card);
   background: none;
   color: var(--color-text-muted);
   font-size: 0.875rem;

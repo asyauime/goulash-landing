@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node scripts/check.mjs:*)",
+      "Bash(node scripts/extract-brand.mjs:*)",
+      "Bash(node --test:*)"
+    ]
+  },
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node scripts/check.mjs --hook"
+          }
+        ]
+      }
+    ]
+  }
+}

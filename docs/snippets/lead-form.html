@@ -1,0 +1,122 @@
+<!--
+  Фрагмент формы заявки (T04). Вставляется в site/kitchens/index.html (T09)
+  и site/delivery/index.html (T14) как есть, одной секцией.
+
+  Что менять для страниц (всё остальное в copy-kitchens.md и copy-delivery.md совпадает):
+    [A] kitchens: оставить как есть.
+    [B] delivery: заменить две строки, помеченные data-copy:
+        data-copy="form-title"    -> «Расскажите о вашем заведении»
+        data-copy="form-subtitle" -> «Ответим и обсудим запуск доставки за 15 минут»
+  Атрибуты data-copy служебные, их можно оставить.
+
+  Подключение скриптов в конце <body> (классические, именно в&nbsp;этом порядке):
+    <script src="../assets/js/lead-form-logic.js"></script>
+    <script src="../assets/js/lead-form.js"></script>
+
+  Хуки для&nbsp;lead-form.js (классы нужны только для&nbsp;стилей):
+    [data-lead-form-root]   корневой контейнер (section#form)
+    form[data-lead-form]    форма; поля ищутся по&nbsp;name
+    [data-error-for="поле"] текст ошибки под&nbsp;полем, id вида lead-<поле>-error
+    [data-lead-submit]      кнопка отправки, внутри [data-lead-submit-label]
+    [data-lead-error]       блок ошибки отправки (внутри региона role="alert"), кнопка [data-lead-retry]
+    [data-lead-success]     блок успеха (внутри региона role="status" aria-live="polite"), кнопка [data-lead-again]
+    [data-lead-simulate]    необязательная ссылка проверки ошибки (на лендинге не используется, работает ?simulate=error)
+    [data-lead-hint]        строка-подсказка для&nbsp;демо-режима ошибки (aria-live)
+  Без&nbsp;JS кнопка отправки выключена, чтобы данные не&nbsp;ушли в&nbsp;адресную строку.
+
+  Оформление (F02), необязательные скрипты:
+    data-reveal на&nbsp;.section__head    появление при&nbsp;прокрутке (main.js); без&nbsp;main.js всё видно сразу
+    .lead-section__art[data-pixel]   пиксельный курьер под&nbsp;заголовком (led.js, виден от&nbsp;1024px);
+                                     без&nbsp;led.js остаётся пустым и&nbsp;ничего не&nbsp;ломает
+    Стили .lead-section__art общие, в&nbsp;components.css.
+-->
+<section class="section section--surface lead-section" id="form" aria-labelledby="form-title" data-lead-form-root>
+  <div class="container lead-section__inner">
+    <div class="section__head" data-reveal>
+      <h2 class="section__title section__title--xl" id="form-title" data-copy="form-title">Расскажите о&nbsp;вашей кухне</h2>
+      <p class="lead" data-copy="form-subtitle">Ответим и&nbsp;обсудим подключение за&nbsp;15&nbsp;минут</p>
+      <span class="lead-section__art" data-pixel="courier" data-pixel-off aria-hidden="true"></span>
+    </div>
+
+    <div class="lead-section__card">
+      <form class="lead-form" action="#form" method="post" data-lead-form>
+        <div class="lead-form__grid">
+          <div class="field">
+            <label class="field__label" for="lead-name">Как к&nbsp;вам обращаться</label>
+            <input class="field__input" id="lead-name" name="name" type="text" autocomplete="name" required>
+            <p class="field__error" id="lead-name-error" data-error-for="name" hidden></p>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="lead-phone">Телефон</label>
+            <input class="field__input" id="lead-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 (999) 123-45-67" required>
+            <p class="field__error" id="lead-phone-error" data-error-for="phone" hidden></p>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="lead-email">Почта <span class="field__optional">(необязательно)</span></label>
+            <input class="field__input" id="lead-email" name="email" type="email" inputmode="email" autocomplete="email">
+            <p class="field__error" id="lead-email-error" data-error-for="email" hidden></p>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="lead-city">Город</label>
+            <input class="field__input" id="lead-city" name="city" type="text" autocomplete="address-level2" required>
+            <p class="field__error" id="lead-city-error" data-error-for="city" hidden></p>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="lead-points">Сколько у&nbsp;вас точек</label>
+            <input class="field__input field__input--short" id="lead-points" name="points" type="text" inputmode="numeric" autocomplete="off" required>
+            <p class="field__error" id="lead-points-error" data-error-for="points" hidden></p>
+          </div>
+        </div>
+
+        <div class="lead-form__consents">
+          <div class="check">
+            <input class="check__input" id="lead-consent-pd" name="consent_pd" type="checkbox" value="yes" required>
+            <label class="check__label" for="lead-consent-pd">Согласие на&nbsp;обработку персональных данных</label>
+            <p class="field__error" id="lead-consent_pd-error" data-error-for="consent_pd" hidden></p>
+          </div>
+
+          <div class="check">
+            <input class="check__input" id="lead-consent-ads" name="consent_ads" type="checkbox" value="yes">
+            <label class="check__label" for="lead-consent-ads">Согласие на&nbsp;получение сообщений о&nbsp;продукте <span class="field__optional">(необязательно)</span></label>
+          </div>
+
+          <p class="lead-form__policy small">
+            <a href="https://goulash.tech/" target="_blank" rel="noopener">Политика обработки персональных данных</a>
+          </p>
+        </div>
+
+        <div role="alert" class="lead-form__alert-region">
+          <div class="lead-form__error" data-lead-error hidden>
+            <p class="lead-form__error-text">Не&nbsp;получилось отправить. Данные сохранены, попробуйте ещё раз</p>
+            <button class="btn btn--ghost btn--sm" type="button" data-lead-retry>Повторить</button>
+          </div>
+        </div>
+
+        <div class="lead-form__actions">
+          <button class="btn btn--primary btn--lg lead-form__submit" type="submit" disabled data-lead-submit>
+            <span class="spinner" aria-hidden="true"></span>
+            <span data-lead-submit-label>Оставить заявку</span>
+          </button>
+        </div>
+
+        <noscript><p class="lead-form__note small">Чтобы отправить форму, включите JavaScript</p></noscript>
+      </form>
+
+      <div role="status" aria-live="polite" class="lead-form__status-region">
+        <div class="lead-success" data-lead-success hidden>
+          <h3 class="lead-success__title" tabindex="-1">Заявка отправлена</h3>
+          <p class="lead-success__text">Спасибо! Мы&nbsp;свяжемся с&nbsp;вами</p>
+          <button class="btn btn--ghost" type="button" data-lead-again>Отправить ещё одну</button>
+        </div>
+      </div>
+
+      <div class="lead-form__footer">
+        <p class="lead-form__hint small" aria-live="polite" data-lead-hint></p>
+      </div>
+    </div>
+  </div>
+</section>

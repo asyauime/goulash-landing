@@ -1,0 +1,2298 @@
+/*
+  page-kitchens.css: стили только для лендинга A (гост-китчены).
+  Цвета, шрифты и скругления только через переменные из base.css.
+  Общие части (hero, демо-панель, D3, шаги, факты, FAQ, форма) лежат в components.css.
+*/
+
+/* Лёгкий параллакс крупных заголовков секций: --py ставит kitchens-blocks.js (±16px),
+   при reduced-motion переменной нет и заголовок стоит на месте */
+.section__title--xl {
+  translate: 0 var(--py, 0px);
+}
+
+/* ---------- Три боли: «было / стало» ----------
+   По умолчанию в карточке только пиксельная иконка и крупное название боли.
+   Вторая сторона (.pain__face--then): пояснение боли мелко и ответ «С Goulash.tech»
+   из утверждённых текстов. Её открывает кнопка .pain__switch (aria-expanded), наведение мышью
+   или касание кнопки (kitchens-blocks.js ставит .is-then).
+   Без JS: обе стороны видны одна под другой, кнопки нет.
+   Телефон с JS: вторая сторона раскрывается под названием.
+   От 720px с JS: стороны в одной ячейке, вторая выезжает снизу шторкой табло (clip-path). */
+.pains {
+  padding-block: var(--space-8) var(--space-9);
+}
+
+.pains__list {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.pain__card {
+  position: relative;
+  display: grid;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  transition: transform var(--dur) var(--ease-out), border-color var(--dur) ease;
+}
+
+.pain__face {
+  display: grid;
+  align-content: start;
+  gap: var(--space-3);
+  padding: var(--space-5);
+}
+
+.pain__face--now {
+  grid-template-columns: 56px minmax(0, 1fr);
+  align-items: center;
+  column-gap: var(--space-4);
+}
+
+.pain__face--then {
+  background-color: color-mix(in srgb, var(--color-accent) 7%, var(--color-surface));
+  border-top: 1px dashed var(--color-accent-line);
+}
+
+.pain__icon {
+  display: block;
+  width: 44px;
+  color: var(--color-text-muted);
+  transition: color var(--dur) ease;
+}
+
+.pain__icon--wide {
+  width: 56px;
+}
+
+.pain__title {
+  font-size: clamp(1.375rem, 2.4vw, 2.25rem);
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+}
+
+.pain__text {
+  color: var(--color-text-muted);
+  font-size: 0.9375rem;
+  text-wrap: pretty;
+}
+
+.pain__tag {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+  color: var(--color-accent);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+/* С JS ту же подпись несёт кнопка, у ответа остаётся только иконка (подпись читает диктор) */
+.js .pain__tag-text {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.js .pain__tag-icon {
+  width: 30px;
+}
+
+.pain__tag-icon {
+  flex: 0 0 auto;
+  width: 22px;
+}
+
+.pain__tag-icon.pain__icon--wide {
+  width: 30px;
+  padding: 0;
+}
+
+.pain__answer {
+  font-size: clamp(1.125rem, 1.6vw, 1.375rem);
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+/* Кнопка-переключатель: без JS не нужна */
+.pain__switch {
+  display: none;
+}
+
+.js .pain__switch {
+  position: relative;
+  z-index: 1;
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 44px;
+  margin: 0 var(--space-5) var(--space-5);
+  padding: var(--space-2) var(--space-3) var(--space-2) var(--space-2);
+  background: none;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-button);
+  color: var(--color-text);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  transition: border-color var(--dur-fast) ease, background-color var(--dur-fast) ease;
+}
+
+.js .pain__switch:hover {
+  background-color: var(--color-hover);
+}
+
+.js .pain__switch-track {
+  position: relative;
+  width: 36px;
+  height: 20px;
+  border-radius: var(--radius-card);
+  background-color: var(--color-border-strong);
+  transition: background-color var(--dur) ease;
+}
+
+.js .pain__switch-track::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background-color: var(--color-text);
+  transition: transform var(--dur) var(--ease-out);
+}
+
+.js .pain__switch[aria-expanded="true"] {
+  border-color: var(--color-accent-line);
+}
+
+.js .pain__switch[aria-expanded="true"] .pain__switch-track {
+  background-color: var(--color-accent);
+}
+
+.js .pain__switch[aria-expanded="true"] .pain__switch-track::after {
+  background-color: var(--color-button-text);
+  transform: translateX(16px);
+}
+
+.js .pain__card.is-then {
+  border-color: var(--color-accent-line);
+}
+
+.js .pain__card.is-then .pain__icon {
+  color: var(--color-accent);
+}
+
+/* Телефон: вторая сторона раскрывается под названием */
+@media (max-width: 719px) {
+  .js .pain__face--then {
+    display: none;
+    border-top: 0;
+    padding-top: 0;
+    background: none;
+  }
+
+  .js .pain__card.is-then .pain__face--then {
+    display: grid;
+    animation: pain-open 0.4s var(--ease-out);
+  }
+}
+
+@keyframes pain-open {
+  from { opacity: 0; transform: translateY(-8px); }
+}
+
+/* От 720px: шторка табло поверх названия */
+@media (min-width: 720px) {
+  .js .pain__card {
+    grid-template-rows: minmax(0, 1fr) auto;
+    min-height: 300px;
+  }
+
+  .js .pain__face {
+    grid-area: 1 / 1;
+    padding: var(--space-6) var(--space-6) var(--space-4);
+  }
+
+  .js .pain__face--now {
+    grid-template-columns: minmax(0, 1fr);
+    align-content: space-between;
+    row-gap: var(--space-6);
+    transition: opacity 0.4s ease, transform 0.55s var(--ease-out), filter 0.4s ease;
+  }
+
+  .js .pain__icon {
+    width: 72px;
+  }
+
+  .js .pain__icon.pain__icon--wide {
+    width: 96px;
+  }
+
+  /* Сторона «стало» закрывает и ряд с кнопкой, чтобы заливка шла до низа карточки */
+  .js .pain__face--then {
+    grid-area: 1 / 1 / 3 / 2;
+    padding-bottom: calc(44px + var(--space-5) + var(--space-4));
+    border-top: 0;
+    clip-path: inset(100% 0 0 0);
+    transition: clip-path 0.55s var(--ease-out);
+  }
+
+  .js .pain__card.is-then .pain__face--then {
+    clip-path: inset(0 0 0 0);
+  }
+
+  .js .pain__card.is-then .pain__face--now {
+    opacity: 0;
+    transform: translateY(-16px);
+    filter: blur(2px);
+  }
+
+  .js .pain__switch {
+    grid-area: 2 / 1;
+    margin-inline: var(--space-6);
+  }
+}
+
+@media (min-width: 960px) {
+  .pains__list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-5);
+  }
+
+  .js .pain__card {
+    min-height: 380px;
+  }
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .pain__card:hover {
+    transform: translateY(-4px);
+  }
+}
+
+.motion .pain.is-in .pain__face--now .pixel__on {
+  animation: pain-flicker 1.1s steps(1, end) backwards;
+  animation-delay: calc(var(--d, 0s) * 4 + 0.35s + var(--i, 0) * 0.12s);
+}
+
+@keyframes pain-flicker {
+  0% { opacity: 0; }
+  25% { opacity: 1; }
+  40% { opacity: 0.15; }
+  55% { opacity: 1; }
+  70% { opacity: 0.35; }
+  85% { opacity: 1; }
+}
+
+/* ---------- D1. Доска заказов ----------
+   Разметку рисует site/assets/js/demo-board.js, схема в комментарии в начале файла.
+   Колонки: 1 на узком экране, 2 от 640px, 4 от 1024px. Горизонтальной прокрутки нет.
+   Колонки без рамок, карточки без рамок: номер, бренд и одно действие. Светлая кнопка
+   только у следующего шага (класс is-next ставит скрипт), остальные действия тихие. */
+.board {
+  display: grid;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.board__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.board .demo-guide__reset.is-next {
+  background-color: var(--color-button-bg);
+  border-color: var(--color-button-bg);
+  color: var(--color-button-text);
+}
+
+.board__message:empty {
+  display: none;
+}
+
+.board__message {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-button);
+}
+
+.board__message.is-error {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  background-color: var(--color-accent-soft);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .board__message.is-error {
+    animation: board-shake 0.4s var(--ease-out);
+  }
+}
+
+@keyframes board-shake {
+  25% { transform: translateX(-6px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-3px); }
+}
+
+/* Знак «!» только для глаз, текст ошибки читается как есть */
+.board__message.is-error::before {
+  content: "!";
+  content: "!" / "";
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius-button);
+  background-color: var(--color-accent);
+  color: var(--color-button-text);
+  font-weight: 700;
+}
+
+/* Колонки */
+.board__columns {
+  display: grid;
+  gap: var(--space-5) var(--space-4);
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 640px) {
+  .board__columns {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .board__columns {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.board__col {
+  display: grid;
+  align-content: start;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.board__col-title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding-inline: var(--space-1);
+  color: var(--color-text-muted);
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+/* Счётчик: LED-цифра (led.js, матрица 5×7) */
+.board__count {
+  display: inline-block;
+  min-width: 1.5ch;
+  color: var(--color-accent);
+  font-family: var(--font-heading);
+  font-size: 1.625rem;
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .board__count.is-up {
+    animation: count-up 0.55s var(--ease-spring);
+  }
+
+  .board__count.is-down {
+    animation: count-down 0.45s var(--ease-out);
+  }
+}
+
+@keyframes count-down {
+  from { transform: translateY(8px); opacity: 0.4; }
+}
+
+.board__list {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.board__empty {
+  padding: var(--space-3) var(--space-1);
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+}
+
+/* Карточка заказа: номер и бренд строкой, ниже одно действие */
+.order {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-3);
+  padding: var(--space-3);
+  background-color: var(--color-bg);
+  border-radius: var(--radius-button);
+  transition: background-color var(--dur) ease;
+}
+
+.section--surface .order {
+  background-color: var(--color-surface);
+}
+
+/* Карточка следующего шага: лёгкий акцентный фон, без рамки вокруг */
+.order.is-next,
+.section--surface .order.is-next {
+  background-color: var(--color-accent-soft);
+}
+
+.order.is-flying {
+  z-index: 2;
+}
+
+/* Короткая вспышка рамки после перелёта или у нового заказа */
+.order::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--color-accent);
+  border-radius: inherit;
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .order.is-landed::after,
+  .order.is-new::after {
+    animation: flash-out 1.2s var(--ease-out);
+  }
+}
+
+@keyframes flash-out {
+  0%, 30% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.order:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.order__title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-3);
+}
+
+.order__num {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.order__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+}
+
+.order__icon {
+  flex: 0 0 auto;
+  width: 16px;
+}
+
+.order[data-brand="b1"] .order__icon { color: var(--color-accent); }
+.order[data-brand="b2"] .order__icon { color: var(--color-text); }
+.order[data-brand="b3"] .order__icon { color: var(--color-text-muted); }
+
+.order__courier,
+.order__track {
+  flex: 1 0 100%;
+}
+
+.order__courier {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+}
+
+/* Пиксельный аватар курьера (led.js): 22 px, на тёмном светлые точки, у свободного голубые,
+   у занятого приглушённые */
+.courier-avatar {
+  flex: 0 0 auto;
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 3px;
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-button);
+  color: var(--color-text);
+}
+
+.courier-avatar .pixel {
+  width: 100%;
+}
+
+.board__courier.is-free .courier-avatar {
+  border-color: var(--color-accent-line);
+  color: var(--color-accent);
+}
+
+.board__courier.is-busy .courier-avatar {
+  color: var(--color-text-muted);
+}
+
+.board__courier.is-busy .courier-avatar .pixel {
+  opacity: 0.7;
+}
+
+/* Заказ в пути: по полоске бежит огонёк */
+.order__track {
+  position: relative;
+  display: block;
+  height: 3px;
+  overflow: hidden;
+  background-color: var(--color-border);
+  border-radius: var(--radius-button);
+}
+
+.order__track::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 30%;
+  background-color: var(--color-accent);
+  box-shadow: 0 0 8px var(--color-accent);
+  border-radius: var(--radius-button);
+  transform: translateX(-100%);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .order__track::after {
+    animation: track-run 1.8s var(--ease-out) infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .order__track::after {
+    transform: translateX(120%);
+  }
+}
+
+@keyframes track-run {
+  to { transform: translateX(340%); }
+}
+
+.order__action {
+  flex: 0 0 auto;
+}
+
+.order__action.btn--ghost {
+  border-color: var(--color-border);
+}
+
+/* Курьеры: одна строка под доской */
+.board__couriers {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-5);
+  padding-top: var(--space-2);
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+}
+
+.board__couriers-title {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.board__courier-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.board__courier {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  border-radius: var(--radius-button);
+}
+
+.board__courier-lamp {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1px solid var(--color-text-muted);
+}
+
+.board__courier.is-free .board__courier-lamp {
+  border-color: var(--color-accent);
+  background-color: var(--color-accent);
+}
+
+.board__courier-name {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .board__courier.is-assigned {
+    animation: courier-pick 0.6s var(--ease-spring);
+  }
+}
+
+@keyframes courier-pick {
+  40% { transform: translateY(-4px) scale(1.05); }
+}
+
+/* ---------- D2. Стоп-лист и меню гостя ----------
+   Разметку рисует site/assets/js/demo-stoplist.js, схема в комментарии в начале файла.
+   Пара «кухня → гость»: слева тумблеры, по центру стрелка, справа телефон гостя.
+   Позиция в стопе: текст --color-text-muted (без прозрачности текста, контраст выше 4.5:1),
+   зачёркивание и надпись «Нет в наличии». Переходы через transform и opacity. */
+.stoplist {
+  display: grid;
+  min-width: 0;
+}
+
+.stoplist__panes {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+}
+
+@media (min-width: 820px) {
+  .stoplist__panes {
+    grid-template-columns: minmax(0, 26rem) auto minmax(0, 1fr);
+    align-items: center;
+    column-gap: var(--space-7);
+  }
+}
+
+.stoplist__pane {
+  display: grid;
+  align-content: start;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.stoplist__pane-title {
+  color: var(--color-text-muted);
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+/* Стрелка «кухня → гость»: из точек, как на табло. На узком экране смотрит вниз */
+.stoplist__arrow {
+  justify-self: center;
+  width: 40px;
+  color: var(--color-accent);
+}
+
+@media (max-width: 819px) {
+  .stoplist__arrow {
+    width: 28px;
+    transform: rotate(90deg);
+  }
+}
+
+.stop-group {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.stop-group__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+}
+
+.stop-group__icon {
+  width: 14px;
+}
+
+.stop-group__title[data-brand="b1"] .stop-group__icon { color: var(--color-accent); }
+.stop-group__title[data-brand="b2"] .stop-group__icon { color: var(--color-text); }
+
+.stop-group__list {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Строка с тумблером: вся строка кликабельна (label) */
+.stop-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 48px;
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid transparent;
+  border-radius: var(--radius-button);
+  cursor: pointer;
+  transition: background-color var(--dur) ease, border-color var(--dur) ease;
+}
+
+.stop-toggle:hover {
+  background-color: var(--color-hover);
+}
+
+.stop-toggle.is-next {
+  border-color: var(--color-accent-line);
+}
+
+.stop-toggle__name {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* «в стопе» видно только у включённого тумблера; у выключенного остаётся в названии для диктора */
+.stop-toggle__state {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  color: var(--color-accent);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.stop-toggle:not(.is-stop) .stop-toggle__state {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Тумблер: настоящий checkbox с role="switch", нарисован CSS.
+   Ручка переезжает с пружинкой, дорожка загорается акцентом. */
+.stop-toggle__switch {
+  -webkit-appearance: none;
+  appearance: none;
+  position: relative;
+  flex: 0 0 auto;
+  width: 48px;
+  height: 26px;
+  margin: 0;
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-card);
+  cursor: pointer;
+  transition: background-color var(--dur) ease, border-color var(--dur) ease;
+}
+
+.stop-toggle__switch::before {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  background-color: var(--color-text-muted);
+  border-radius: 50%;
+  transition: transform 0.45s var(--ease-spring), background-color var(--dur) ease;
+}
+
+.stop-toggle__switch:checked {
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.stop-toggle__switch:checked::before {
+  background-color: var(--color-button-text);
+  transform: translateX(22px);
+}
+
+.stop-toggle__switch:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+/* Телефон гостя */
+.phone {
+  position: relative;
+  width: 100%;
+  max-width: 380px;
+  justify-self: center;
+  padding: var(--space-6) var(--space-4) var(--space-5);
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-card);
+}
+
+@media (max-width: 479px) {
+  .phone {
+    padding-inline: var(--space-2);
+  }
+}
+
+.phone__notch {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  width: 56px;
+  height: 5px;
+  margin-left: -28px;
+  background-color: var(--color-border-strong);
+  border-radius: var(--radius-button);
+}
+
+.guest-menu {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.guest-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 52px;
+  padding: var(--space-2);
+  border: 1px solid transparent;
+  border-radius: var(--radius-button);
+  transition: border-color var(--dur) ease, background-color var(--dur) ease;
+}
+
+.guest-item.is-next {
+  border-color: var(--color-accent-line);
+}
+
+.guest-item__icon {
+  flex: 0 0 auto;
+  width: 18px;
+  color: var(--color-accent);
+  transition: opacity var(--dur) ease, transform var(--dur) var(--ease-out);
+}
+
+.guest-item__info {
+  display: grid;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* Зачёркивание проявляется плавно и работает, даже если название в две строки */
+.guest-item__name {
+  justify-self: start;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  text-decoration: line-through 2px transparent;
+  transition: color var(--dur) ease, text-decoration-color var(--dur) ease;
+}
+
+/* Позиция в стопе: серый текст через --color-text-muted, без opacity на тексте */
+.guest-item.is-stop .guest-item__icon {
+  opacity: 0.35;
+  transform: scale(0.9);
+}
+
+.guest-item.is-stop .guest-item__name {
+  color: var(--color-text-muted);
+}
+
+.guest-item.is-stop .guest-item__name {
+  text-decoration-color: var(--color-text-muted);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .guest-item.is-changed .guest-item__add-text {
+    animation: status-swap 0.5s var(--ease-out);
+  }
+
+  .guest-item.is-added .guest-item__add {
+    animation: add-pop 0.45s var(--ease-spring);
+  }
+}
+
+@keyframes status-swap {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+@keyframes add-pop {
+  40% { transform: scale(0.92); }
+  70% { transform: scale(1.06); }
+}
+
+.guest-item__add {
+  flex: 0 0 auto;
+}
+
+/* Надпись и невидимый образец «Нет в наличии» в одной ячейке: ширина кнопки постоянная */
+.guest-item .guest-item__add {
+  display: inline-grid;
+  justify-items: center;
+}
+
+.guest-item__add-text,
+.guest-item__add-size {
+  grid-area: 1 / 1;
+  white-space: nowrap;
+}
+
+.guest-item__add-size {
+  visibility: hidden;
+}
+
+/* Неактивная кнопка: без прозрачности, чтобы текст оставался читаемым */
+.guest-item .guest-item__add:disabled {
+  opacity: 1;
+  background-color: transparent;
+  border-color: var(--color-border);
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+}
+
+/* ---------- Кому подходит: манифест ----------
+   Четыре пункта крупными строками по центру. kitchens-blocks.js оборачивает слова в span.mw,
+   и они загораются по мере прокрутки (класс is-lit): из тёмно-серого в приглушённый --color-text-muted, ключевые
+   фразы (.manifest__key) получают голубой маркер. Пиксельные иконки стоят прямо в строках.
+   Серый «незагоревшийся» цвет только промежуточный и только при .motion .manifest.is-ready:
+   без JS и при reduced-motion текст сразу в итоговом виде (контраст ≥ 4.5:1). */
+.fit {
+  padding-block: var(--space-9) calc(var(--space-9) * 1.25);
+  text-align: center;
+}
+
+.fit__title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  max-width: none;
+  margin-bottom: var(--space-7);
+  color: var(--color-text-muted);
+  font-size: clamp(1.125rem, 1.6vw, 1.375rem);
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+/* По бокам заголовка короткие линии из точек табло */
+.fit__title::before,
+.fit__title::after {
+  content: "";
+  width: 40px;
+  height: 6px;
+  background-image: radial-gradient(circle, var(--color-accent-line) 2px, transparent 2.5px);
+  background-size: 8px 6px;
+}
+
+.manifest {
+  display: grid;
+  justify-items: center;
+  gap: 0.4em;
+  max-width: 21em;
+  margin-inline: auto;
+  color: var(--color-text-muted);
+  font-size: clamp(1.5rem, 3.9vw, 3.5rem);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.03em;
+}
+
+.manifest__line {
+  max-width: none;
+  text-wrap: balance;
+}
+
+/* Ключевые фразы: голубой маркер (заливка --color-cyan) и тёмный текст, контраст 16:1.
+   Голубой текст на белом нечитаем (1.25:1), поэтому акцент только заливкой. */
+.manifest__key {
+  margin-inline: -0.06em;
+  padding-inline: 0.14em;
+  color: var(--color-text-on-light);
+  background-image: linear-gradient(var(--color-cyan), var(--color-cyan));
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  border-radius: var(--radius-button);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  transition: background-size 0.6s var(--ease-out);
+}
+
+.manifest__key .manifest__icon {
+  color: var(--color-text-on-light);
+}
+
+.motion .manifest.is-ready .manifest__key:not(.is-lit) {
+  background-size: 0% 100%;
+}
+
+.manifest__chip {
+  white-space: nowrap;
+}
+
+.manifest__icon {
+  display: inline-block;
+  width: 0.72em;
+  margin-right: 0.16em;
+  vertical-align: -0.04em;
+  color: var(--color-accent);
+}
+
+.manifest__icon--wide {
+  width: 1em;
+}
+
+.manifest__icons {
+  display: inline-flex;
+  gap: 0.12em;
+  margin-left: 0.28em;
+  vertical-align: -0.04em;
+  white-space: nowrap;
+}
+
+.manifest__icons .manifest__icon {
+  margin-right: 0;
+}
+
+.manifest .mw {
+  transition: color 0.35s ease;
+}
+
+.motion .manifest.is-ready .mw:not(.is-lit),
+.motion .manifest.is-ready .manifest__key .mw:not(.is-lit) {
+  /* Ещё не загоревшиеся слова: серый с контрастом не ниже 3:1 к фону */
+  color: color-mix(in srgb, var(--color-text) 46%, var(--color-bg));
+}
+
+.motion .manifest.is-ready .manifest__icon.is-lit .pixel__on {
+  animation: manifest-pop 0.45s var(--ease-out) backwards;
+}
+
+@keyframes manifest-pop {
+  from { transform: scale(0.2); }
+}
+
+.manifest .pixel__on {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+@media (max-width: 479px) {
+  .manifest {
+    gap: 0.55em;
+  }
+
+  .fit__title::before,
+  .fit__title::after {
+    width: 24px;
+  }
+}
+
+/* ---------- Что входит: bento ----------
+   Четыре модуля разного размера. На широком экране: «Единая очередь» высокая 2×2 слева,
+   «Общий стоп-лист» 2×1 справа сверху (единственная акцентная карточка: заливка
+   --color-accent, тёмный текст --color-button-text, контраст 16:1), под ней «Курьеры» и
+   «Кабинет» 1×1. Планшет: две колонки, телефон: одна.
+   В каждой карточке мини-интерфейс (aria-hidden), его оживляет kitchens-blocks.js.
+   Состояние в разметке итоговое: так выглядит без JS и при reduced-motion. */
+.includes {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.bento {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4);
+}
+
+.bento__cell {
+  display: flex;
+  min-width: 0;
+}
+
+.bento__card {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-5);
+  min-width: 0;
+  padding: var(--space-5);
+  overflow: hidden;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  transition: transform var(--dur) var(--ease-out), border-color var(--dur) ease;
+}
+
+.bento__copy {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.bento__title {
+  font-size: clamp(1.5rem, 2.4vw, 2.125rem);
+  line-height: 1.25;
+  letter-spacing: -0.03em;
+}
+
+.bento__title {
+  overflow-wrap: break-word;
+}
+
+.bento__text {
+  max-width: 40ch;
+  color: var(--color-text-muted);
+  font-size: 0.9375rem;
+  text-wrap: pretty;
+}
+
+/* У «Одного кабинета» строка дословно повторяет разделы мини-кабинета: видна только диктору */
+.bento__text--sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.bento__card--accent {
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-button-text);
+}
+
+.bento__card--accent .bento__text {
+  color: color-mix(in srgb, var(--color-button-text) 80%, var(--color-accent));
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .bento__card:hover {
+    transform: translateY(-4px);
+    border-color: var(--color-border-strong);
+  }
+
+  .bento__card--accent:hover {
+    border-color: var(--color-accent);
+  }
+}
+
+@media (min-width: 560px) {
+  .bento {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .bento__cell--queue,
+  .bento__cell--stop {
+    grid-column: span 2;
+  }
+
+  .bento__card {
+    padding: var(--space-6);
+  }
+}
+
+@media (min-width: 1024px) {
+  .bento {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-5);
+  }
+
+  .bento__cell--queue {
+    grid-column: 1 / 3;
+    grid-row: 1 / 3;
+  }
+
+  .bento__cell--stop {
+    grid-column: 3 / 5;
+    grid-row: 1;
+  }
+
+  .bento__cell--courier {
+    grid-column: 3 / 5;
+    grid-row: 2;
+  }
+
+  .bento__cell--cabinet {
+    grid-column: 1 / 5;
+    grid-row: 3;
+  }
+
+  /* Курьеры 2×1: карта широкой полосой под текстом */
+  .bento__cell--courier .mc {
+    aspect-ratio: 5 / 2;
+  }
+
+  /* Кабинет 4×1: текст слева, разделы справа в две колонки */
+  .bento__cell--cabinet .bento__card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
+    align-items: center;
+    column-gap: var(--space-7);
+  }
+
+  .bento__cell--cabinet .md {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-1);
+    margin-top: 0;
+    padding: var(--space-3);
+  }
+
+  .bento__cell--cabinet .md__row {
+    min-height: 48px;
+    font-size: 1rem;
+  }
+
+  /* Высокая карточка очереди: мини-интерфейс растягивается, очередь занимает остаток.
+     Сколько строк влезает, решает kitchens-blocks.js (лишние убирает) */
+  .bento__cell--queue .mq {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+  }
+
+  .bento__cell--queue .mq__queue {
+    flex: 1 1 0;
+    height: 0;
+    min-height: calc(44px * 4 + 6px * 3);
+    align-content: start;
+  }
+}
+
+@media (min-width: 1240px) {
+  .bento__cell--cabinet .md {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Общая подложка мини-интерфейсов: экран с точками табло */
+.mq,
+.mc,
+.md {
+  margin-top: auto;
+  background-color: var(--color-bg);
+  background-image: var(--led-grid);
+  background-size: var(--led-step) var(--led-step);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-button);
+}
+
+/* --- Единая очередь (mq): три дорожки брендов сходятся в одну колонку --- */
+.mq {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-4);
+}
+
+.mq__lanes {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+.mq__lane {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  padding: var(--space-2);
+  background-color: var(--color-surface);
+  border: 1px dashed var(--color-border-strong);
+  border-radius: var(--radius-button);
+}
+
+.mq__brand {
+  flex: 0 0 auto;
+  width: 22px;
+  color: var(--color-text-muted);
+}
+
+.mq__slot {
+  display: flex;
+  flex: 1;
+  justify-content: flex-end;
+  min-width: 0;
+}
+
+.mq__ticket,
+.mq__num {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+.mq__ticket {
+  padding: 1px var(--space-2);
+  background-color: var(--color-accent-soft);
+  border-radius: var(--radius-button);
+  color: var(--color-accent);
+  font-size: 0.875rem;
+  animation: mq-ticket 0.35s var(--ease-out) backwards;
+}
+
+@keyframes mq-ticket {
+  from { transform: translateY(-10px) scale(0.6); opacity: 0; }
+}
+
+/* Воронка: три пунктира сходятся к пиктограмме кухни */
+.mq__funnel {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  height: 40px;
+}
+
+.mq__funnel::before {
+  content: "";
+  position: absolute;
+  inset: 0 16.66% 50%;
+  border: 1px dashed var(--color-accent-line);
+  border-top: 0;
+  border-radius: 0 0 var(--radius-button) var(--radius-button);
+}
+
+.mq__kitchen {
+  position: relative;
+  align-self: end;
+  width: 26px;
+  padding: 2px;
+  background-color: var(--color-bg);
+  color: var(--color-accent);
+}
+
+.mq__queue {
+  display: grid;
+  grid-auto-rows: 44px;
+  gap: 6px;
+  height: calc(44px * 4 + 6px * 3);
+  overflow: hidden;
+}
+
+.mq__row {
+  display: grid;
+  grid-template-columns: 20px 3.5ch minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-3);
+  padding-inline: var(--space-3);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-button);
+  transition: border-color var(--dur) ease, opacity var(--dur) ease;
+}
+
+.mq__row-icon {
+  width: 20px;
+  color: var(--color-accent);
+}
+
+/* Полоска готовности из точек: у первого заказа (готовится сейчас) заполнена акцентом */
+.mq__bar {
+  position: relative;
+  height: 6px;
+  background-image: radial-gradient(circle, var(--color-led-off) 2px, transparent 2.5px);
+  background-size: 8px 6px;
+}
+
+.mq__row:first-child {
+  border-color: var(--color-accent-line);
+}
+
+.mq__row:first-child .mq__bar::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 62%;
+  background-image: radial-gradient(circle, var(--color-accent) 2px, transparent 2.5px);
+  background-size: 8px 6px;
+}
+
+.motion .mq__row:first-child .mq__bar::after {
+  animation: mq-fill 2s steps(7, end) backwards;
+}
+
+@keyframes mq-fill {
+  from { width: 0; }
+}
+
+.mq__row.is-new {
+  border-color: var(--color-accent);
+}
+
+.mq__row.is-leaving {
+  opacity: 0;
+}
+
+.bento__card.is-hover .mq__lane {
+  border-color: var(--color-accent-line);
+}
+
+@media (max-width: 419px) {
+  .mq {
+    padding: var(--space-3);
+  }
+
+  .mq__lane {
+    padding: var(--space-2) 6px;
+  }
+
+  .mq__brand {
+    width: 18px;
+  }
+
+  .mq__row {
+    grid-template-columns: 18px 3.5ch minmax(0, 1fr);
+    gap: var(--space-2);
+  }
+}
+
+/* --- Общий стоп-лист (ms), акцентная карточка: кухня -> гость --- */
+.ms {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 28px minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: auto;
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+
+.ms__kitchen,
+.ms__guest {
+  display: grid;
+  align-content: start;
+  gap: var(--space-3);
+  height: 100%;
+  padding: var(--space-4);
+  background-color: color-mix(in srgb, var(--color-button-text) 7%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-button-text) 22%, transparent);
+  border-radius: var(--radius-button);
+}
+
+.ms__kitchen {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+}
+
+.ms__kitchen .ms__item {
+  grid-column: 1 / -1;
+}
+
+.ms__icon {
+  width: 22px;
+}
+
+.ms__guest .ms__icon {
+  grid-column: 1 / -1;
+}
+
+.ms__switch {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  border: 1.5px solid var(--color-button-text);
+  border-radius: var(--radius-card);
+  transition: background-color var(--dur) ease;
+}
+
+.ms__switch::before {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 15px;
+  height: 15px;
+  background-color: var(--color-button-text);
+  border-radius: 50%;
+  transition: transform 0.45s var(--ease-out), background-color var(--dur) ease;
+}
+
+.ms.is-stopped .ms__switch {
+  background-color: var(--color-button-text);
+}
+
+.ms.is-stopped .ms__switch::before {
+  background-color: var(--color-accent);
+  transform: translateX(20px);
+}
+
+.ms__arrow {
+  width: 28px;
+}
+
+.ms__menu {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.ms__dish {
+  justify-self: start;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-position: 0 55%;
+  background-repeat: no-repeat;
+  background-size: 0 1.5px;
+  transition: background-size 0.45s var(--ease-out) 0.25s, color var(--dur) ease 0.25s;
+}
+
+.ms.is-stopped .ms__dish--target {
+  color: color-mix(in srgb, var(--color-button-text) 62%, var(--color-accent));
+  background-size: 100% 1.5px;
+}
+
+@media (max-width: 519px) {
+  .ms {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: stretch;
+  }
+
+  .ms__arrow {
+    justify-self: center;
+    width: 22px;
+    transform: rotate(90deg);
+  }
+}
+
+/* --- Автораспределение курьеров (mc): мини-карта --- */
+.mc {
+  position: relative;
+  min-height: 180px;
+  aspect-ratio: 16 / 11;
+  overflow: hidden;
+}
+
+.mc__streets {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  fill: none;
+}
+
+.mc__streets path {
+  stroke: var(--color-hover);
+  stroke-width: 10px;
+  vector-effect: non-scaling-stroke;
+}
+
+.mc__route {
+  stroke: var(--color-accent);
+  stroke-width: 2.5px;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+/* Прорисовка маршрута: только в живом режиме, когда JS перевёл карту в пиксельные координаты
+   (иначе длина штриха считалась бы в растянутых единицах viewBox) */
+.mc.is-live .mc__route {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+
+.mc.is-live.is-drawn .mc__route {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.5s var(--ease-out);
+}
+
+.mc__pin,
+.mc__courier {
+  position: absolute;
+  top: calc(var(--y) * 1%);
+  left: calc(var(--x) * 1%);
+  transform: translate(-50%, -50%);
+}
+
+.mc__pin {
+  width: 26px;
+  padding: 3px;
+  background-color: var(--color-bg);
+  border-radius: var(--radius-button);
+  color: var(--color-text-muted);
+  transition: color var(--dur) ease;
+}
+
+.mc__pin--kitchen {
+  color: var(--color-text);
+}
+
+.mc__pin--house.is-target {
+  color: var(--color-text);
+}
+
+.mc__pin--house.is-done {
+  color: var(--color-accent);
+}
+
+.mc__pin--house.is-done .pixel {
+  animation: mc-arrive 0.5s var(--ease-out);
+}
+
+@keyframes mc-arrive {
+  50% { transform: scale(1.25); }
+}
+
+.mc__courier {
+  width: 12px;
+  height: 12px;
+  background-color: var(--color-accent);
+  border: 2px solid var(--color-bg);
+  border-radius: 50%;
+}
+
+.mc__courier--idle {
+  width: 10px;
+  height: 10px;
+  background-color: var(--color-text-muted);
+}
+
+.bento__card.is-hover .mc__courier--idle {
+  background-color: var(--color-text);
+}
+
+/* --- Один кабинет (md): строки разделов загораются галочками --- */
+.md {
+  display: grid;
+  gap: 2px;
+  padding: var(--space-2);
+}
+
+.md__row {
+  display: grid;
+  grid-template-columns: 8px minmax(0, 1fr) 16px;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 34px;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-button);
+  color: var(--color-text-muted);
+  font-size: 0.9375rem;
+  transition: color var(--dur) ease, background-color var(--dur) ease;
+}
+
+.md__led {
+  width: 8px;
+  height: 8px;
+  background-color: var(--color-led-off);
+  border-radius: 50%;
+  transition: background-color var(--dur) ease;
+}
+
+.md__check {
+  color: var(--color-accent);
+  opacity: 0;
+  transform: scale(0.5);
+  transition: opacity var(--dur-fast) ease, transform var(--dur) var(--ease-out);
+}
+
+.md__row.is-on {
+  background-color: var(--color-hover);
+  color: var(--color-text);
+}
+
+.md__row.is-on .md__led {
+  background-color: var(--color-accent);
+}
+
+.md__row.is-on .md__check {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- Сколько занимает подключение ----------
+   Горизонтальная шкала-табло: тёмная полоса-подложка, на ней точки; горящие точки голубые
+   (на светлом фоне голубой только внутри тёмной полосы, контраст точки к полосе 13:1,
+   полосы к фону 15:1). Две вехи стоят в пропорции сроков (7 из 21 дня): колонки 1fr и 2fr.
+   Над шкалой LED-цифры (led.js), под ней подпись. При появлении шкала заполняется
+   слева направо: до первой вехи, короткая пауза, затем до второй. Заполнение открывается
+   маской (clip-path), точки не сжимаются. На узком экране шкала вертикальная, слева. */
+.timeline-section {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.timeline {
+  --track-h: 18px;
+  --strip: var(--color-button-bg-on-light);
+  --strip-off: color-mix(in srgb, var(--color-bg-light) 30%, var(--color-button-bg-on-light));
+  --fill: var(--color-cyan);
+  display: grid;
+  gap: var(--space-6);
+}
+
+.timeline__scale {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.milestone {
+  position: relative;
+  display: grid;
+  align-content: end;
+  gap: var(--space-2);
+  padding-left: calc(var(--track-h) + var(--space-5));
+}
+
+.milestone--min {
+  min-height: 9rem;
+  padding-bottom: var(--space-6);
+}
+
+.milestone--avg {
+  min-height: 12rem;
+}
+
+.milestone__value {
+  color: var(--color-text);
+  font-family: var(--font-heading);
+  font-weight: 800;
+  line-height: 1;
+}
+
+.milestone__num {
+  margin-inline: 0.06em;
+  font-size: clamp(4rem, 9vw, 7.5rem);
+}
+
+.milestone__word {
+  font-size: clamp(1.5rem, 2.6vw, 2.25rem);
+  letter-spacing: -0.02em;
+}
+
+.milestone__label {
+  max-width: 26ch;
+  color: var(--color-text-muted);
+  font-size: clamp(1rem, 1.3vw, 1.125rem);
+}
+
+/* Отрезок шкалы этой вехи: тёмная полоса, погасшие точки и поверх горящие (заполнение) */
+.milestone__track {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: var(--track-h);
+  background-color: var(--strip);
+  background-image: radial-gradient(circle, var(--strip-off) 2px, transparent 2.6px);
+  background-size: 9px 9px;
+  background-position: center 0;
+  background-repeat: repeat-y;
+}
+
+.milestone--min .milestone__track {
+  border-radius: var(--radius-button) var(--radius-button) 0 0;
+}
+
+.milestone--avg .milestone__track {
+  border-radius: 0 0 var(--radius-button) var(--radius-button);
+}
+
+.milestone__track::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, var(--fill) 2.4px, transparent 3px);
+  background-size: inherit;
+  background-position: inherit;
+  background-repeat: inherit;
+}
+
+/* Метка вехи: квадрат-светодиод в конце отрезка, голубой на тёмной полосе */
+.milestone__track::after {
+  content: "";
+  position: absolute;
+  bottom: -3px;
+  left: -3px;
+  width: calc(var(--track-h) + 6px);
+  height: calc(var(--track-h) + 6px);
+  background-color: var(--strip);
+  border: 3px solid var(--fill);
+  border-radius: var(--radius-button);
+}
+
+.timeline__note {
+  max-width: 52ch;
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--color-border-strong);
+  color: var(--color-text-muted);
+  font-size: clamp(1rem, 1.3vw, 1.125rem);
+  text-wrap: pretty;
+}
+
+@media (min-width: 720px) {
+  /* Три общие строки (цифры, шкала, подпись): отрезки обеих вех стоят на одной линии */
+  .timeline__scale {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    grid-template-rows: auto var(--track-h) auto;
+    row-gap: var(--space-4);
+  }
+
+  .milestone,
+  .milestone--min,
+  .milestone--avg {
+    grid-row: span 3;
+    grid-template-rows: subgrid;
+    align-content: start;
+    justify-items: end;
+    min-height: 0;
+    gap: var(--space-4);
+    padding: 0;
+    text-align: right;
+  }
+
+  .milestone__value {
+    align-self: end;
+    padding-right: var(--space-2);
+  }
+
+  .milestone__label {
+    padding-right: var(--space-2);
+  }
+
+  .milestone__track {
+    position: relative;
+    grid-row: 2;
+    width: 100%;
+    height: var(--track-h);
+    background-position: 0 center;
+    background-repeat: repeat-x;
+  }
+
+  .milestone--min .milestone__track {
+    border-radius: var(--radius-button) 0 0 var(--radius-button);
+  }
+
+  .milestone--avg .milestone__track {
+    border-radius: 0 var(--radius-button) var(--radius-button) 0;
+  }
+
+  .milestone__track::after {
+    top: -3px;
+    bottom: auto;
+    left: auto;
+    right: -3px;
+  }
+
+  .timeline__note {
+    border-top: 0;
+    padding-top: 0;
+  }
+}
+
+/* Анимация: 0.3 с старт → 1.1 с первая веха (7) горит → пауза → 1.4 с старт второго
+   отрезка → 2.6 с вторая веха (21) горит. Отрезки не пересекаются по времени. Итог стабилен:
+   после переходов ничего не движется. reduced-motion и без JS: сразу итоговый вид. */
+.motion .milestone__track::before {
+  clip-path: inset(0 0 100% 0);
+}
+
+.motion .milestone__value,
+.motion .milestone__track::after {
+  opacity: 0.3;
+}
+
+.motion .milestone__track::after {
+  border-color: var(--strip-off);
+}
+
+.motion .timeline.is-in .milestone__track::before {
+  clip-path: inset(0 0 0 0);
+  transition: clip-path 0.8s cubic-bezier(0.45, 0, 0.25, 1) 0.3s;
+}
+
+.motion .timeline.is-in .milestone--avg .milestone__track::before {
+  transition-duration: 1.2s;
+  transition-delay: 1.4s;
+}
+
+.motion .timeline.is-in .milestone__value,
+.motion .timeline.is-in .milestone__track::after {
+  opacity: 1;
+  border-color: var(--fill);
+  transition: opacity 0.3s ease 1.1s, border-color 0.3s ease 1.1s;
+}
+
+.motion .timeline.is-in .milestone--avg .milestone__value,
+.motion .timeline.is-in .milestone--avg .milestone__track::after {
+  transition-delay: 2.6s;
+}
+
+@media (min-width: 720px) {
+  .motion .milestone__track::before {
+    clip-path: inset(0 100% 0 0);
+  }
+}
+
+/* ---------- Что будет после заявки ----------
+   Лента табло: три шага, номера — LED-цифры (led.js) в плашках, плашки нанизаны на линию
+   из светодиодов. При появлении линия загорается голубым слева направо (на телефоне сверху
+   вниз), шаги проявляются по мере того, как до них доходит свет, в конце стрелка к форме.
+   Заголовок в первой колонке сетки страницы (от 1024px). */
+.next-section {
+  padding-block: var(--space-8) var(--space-6);
+  border-top: 1px solid var(--color-border);
+}
+
+.next-section__inner {
+  --num: 52px;
+  display: grid;
+  gap: var(--space-6);
+}
+
+.next-section__title {
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+
+.next-steps {
+  --dot: radial-gradient(circle, var(--color-led-off) 2px, transparent 2.6px);
+  --dot-on: radial-gradient(circle, var(--color-accent) 2px, transparent 2.6px);
+  position: relative;
+  display: grid;
+  gap: var(--space-5);
+}
+
+/* Линия ленты: погасшие точки и поверх голубые (заполнение маской) */
+.next-steps::before,
+.next-steps::after {
+  content: "";
+  position: absolute;
+  top: calc(var(--num) / 2);
+  bottom: calc(var(--num) / 2);
+  left: calc(var(--num) / 2 - 4px);
+  width: 8px;
+  background-image: var(--dot);
+  background-size: 8px 9px;
+  background-repeat: repeat-y;
+}
+
+.next-steps::after {
+  background-image: var(--dot-on);
+  filter: drop-shadow(0 0 3px var(--color-accent-line));
+}
+
+.next-step {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--num) minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.next-step__num {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: var(--num);
+  height: var(--num);
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-accent-line);
+  border-radius: var(--radius-button);
+  color: var(--color-accent);
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+.next-step p {
+  max-width: 30ch;
+  font-size: clamp(1.0625rem, 1.3vw, 1.125rem);
+  line-height: 1.45;
+}
+
+.next-section__arrow {
+  width: 28px;
+  color: var(--color-accent);
+  transform: rotate(90deg);
+  justify-self: start;
+  margin-left: calc(var(--num) / 2 - 14px);
+}
+
+/* От 720px лента горизонтальная: плашки на одной линии, текст под ними */
+@media (min-width: 720px) {
+  .next-section__inner {
+    --num: 60px;
+  }
+
+  .next-steps {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
+  }
+
+  .next-steps::before,
+  .next-steps::after {
+    top: calc(var(--num) / 2 - 4px);
+    bottom: auto;
+    left: 0;
+    right: 0;
+    width: auto;
+    height: 8px;
+    background-size: 9px 8px;
+    background-repeat: repeat-x;
+  }
+
+  .next-step {
+    grid-template-columns: minmax(0, 1fr);
+    align-content: start;
+    align-items: start;
+    gap: var(--space-4);
+    padding-right: var(--space-5);
+  }
+
+  .next-step__num {
+    font-size: 3rem;
+  }
+
+  .next-step + .next-step {
+    padding-left: var(--space-5);
+  }
+
+  /* Стрелка продолжает ленту вниз, к форме, под третьим шагом */
+  .next-section__arrow {
+    margin-left: calc(200% / 3 + var(--space-5) + var(--num) / 2 - 14px);
+  }
+}
+
+/* От 1024px заголовок в первой колонке сетки страницы, лента в трёх следующих */
+@media (min-width: 1024px) {
+  .next-section__inner {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    column-gap: 0;
+    row-gap: var(--space-5);
+  }
+
+  .next-section__title {
+    padding-right: var(--space-5);
+  }
+
+  .next-steps {
+    grid-column: 2 / span 3;
+  }
+
+  .next-step,
+  .next-step + .next-step {
+    padding-left: var(--space-5);
+  }
+
+  .next-steps::before,
+  .next-steps::after {
+    left: var(--space-5);
+  }
+
+  .next-section__arrow {
+    grid-column: 4;
+    margin-left: calc(var(--space-5) + var(--num) / 2 - 14px);
+  }
+}
+
+/* Появление: линия горит слева направо за 1.5 с, шаги и стрелка проявляются, когда свет до них дошёл.
+   reduced-motion и без JS: сразу итоговый вид. */
+.motion .next-steps::after {
+  clip-path: inset(0 0 100% 0);
+}
+
+.motion .next-steps .next-step,
+.motion .next-steps ~ .next-section__arrow {
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+.motion .next-steps.is-in::after {
+  clip-path: inset(0 0 0 0);
+  transition: clip-path 1.5s cubic-bezier(0.45, 0, 0.25, 1) 0.15s;
+}
+
+.motion .next-steps.is-in .next-step,
+.motion .next-steps.is-in ~ .next-section__arrow {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out);
+  transition-delay: calc(0.15s + var(--i, 0) * 0.6s);
+}
+
+.motion .next-steps.is-in ~ .next-section__arrow {
+  transform: rotate(90deg);
+  transition-delay: 1.65s;
+}
+
+.motion .next-steps ~ .next-section__arrow {
+  transform: rotate(90deg) translateX(-12px);
+}
+
+@media (min-width: 720px) {
+  .motion .next-steps::after {
+    clip-path: inset(0 100% 0 0);
+  }
+}
+
+/* ---------- Видео в подвале: маленький тихий экран ----------
+   В конце строки «бренды → кухня → курьер», высотой с пиксельные значки, приглушён,
+   без подписи. На телефоне скрыт. */
+.site-footer__video {
+  display: none;
+  flex: 0 0 auto;
+  width: clamp(112px, 11vw, 152px);
+  margin-left: clamp(var(--space-3), 2vw, var(--space-6));
+  overflow: hidden;
+  border-radius: var(--radius-button);
+  background-color: var(--color-surface);
+  opacity: 0.6;
+}
+
+.site-footer__video-el {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+@media (min-width: 720px) {
+  .site-footer__video {
+    display: block;
+  }
+}
+
+/* ---------- Светлые секции: только перекраска (F15) ----------
+   Акцентная карточка bento на светлом фоне тёмная, как фон тёмных секций (#222). */
+.section--light .bento__card--accent {
+  --color-accent: var(--color-button-bg-on-light);
+}
+
+/* ---------- «Что входит» на светлом: голубые акценты (F17) ----------
+   Голубой только как свет и заливка: на тёмных плашках (#222, --color-button-bg-on-light)
+   или маркером под тёмным текстом. Голубого текста на белом нет. */
+.section--light .bento {
+  --plate: var(--color-button-bg-on-light);
+  --plate-text: var(--color-bg-light);
+  --plate-off: color-mix(in srgb, var(--color-bg-light) 30%, var(--color-button-bg-on-light));
+}
+
+/* Очередь: номер нового заказа на дорожке бренда — маркер (голубая заливка, тёмный текст) */
+.section--light .mq__ticket {
+  background-color: var(--color-cyan);
+  color: var(--color-text-on-light);
+}
+
+/* Кухня в воронке: голубая пиктограмма на тёмной плашке */
+.section--light .mq__kitchen {
+  padding: 4px;
+  width: 30px;
+  background-color: var(--plate);
+  border-radius: var(--radius-button);
+  color: var(--color-cyan);
+}
+
+/* Заказ, который готовится сейчас: тёмная строка, полоска готовности горит голубым */
+.section--light .mq__row:first-child {
+  background-color: var(--plate);
+  border-color: var(--plate);
+  color: var(--plate-text);
+}
+
+.section--light .mq__row:first-child .mq__row-icon {
+  color: var(--color-cyan);
+}
+
+.section--light .mq__row:first-child .mq__bar {
+  background-image: radial-gradient(circle, var(--plate-off) 2px, transparent 2.5px);
+}
+
+.section--light .mq__row:first-child .mq__bar::after {
+  background-image: radial-gradient(circle, var(--color-cyan) 2px, transparent 2.5px);
+}
+
+/* Неактивные полоски очереди: погасшие точки заметнее (≥ 3:1 к фону строки) */
+.section--light .mq__row:not(:first-child) .mq__bar {
+  background-image: radial-gradient(circle, var(--color-border) 2px, transparent 2.5px);
+}
+
+/* Стоп-лист (тёмная карточка): включённый тумблер и стрелка голубые */
+.section--light .ms.is-stopped .ms__switch {
+  background-color: var(--color-cyan);
+  border-color: var(--color-cyan);
+}
+
+.section--light .ms.is-stopped .ms__switch::before {
+  background-color: var(--plate);
+}
+
+.section--light .ms__arrow {
+  color: var(--color-cyan);
+}
+
+/* Курьеры: мини-карта — тёмный экран, маршрут и курьер в пути голубые */
+.section--light .mc {
+  --color-bg: var(--plate);
+  --color-text: var(--plate-text);
+  --color-text-muted: color-mix(in srgb, var(--color-bg-light) 72%, var(--color-button-bg-on-light));
+  --color-led-off: color-mix(in srgb, var(--color-bg-light) 12%, transparent);
+  border-color: var(--plate);
+}
+
+.section--light .mc__streets path {
+  stroke: color-mix(in srgb, var(--color-bg-light) 10%, transparent);
+}
+
+.section--light .mc__route {
+  stroke: var(--color-cyan);
+}
+
+.section--light .mc__courier {
+  background-color: var(--color-cyan);
+}
+
+.section--light .mc__courier--idle {
+  background-color: var(--color-text-muted);
+}
+
+.section--light .mc__pin--house.is-done {
+  color: var(--color-cyan);
+}
+
+/* Кабинет: галочка голубая на тёмной плашке, огонёк включённого раздела голубой в тёмном кольце */
+.section--light .md__check {
+  box-sizing: content-box;
+  padding: 3px;
+  background-color: var(--plate);
+  border-radius: var(--radius-button);
+  color: var(--color-cyan);
+}
+
+.section--light .md__led {
+  background-color: var(--color-border);
+}
+
+.section--light .md__row.is-on .md__led {
+  background-color: var(--color-cyan);
+  box-shadow: 0 0 0 2px var(--plate);
+}

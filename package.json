@@ -1,0 +1,11 @@
+{
+  "name": "goulash-landing",
+  "private": true,
+  "description": "Два лендинга для Goulash.tech (тестовое задание). Зависимостей нет.",
+  "scripts": {
+    "check": "node scripts/check.mjs",
+    "check:strict": "node scripts/check.mjs --strict",
+    "test": "node --test",
+    "serve": "python3 -m http.server 8000 --directory site"
+  }
+}

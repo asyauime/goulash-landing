@@ -1,0 +1,555 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Goulash.tech для гост-китченов и виртуальных брендов</title>
+  <meta name="description" content="Goulash.tech собирает заказы всех ваших брендов в одном контуре. Кухня работает по единой очереди, курьеры распределяются автоматически, стоп-листы не расходятся.">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/page-kitchens.css">
+</head>
+<body id="top">
+  <a class="skip-link" href="#main">Перейти к&nbsp;содержанию</a>
+
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="#top">Goulash.tech</a>
+      <nav id="site-nav" class="site-nav" aria-label="Разделы страницы">
+        <ul class="site-nav__list">
+          <li><a href="#demo">Демо</a></li>
+          <li><a href="#how">Как это работает</a></li>
+          <li><a href="#faq">Вопросы</a></li>
+        </ul>
+      </nav>
+      <a class="btn btn--primary site-header__cta" href="#form">Оставить заявку</a>
+      <button class="nav-toggle" type="button" aria-controls="site-nav" aria-expanded="false">
+        <span class="nav-toggle__icon" aria-hidden="true"></span>
+        Меню
+      </button>
+    </div>
+  </header>
+
+  <main id="main" class="page-lines">
+    <section class="hero" aria-labelledby="hero-title" data-led-wall>
+      <!-- LED-стена (led.js): курсор или палец зажигает светодиоды, от него заказы стекаются
+           по сетке к кнопке. Только графика, поэтому aria-hidden. Видео ниже первого экрана. -->
+      <canvas class="hero__wall" aria-hidden="true"></canvas>
+      <div class="container hero__content">
+        <h1 class="hero__title" id="hero-title" data-led-avoid><span class="hero__line">Одна кухня.</span> <span class="hero__line">Несколько брендов.</span> <span class="hero__line">Один поток заказов.</span></h1>
+        <p class="lead hero__lead" data-led-avoid>Goulash.tech собирает заказы всех ваших брендов в&nbsp;одном контуре. Кухня работает по&nbsp;единой очереди, курьеры распределяются автоматически, <span class="hero__keep">стоп-листы</span> не&nbsp;расходятся</p>
+        <div class="hero__actions">
+          <a class="btn btn--primary btn--lg" href="#form" data-led-target>Обсудить за&nbsp;15&nbsp;минут</a>
+          <a class="link-arrow" href="#demo" data-led-target data-led-avoid>Посмотреть, как это выглядит</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section pains" id="pains" aria-labelledby="pains-title">
+      <div class="container">
+        <h2 class="visually-hidden" id="pains-title">Три боли</h2>
+        <!-- «Было / стало». Видно по умолчанию только название боли (крупно).
+             Пояснение боли и ответ «С Goulash.tech» лежат во второй стороне карточки:
+             она открывается кнопкой (aria-expanded), наведением мышью или касанием.
+             Без JS обе стороны видны одна под другой. -->
+        <ul class="pains__list" data-reveal-stagger data-pains>
+          <li class="pain" data-reveal>
+            <div class="pain__card">
+              <div class="pain__face pain__face--now">
+                <span class="pain__icon" data-pixel="tablets" aria-hidden="true"></span>
+                <h3 class="pain__title">Планшет на&nbsp;каждый бренд</h3>
+              </div>
+              <div class="pain__face pain__face--then" id="pain-more-1">
+                <p class="pain__text">Заказы приходят в&nbsp;разные окна, и&nbsp;кухня теряет минуты на&nbsp;переключении между ними</p>
+                <p class="pain__tag"><span class="pain__tag-icon" data-pixel="queue" aria-hidden="true"></span><span class="pain__tag-text">С&nbsp;Goulash.tech</span></p>
+                <p class="pain__answer">Заказы со&nbsp;всех каналов попадают в&nbsp;один контур: сайт, приложение, оператор и&nbsp;агрегаторы</p>
+              </div>
+              <button class="pain__switch" type="button" aria-expanded="false" aria-controls="pain-more-1">
+                <span class="pain__switch-track" aria-hidden="true"></span>
+                <span class="pain__switch-text">С&nbsp;Goulash.tech</span>
+              </button>
+            </div>
+          </li>
+          <li class="pain" data-reveal>
+            <div class="pain__card">
+              <div class="pain__face pain__face--now">
+                <span class="pain__icon" data-pixel="stoplist" aria-hidden="true"></span>
+                <h3 class="pain__title">Стоп-лист живёт отдельно</h3>
+              </div>
+              <div class="pain__face pain__face--then" id="pain-more-2">
+                <p class="pain__text">Позицию остановили в&nbsp;одном месте, а&nbsp;гость продолжает заказывать её в&nbsp;другом. Дальше отмены и&nbsp;извинения</p>
+                <p class="pain__tag"><span class="pain__tag-icon" data-pixel="stoplist" aria-hidden="true"></span><span class="pain__tag-text">С&nbsp;Goulash.tech</span></p>
+                <p class="pain__answer">Позицию остановили один раз, и&nbsp;она пропала у&nbsp;гостя везде</p>
+              </div>
+              <button class="pain__switch" type="button" aria-expanded="false" aria-controls="pain-more-2">
+                <span class="pain__switch-track" aria-hidden="true"></span>
+                <span class="pain__switch-text">С&nbsp;Goulash.tech</span>
+              </button>
+            </div>
+          </li>
+          <li class="pain" data-reveal>
+            <div class="pain__card">
+              <div class="pain__face pain__face--now">
+                <span class="pain__icon" data-pixel="phone" aria-hidden="true"></span>
+                <h3 class="pain__title">Курьеров распределяет человек</h3>
+              </div>
+              <div class="pain__face pain__face--then" id="pain-more-3">
+                <p class="pain__text">Диспетчер звонит и&nbsp;решает на&nbsp;глаз. В&nbsp;часы пик это узкое место</p>
+                <p class="pain__tag"><span class="pain__tag-icon pain__icon--wide" data-pixel="courier" aria-hidden="true"></span><span class="pain__tag-text">С&nbsp;Goulash.tech</span></p>
+                <p class="pain__answer">Система сама распределяет заказы между курьерами с&nbsp;учётом того, где они находятся и&nbsp;как доставляют</p>
+              </div>
+              <button class="pain__switch" type="button" aria-expanded="false" aria-controls="pain-more-3">
+                <span class="pain__switch-track" aria-hidden="true"></span>
+                <span class="pain__switch-text">С&nbsp;Goulash.tech</span>
+              </button>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section section--light fit" id="fit" aria-labelledby="fit-title">
+      <div class="container">
+        <h2 class="fit__title" id="fit-title" data-reveal>Кому подходит</h2>
+        <!-- Манифест: слова загораются по мере прокрутки (kitchens-blocks.js оборачивает слова
+             и ставит is-lit). Без JS и при reduced-motion весь текст сразу яркий. -->
+        <ul class="manifest" data-manifest>
+          <li class="manifest__line">На&nbsp;одной кухне готовятся заказы <span class="manifest__key">нескольких брендов</span><span class="manifest__icons" aria-hidden="true"><span class="manifest__icon" data-pixel="pot"></span><span class="manifest__icon" data-pixel="onion"></span><span class="manifest__icon" data-pixel="pancakes"></span></span></li>
+          <li class="manifest__line">Заказы приходят с&nbsp;разных каналов: <span class="manifest__key"><span class="manifest__chip"><span class="manifest__icon" data-pixel="site" aria-hidden="true"></span>сайт,</span> <span class="manifest__chip"><span class="manifest__icon" data-pixel="app" aria-hidden="true"></span>приложение,</span> <span class="manifest__chip"><span class="manifest__icon" data-pixel="headset" aria-hidden="true"></span>оператор</span> и&nbsp;<span class="manifest__chip"><span class="manifest__icon" data-pixel="basket" aria-hidden="true"></span>агрегаторы</span></span></li>
+          <li class="manifest__line">Цикл приготовления <span class="manifest__key"><span class="manifest__chip"><span class="manifest__icon" data-pixel="timer" aria-hidden="true"></span>до&nbsp;30&nbsp;минут</span></span></li>
+          <li class="manifest__line"><span class="manifest__chip"><span class="manifest__icon manifest__icon--wide" data-pixel="courier" aria-hidden="true"></span>Курьеров</span> распределяют <span class="manifest__key">вручную</span>, и&nbsp;в&nbsp;часы пик это узкое место</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section section--surface how" id="how" aria-labelledby="how-title">
+      <div class="container">
+        <div class="section__head" data-reveal>
+          <h2 class="section__title section__title--xl" id="how-title">Как это работает</h2>
+        </div>
+        <ol class="steps steps--flow" data-reveal data-steps>
+          <li class="step">
+            <span class="step__num" data-pixel="n1" aria-hidden="true"></span>
+            <p>Заказы со&nbsp;всех каналов попадают в&nbsp;один контур: сайт, приложение, оператор и&nbsp;агрегаторы</p>
+          </li>
+          <li class="step">
+            <span class="step__num" data-pixel="n2" aria-hidden="true"></span>
+            <p>Кухня видит единую очередь и&nbsp;работает по&nbsp;ней, без&nbsp;ручных костылей</p>
+          </li>
+          <li class="step">
+            <span class="step__num" data-pixel="n3" aria-hidden="true"></span>
+            <p>Система сама распределяет заказы между курьерами с&nbsp;учётом того, где они находятся и&nbsp;как доставляют</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section section--light includes" id="includes" aria-labelledby="includes-title">
+      <div class="container">
+        <div class="section__head" data-reveal>
+          <h2 class="section__title section__title--xl" id="includes-title">Что входит</h2>
+        </div>
+        <!-- Bento: четыре модуля разного размера. Внутри каждой карточки живой мини-интерфейс
+             (kitchens-blocks.js): анимируется, только пока карточка на экране, реагирует на наведение.
+             Мини-интерфейсы только для глаз (aria-hidden), смысл несут h3 и строка под ним.
+             Номера заказов и блюда в них вымышлены, как и в демо (сноска в подвале). -->
+        <ul class="bento" data-reveal-stagger>
+          <li class="bento__cell bento__cell--queue" data-reveal>
+            <article class="bento__card" data-bento="queue">
+              <div class="bento__copy">
+                <h3 class="bento__title">Единая очередь заказов</h3>
+                <p class="bento__text">Все бренды и&nbsp;каналы в&nbsp;одном окне кухни</p>
+              </div>
+              <div class="mq" aria-hidden="true">
+                <div class="mq__lanes">
+                  <div class="mq__lane" data-brand="b1"><span class="mq__brand" data-pixel="pot"></span><span class="mq__slot"></span></div>
+                  <div class="mq__lane" data-brand="b2"><span class="mq__brand" data-pixel="onion"></span><span class="mq__slot"></span></div>
+                  <div class="mq__lane" data-brand="b3"><span class="mq__brand" data-pixel="pancakes"></span><span class="mq__slot"></span></div>
+                </div>
+                <div class="mq__funnel"><span class="mq__kitchen" data-pixel="kitchen"></span></div>
+                <ol class="mq__queue">
+                  <li class="mq__row"><span class="mq__row-icon" data-pixel="pancakes"></span><span class="mq__num">107</span><span class="mq__bar"></span></li>
+                  <li class="mq__row"><span class="mq__row-icon" data-pixel="pot"></span><span class="mq__num">106</span><span class="mq__bar"></span></li>
+                  <li class="mq__row"><span class="mq__row-icon" data-pixel="onion"></span><span class="mq__num">105</span><span class="mq__bar"></span></li>
+                  <li class="mq__row"><span class="mq__row-icon" data-pixel="pot"></span><span class="mq__num">104</span><span class="mq__bar"></span></li>
+                  <li class="mq__row"><span class="mq__row-icon" data-pixel="pancakes"></span><span class="mq__num">103</span><span class="mq__bar"></span></li>
+                  <li class="mq__row"><span class="mq__row-icon" data-pixel="onion"></span><span class="mq__num">102</span><span class="mq__bar"></span></li>
+                  <li class="mq__row"><span class="mq__row-icon" data-pixel="pot"></span><span class="mq__num">101</span><span class="mq__bar"></span></li>
+                  <li class="mq__row"><span class="mq__row-icon" data-pixel="pancakes"></span><span class="mq__num">100</span><span class="mq__bar"></span></li>
+                  <li class="mq__row"><span class="mq__row-icon" data-pixel="onion"></span><span class="mq__num">99</span><span class="mq__bar"></span></li>
+                  <li class="mq__row"><span class="mq__row-icon" data-pixel="pot"></span><span class="mq__num">98</span><span class="mq__bar"></span></li>
+                </ol>
+              </div>
+            </article>
+          </li>
+          <li class="bento__cell bento__cell--stop" data-reveal>
+            <article class="bento__card bento__card--accent" data-bento="stop">
+              <div class="bento__copy">
+                <h3 class="bento__title">Общий стоп-лист</h3>
+                <p class="bento__text">Позицию остановили один раз, и&nbsp;она пропала у&nbsp;гостя везде</p>
+              </div>
+              <div class="ms is-stopped" aria-hidden="true">
+                <div class="ms__kitchen">
+                  <span class="ms__icon" data-pixel="kitchen"></span>
+                  <span class="ms__switch"></span>
+                  <span class="ms__item">Гуляш с&nbsp;картофелем</span>
+                </div>
+                <span class="ms__arrow" data-pixel="arrow"></span>
+                <div class="ms__guest">
+                  <span class="ms__icon" data-pixel="app"></span>
+                  <ul class="ms__menu">
+                    <li class="ms__dish ms__dish--target">Гуляш с&nbsp;картофелем</li>
+                    <li class="ms__dish">Борщ с&nbsp;пампушкой</li>
+                    <li class="ms__dish">Блины с&nbsp;ягодами</li>
+                  </ul>
+                </div>
+              </div>
+            </article>
+          </li>
+          <li class="bento__cell bento__cell--courier" data-reveal>
+            <article class="bento__card" data-bento="courier">
+              <div class="bento__copy">
+                <h3 class="bento__title">Автораспределение курьеров</h3>
+                <p class="bento__text">Система учитывает, где курьер и&nbsp;как он доставляет</p>
+              </div>
+              <div class="mc" aria-hidden="true">
+                <svg class="mc__streets" viewBox="0 0 100 100" preserveAspectRatio="none" focusable="false">
+                  <path d="M0 24H100M0 50H100M0 78H100M16 0V100M44 0V100M72 0V100" />
+                  <polyline class="mc__route" pathLength="1" points="16,78 44,78 44,24 86,24" />
+                </svg>
+                <span class="mc__pin mc__pin--kitchen" style="--x:16;--y:78" data-pixel="kitchen"></span>
+                <span class="mc__pin mc__pin--house is-done" style="--x:86;--y:24" data-pixel="house"></span>
+                <span class="mc__pin mc__pin--house" style="--x:72;--y:92" data-pixel="house"></span>
+                <span class="mc__pin mc__pin--house" style="--x:44;--y:8" data-pixel="house"></span>
+                <span class="mc__courier mc__courier--idle" style="--x:72;--y:50"></span>
+                <span class="mc__courier mc__courier--idle" style="--x:16;--y:24"></span>
+                <span class="mc__courier mc__courier--active" style="--x:86;--y:24"></span>
+              </div>
+            </article>
+          </li>
+          <li class="bento__cell bento__cell--cabinet" data-reveal>
+            <article class="bento__card" data-bento="cabinet">
+              <div class="bento__copy">
+                <h3 class="bento__title">Один кабинет</h3>
+                <p class="bento__text bento__text--sr">Меню, цены, зоны доставки, <span class="hero__keep">стоп-листы</span>, графики персонала и&nbsp;сводная аналитика по&nbsp;заведениям</p>
+              </div>
+              <ul class="md" aria-hidden="true">
+                <li class="md__row is-on"><span class="md__led"></span>Меню<span class="md__check" data-pixel="check"></span></li>
+                <li class="md__row is-on"><span class="md__led"></span>Цены<span class="md__check" data-pixel="check"></span></li>
+                <li class="md__row is-on"><span class="md__led"></span>Зоны доставки<span class="md__check" data-pixel="check"></span></li>
+                <li class="md__row is-on"><span class="md__led"></span>Стоп-листы<span class="md__check" data-pixel="check"></span></li>
+                <li class="md__row is-on"><span class="md__led"></span>Графики персонала<span class="md__check" data-pixel="check"></span></li>
+                <li class="md__row is-on"><span class="md__led"></span>Сводная аналитика<span class="md__check" data-pixel="check"></span></li>
+              </ul>
+            </article>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section demo-section" id="demo" aria-labelledby="demo-title">
+      <div class="container">
+        <div class="section__head" data-reveal>
+          <h2 class="section__title section__title--xl" id="demo-title">Попробуйте интерфейс</h2>
+        </div>
+        <div class="demos" id="demos" data-reveal>
+          <div class="demo-tabs" role="tablist" aria-label="Демо-интерфейсы" data-tabs>
+            <button class="demo-tab" type="button" role="tab" id="tab-d1" aria-controls="panel-d1" aria-selected="true">
+              <span class="demo-tab__icon" data-pixel="tablets" aria-hidden="true"></span>
+              <span class="demo-tab__text">Доска заказов</span>
+            </button>
+            <button class="demo-tab" type="button" role="tab" id="tab-d2" aria-controls="panel-d2" aria-selected="false" tabindex="-1">
+              <span class="demo-tab__icon" data-pixel="stoplist" aria-hidden="true"></span>
+              <span class="demo-tab__text">Стоп-лист и&nbsp;меню гостя</span>
+            </button>
+            <button class="demo-tab" type="button" role="tab" id="tab-d3" aria-controls="panel-d3" aria-selected="false" tabindex="-1">
+              <span class="demo-tab__icon" data-pixel="courier" aria-hidden="true"></span>
+              <span class="demo-tab__text">Маршрут и&nbsp;время доставки</span>
+            </button>
+          </div>
+          <div class="demo demo-board" data-demo="d1" role="tabpanel" id="panel-d1" aria-labelledby="tab-d1">
+            <div class="demo__bar">
+              <h3 class="demo__title visually-hidden" id="d1-title">Доска заказов</h3>
+            </div>
+            <div class="demo__body" data-board></div>
+          </div>
+          <div class="demo demo-stoplist" data-demo="d2" role="tabpanel" id="panel-d2" aria-labelledby="tab-d2" hidden>
+            <div class="demo__bar">
+              <h3 class="demo__title visually-hidden" id="d2-title">Стоп-лист и&nbsp;меню гостя</h3>
+            </div>
+            <div class="demo__body" data-stoplist></div>
+          </div>
+          <div class="demo demo-route" data-demo="d3" role="tabpanel" id="panel-d3" aria-labelledby="tab-d3" hidden>
+            <div class="demo__bar">
+              <h3 class="demo__title visually-hidden" id="d3-title">Маршрут и&nbsp;время доставки</h3>
+            </div>
+            <div class="demo__body" data-route></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section facts-section" id="facts" aria-labelledby="facts-title">
+      <div class="container">
+        <h2 class="visually-hidden" id="facts-title">Факты</h2>
+        <ul class="facts facts--board" data-reveal-stagger>
+          <li class="fact" data-reveal>
+            <span class="fact__value" data-count data-led>900+</span>
+            <span class="fact__label">точек подключено к&nbsp;системе</span>
+          </li>
+          <li class="fact fact--hero" data-reveal>
+            <span class="fact__value" data-count data-led>1,3&nbsp;млн+</span>
+            <span class="fact__label">заказов в&nbsp;месяц через систему</span>
+          </li>
+          <li class="fact" data-reveal>
+            <span class="fact__value" data-count data-led>150+</span>
+            <span class="fact__label">городов с&nbsp;автоматизированной доставкой</span>
+          </li>
+          <li class="fact" data-reveal>
+            <span class="fact__value" data-count data-led>21&nbsp;день</span>
+            <span class="fact__label">средний срок перехода сети на&nbsp;платформу</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section section--light section--light-alt timeline-section" id="timeline" aria-labelledby="timeline-title">
+      <div class="container">
+        <div class="section__head" data-reveal>
+          <h2 class="section__title section__title--xl" id="timeline-title">Сколько занимает подключение</h2>
+        </div>
+        <div class="timeline" data-reveal>
+          <ol class="timeline__scale">
+            <li class="milestone milestone--min">
+              <p class="milestone__value"><span class="milestone__word">От</span>&nbsp;<span class="milestone__num" data-led>7</span>&nbsp;<span class="milestone__word">дней</span></p>
+              <span class="milestone__track" aria-hidden="true"></span>
+              <p class="milestone__label">минимальная настройка</p>
+            </li>
+            <li class="milestone milestone--avg">
+              <p class="milestone__value"><span class="milestone__num" data-led>21</span>&nbsp;<span class="milestone__word">день</span></p>
+              <span class="milestone__track" aria-hidden="true"></span>
+              <p class="milestone__label">средний срок перехода сети на&nbsp;платформу</p>
+            </li>
+          </ol>
+          <p class="timeline__note">Срок зависит от&nbsp;числа точек, модулей и&nbsp;интеграции с&nbsp;вашей кассовой системой</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--light faq-section" id="faq" aria-labelledby="faq-title">
+      <div class="container faq-section__inner">
+        <div class="section__head faq-section__head" data-reveal>
+          <h2 class="section__title section__title--xl" id="faq-title">Вопросы</h2>
+        </div>
+        <div class="faq" data-faq data-reveal>
+          <div class="faq__item">
+            <h3 class="faq__heading">
+              <button class="faq__question" type="button" aria-expanded="false" aria-controls="faq-answer-1">
+                Нужно&nbsp;ли гостю скачивать приложение?
+                <span class="faq__icon" aria-hidden="true"></span>
+              </button>
+            </h3>
+            <div class="faq__answer" id="faq-answer-1">
+              <p>Нет. Заказать можно на&nbsp;сайте, в&nbsp;приложении, через оператора или&nbsp;на&nbsp;агрегаторе. Приложение даёт больше: уведомления, бонусы и&nbsp;историю заказов</p>
+            </div>
+          </div>
+          <div class="faq__item">
+            <h3 class="faq__heading">
+              <button class="faq__question" type="button" aria-expanded="false" aria-controls="faq-answer-2">
+                Работает&nbsp;ли это с&nbsp;агрегаторами?
+                <span class="faq__icon" aria-hidden="true"></span>
+              </button>
+            </h3>
+            <div class="faq__answer" id="faq-answer-2">
+              <p>Да. Их заказы попадают в&nbsp;общий контур: их видит кухня, они учитываются в&nbsp;аналитике и&nbsp;стоп-листах, а&nbsp;курьеры распределяются единым алгоритмом</p>
+            </div>
+          </div>
+          <div class="faq__item">
+            <h3 class="faq__heading">
+              <button class="faq__question" type="button" aria-expanded="false" aria-controls="faq-answer-3">
+                Можно&nbsp;ли вести несколько заведений из&nbsp;одного кабинета?
+                <span class="faq__icon" aria-hidden="true"></span>
+              </button>
+            </h3>
+            <div class="faq__answer" id="faq-answer-3">
+              <p>Да. В&nbsp;одном кабинете меню, цены, зоны доставки, стоп-листы, графики персонала и&nbsp;сводная аналитика по&nbsp;заведениям</p>
+            </div>
+          </div>
+          <div class="faq__item">
+            <h3 class="faq__heading">
+              <button class="faq__question" type="button" aria-expanded="false" aria-controls="faq-answer-4">
+                Сколько занимает подключение?
+                <span class="faq__icon" aria-hidden="true"></span>
+              </button>
+            </h3>
+            <div class="faq__answer" id="faq-answer-4">
+              <p>Минимальная настройка от&nbsp;7&nbsp;дней, полный переход сети в&nbsp;среднем 21&nbsp;день. Срок зависит от&nbsp;числа точек, модулей и&nbsp;интеграции с&nbsp;вашей кассовой системой</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section next-section" id="next" aria-labelledby="next-title">
+      <div class="container next-section__inner">
+        <h2 class="section__title next-section__title" id="next-title" data-reveal>Что будет после заявки</h2>
+        <ol class="next-steps" data-reveal data-reveal-stagger>
+          <li class="next-step">
+            <span class="next-step__num" data-led aria-hidden="true">1</span>
+            <p>Созвонимся на&nbsp;15&nbsp;минут и&nbsp;узнаем, как устроена ваша кухня</p>
+          </li>
+          <li class="next-step">
+            <span class="next-step__num" data-led aria-hidden="true">2</span>
+            <p>Покажем, как ваши бренды и&nbsp;каналы соберутся в&nbsp;один поток</p>
+          </li>
+          <li class="next-step">
+            <span class="next-step__num" data-led aria-hidden="true">3</span>
+            <p>Обсудим, какие модули нужны и&nbsp;сколько займёт подключение</p>
+          </li>
+        </ol>
+        <span class="next-section__arrow" data-pixel="arrow" aria-hidden="true"></span>
+      </div>
+    </section>
+
+    <section class="section section--surface lead-section" id="form" aria-labelledby="form-title" data-lead-form-root>
+      <div class="container lead-section__inner">
+        <div class="section__head" data-reveal>
+          <h2 class="section__title section__title--xl" id="form-title" data-copy="form-title">Расскажите о&nbsp;вашей кухне</h2>
+          <p class="lead" data-copy="form-subtitle">Ответим и&nbsp;обсудим подключение за&nbsp;15&nbsp;минут</p>
+          <span class="lead-section__art" data-pixel="courier" data-pixel-off aria-hidden="true"></span>
+        </div>
+
+        <div class="lead-section__card">
+          <form class="lead-form" action="#form" method="post" data-lead-form>
+            <div class="lead-form__grid">
+              <div class="field">
+                <label class="field__label" for="lead-name">Как к&nbsp;вам обращаться</label>
+                <input class="field__input" id="lead-name" name="name" type="text" autocomplete="name" required>
+                <p class="field__error" id="lead-name-error" data-error-for="name" hidden></p>
+              </div>
+
+              <div class="field">
+                <label class="field__label" for="lead-phone">Телефон</label>
+                <input class="field__input" id="lead-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 (999) 123-45-67" required>
+                <p class="field__error" id="lead-phone-error" data-error-for="phone" hidden></p>
+              </div>
+
+              <div class="field">
+                <label class="field__label" for="lead-email">Почта <span class="field__optional">(необязательно)</span></label>
+                <input class="field__input" id="lead-email" name="email" type="email" inputmode="email" autocomplete="email">
+                <p class="field__error" id="lead-email-error" data-error-for="email" hidden></p>
+              </div>
+
+              <div class="field">
+                <label class="field__label" for="lead-city">Город</label>
+                <input class="field__input" id="lead-city" name="city" type="text" autocomplete="address-level2" required>
+                <p class="field__error" id="lead-city-error" data-error-for="city" hidden></p>
+              </div>
+
+              <div class="field">
+                <label class="field__label" for="lead-points">Сколько у&nbsp;вас точек</label>
+                <input class="field__input field__input--short" id="lead-points" name="points" type="text" inputmode="numeric" autocomplete="off" required>
+                <p class="field__error" id="lead-points-error" data-error-for="points" hidden></p>
+              </div>
+            </div>
+
+            <div class="lead-form__consents">
+              <div class="check">
+                <input class="check__input" id="lead-consent-pd" name="consent_pd" type="checkbox" value="yes" required>
+                <label class="check__label" for="lead-consent-pd">Согласие на&nbsp;обработку персональных данных</label>
+                <p class="field__error" id="lead-consent_pd-error" data-error-for="consent_pd" hidden></p>
+              </div>
+
+              <div class="check">
+                <input class="check__input" id="lead-consent-ads" name="consent_ads" type="checkbox" value="yes">
+                <label class="check__label" for="lead-consent-ads">Согласие на&nbsp;получение сообщений о&nbsp;продукте <span class="field__optional">(необязательно)</span></label>
+              </div>
+
+              <p class="lead-form__policy small">
+                <a href="https://goulash.tech/" target="_blank" rel="noopener">Политика обработки персональных данных</a>
+              </p>
+            </div>
+
+            <div role="alert" class="lead-form__alert-region">
+              <div class="lead-form__error" data-lead-error hidden>
+                <p class="lead-form__error-text">Не&nbsp;получилось отправить. Данные сохранены, попробуйте ещё раз</p>
+                <button class="btn btn--ghost btn--sm" type="button" data-lead-retry>Повторить</button>
+              </div>
+            </div>
+
+            <div class="lead-form__actions">
+              <button class="btn btn--primary btn--lg lead-form__submit" type="submit" disabled data-lead-submit>
+                <span class="spinner" aria-hidden="true"></span>
+                <span data-lead-submit-label>Оставить заявку</span>
+              </button>
+            </div>
+
+            <noscript><p class="lead-form__note small">Чтобы отправить форму, включите JavaScript</p></noscript>
+          </form>
+
+          <div role="status" aria-live="polite" class="lead-form__status-region">
+            <div class="lead-success" data-lead-success hidden>
+              <h3 class="lead-success__title" tabindex="-1">Заявка отправлена</h3>
+              <p class="lead-success__text">Спасибо! Мы&nbsp;свяжемся с&nbsp;вами</p>
+              <button class="btn btn--ghost" type="button" data-lead-again>Отправить ещё одну</button>
+            </div>
+          </div>
+
+          <div class="lead-form__footer">
+            <p class="lead-form__hint small" aria-live="polite" data-lead-hint></p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <div class="site-footer__flow" aria-hidden="true">
+        <span class="site-footer__icon" data-pixel="pot"></span>
+        <span class="site-footer__icon" data-pixel="onion"></span>
+        <span class="site-footer__icon" data-pixel="pancakes"></span>
+        <span class="site-footer__arrow" data-pixel="arrow"></span>
+        <span class="site-footer__icon site-footer__icon--accent" data-pixel="kitchen"></span>
+        <span class="site-footer__arrow" data-pixel="arrow"></span>
+        <span class="site-footer__icon site-footer__icon--wide" data-pixel="courier"></span>
+        <!-- Видео (ТЗ раздел 8): LED-табло на ночной улице. Маленький приглушённый экран в конце
+             «потока», без подписи; на телефоне скрыт. Только графика, поэтому aria-hidden.
+             kitchens-blocks.js: играет только на экране, при reduced-motion стоит на постере. -->
+        <span class="site-footer__video">
+          <video class="site-footer__video-el" width="1280" height="720" autoplay muted loop playsinline preload="metadata" poster="../assets/media/video-kitchens-poster.jpg" aria-hidden="true" data-video>
+            <source src="../assets/media/video-kitchens.mp4" type="video/mp4">
+          </video>
+        </span>
+      </div>
+      <a class="btn btn--primary btn--lg site-footer__cta" href="#form">Обсудить за&nbsp;15&nbsp;минут</a>
+      <div class="site-footer__row">
+        <a class="site-footer__brand" href="#top">Goulash.tech</a>
+        <nav class="site-footer__nav" aria-label="Разделы страницы в&nbsp;подвале">
+          <ul class="site-footer__list">
+            <li><a href="#demo">Демо</a></li>
+            <li><a href="#how">Как это работает</a></li>
+            <li><a href="#faq">Вопросы</a></li>
+            <li><a href="#form">Оставить заявку</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="site-footer__legal">
+        <a href="https://goulash.tech/" target="_blank" rel="noopener">Политика обработки персональных данных</a>
+        <p class="footnote">Тестовое задание. Это не&nbsp;официальный сайт Goulash.tech, демо-данные вымышлены.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../assets/js/lead-form-logic.js"></script>
+  <script src="../assets/js/demo-logic.js"></script>
+  <script src="../assets/js/led.js"></script>
+  <script src="../assets/js/main.js"></script>
+  <script src="../assets/js/kitchens-blocks.js"></script>
+  <script src="../assets/js/lead-form.js"></script>
+  <script src="../assets/js/demo-board.js"></script>
+  <script src="../assets/js/demo-stoplist.js"></script>
+  <script src="../assets/js/demo-route.js"></script>
+</body>
+</html>

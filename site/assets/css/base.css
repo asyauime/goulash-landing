@@ -1,0 +1,318 @@
+/*
+  base.css: токены бренда, шрифт, сброс, типографика, тёмная и светлая секции, фокус.
+  Значения токенов только из docs/brand.md (таблица «Токены»).
+  Шрифт Onest (OFL 1.1) лежит локально: site/assets/fonts/Onest-Variable.ttf, вариативный 100–900.
+*/
+
+@font-face {
+  font-family: "Onest";
+  src: url("../fonts/Onest-Variable.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* Цвета (docs/brand.md) */
+  --color-bg: #222222;
+  --color-surface: #1b1b1b;
+  --color-text: #ffffff;
+  --color-text-muted: #b6bfc9;
+  --color-accent: #00ffff;
+  --color-button-bg: #ffffff;
+  --color-button-text: #040406;
+  /* Голубой, который не перекрашивается в светлых секциях (там --color-accent тёмный):
+     только заливки и графика на тёмной подложке, не цвет текста на светлом */
+  --color-cyan: var(--color-accent);
+
+  /* Светлые секции (docs/brand.md, добавлено по решению Аси) */
+  --color-bg-light: #ffffff;
+  --color-surface-light: #f8f8f8;
+  --color-text-on-light: #040406;
+  --color-text-muted-on-light: #424242;
+  --color-border-light: #ececec;
+  --color-button-bg-on-light: #222222;
+
+  /* Шрифты (docs/brand.md) */
+  --font-heading: "Onest", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "Onest", "Helvetica Neue", Arial, sans-serif;
+
+  /* Скругления (docs/brand.md) */
+  --radius-card: 16px;
+  --radius-button: 8px;
+
+  /* Производные значения: только смеси токенов, новых цветов нет */
+  --color-border: color-mix(in srgb, var(--color-text) 14%, transparent);
+  --color-border-strong: color-mix(in srgb, var(--color-text) 28%, transparent);
+  --color-hover: color-mix(in srgb, var(--color-text) 8%, transparent);
+  --color-button-bg-hover: color-mix(in srgb, var(--color-button-bg) 88%, var(--color-bg));
+  --focus-ring: 0 0 0 3px var(--color-accent);
+
+  /* LED-табло и сетка (тоже только смеси токенов) */
+  --color-line: color-mix(in srgb, var(--color-text) 6%, transparent);
+  --color-led-off: color-mix(in srgb, var(--color-text) 9%, transparent);
+  --color-led-dim: color-mix(in srgb, var(--color-accent) 22%, transparent);
+  --color-accent-soft: color-mix(in srgb, var(--color-accent) 14%, transparent);
+  --color-accent-line: color-mix(in srgb, var(--color-accent) 45%, transparent);
+  --shadow-panel: 0 30px 60px -40px color-mix(in srgb, var(--color-button-text) 70%, transparent);
+  --led-grid: radial-gradient(circle, var(--color-led-off) 1px, transparent 1.6px);
+  --led-step: 8px;
+
+  /* Движение */
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --dur-fast: 0.18s;
+  --dur: 0.42s;
+  --dur-slow: 0.8s;
+
+  /* Отступы и ширины (не цвета и не радиусы) */
+  --container: 1200px;
+  --gutter: clamp(16px, 4vw, 32px);
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: clamp(56px, 9vw, 112px);
+  --header-height: 64px;
+
+  color-scheme: dark;
+}
+
+/* ---------- Сброс ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-padding-top: calc(var(--header-height) + var(--space-4));
+}
+
+body,
+h1, h2, h3, h4, h5, h6,
+p, figure, blockquote,
+ul, ol, dl, dd {
+  margin: 0;
+}
+
+ul[class],
+ol[class] {
+  padding: 0;
+  list-style: none;
+}
+
+img,
+svg,
+video,
+canvas,
+picture {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+input,
+button,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled,
+[aria-disabled="true"] {
+  cursor: not-allowed;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+/* ---------- Тёмная тема и типографика ---------- */
+body {
+  min-height: 100vh;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.55;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: clamp(2rem, 5.2vw, 3.75rem);
+  letter-spacing: -0.02em;
+}
+
+h2 {
+  font-size: clamp(1.625rem, 3.4vw, 2.5rem);
+}
+
+h3 {
+  font-size: clamp(1.125rem, 1.8vw, 1.375rem);
+  line-height: 1.3;
+}
+
+p {
+  max-width: 68ch;
+}
+
+.lead {
+  color: var(--color-text-muted);
+  text-wrap: pretty;
+  font-size: clamp(1.0625rem, 1.6vw, 1.25rem);
+  line-height: 1.5;
+}
+
+.muted {
+  color: var(--color-text-muted);
+}
+
+small,
+.small {
+  font-size: 0.875rem;
+}
+
+/* Ссылки без подчёркивания в обычном состоянии; подчёркивание появляется при наведении
+   и фокусе с клавиатуры. :where() держит вес правила низким: кнопки-ссылки (.btn) и
+   ссылки с собственным hover (смена цвета) остаются без подчёркивания. */
+a {
+  color: var(--color-accent);
+  text-decoration: none;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+:where(a):hover,
+:where(a):focus-visible {
+  text-decoration-line: underline;
+}
+
+strong {
+  font-weight: 700;
+}
+
+::selection {
+  background-color: var(--color-accent);
+  color: var(--color-button-text);
+}
+
+/* ---------- Светлая секция ----------
+   Только перекраска: класс переопределяет переменные цвета, состав и эффекты блоков те же.
+   Голубой на светлом как цвет текста запрещён (docs/brand.md, «Правила акцента», контраст 1.25:1),
+   поэтому внутри светлой секции --color-accent становится тёмным цветом текста: LED-цифры, пиксельные
+   иконки, ключевые слова и фокус тёмные. Производные смеси объявлены заново, иначе они
+   унаследуются уже вычисленными от :root (светлыми на тёмном). */
+.section--light {
+  --color-bg: var(--color-bg-light);
+  --color-surface: var(--color-surface-light);
+  --color-text: var(--color-text-on-light);
+  --color-text-muted: var(--color-text-muted-on-light);
+  /* Рамки на светлом: не ниже 3:1 к белому (WCAG 1.4.11), #ececec из brand.md давал 1.2:1 */
+  --color-border: color-mix(in srgb, var(--color-text-on-light) 48%, var(--color-bg-light));
+  --color-accent: var(--color-text-on-light);
+  --color-button-bg: var(--color-button-bg-on-light);
+  --color-button-text: var(--color-bg-light);
+
+  --color-border-strong: color-mix(in srgb, var(--color-text-on-light) 62%, var(--color-bg-light));
+  --color-hover: color-mix(in srgb, var(--color-text-on-light) 5%, transparent);
+  --color-button-bg-hover: color-mix(in srgb, var(--color-button-bg-on-light) 86%, var(--color-bg-light));
+  --focus-ring: 0 0 0 3px var(--color-text-on-light);
+  --color-line: color-mix(in srgb, var(--color-text-on-light) 10%, transparent);
+  --color-led-off: color-mix(in srgb, var(--color-text-on-light) 14%, transparent);
+  --color-led-dim: color-mix(in srgb, var(--color-text-on-light) 46%, transparent);
+  --color-accent-soft: color-mix(in srgb, var(--color-text-on-light) 6%, transparent);
+  --color-accent-line: color-mix(in srgb, var(--color-text-on-light) 56%, transparent);
+  --shadow-panel: 0 30px 60px -40px color-mix(in srgb, var(--color-text-on-light) 25%, transparent);
+  --led-grid: radial-gradient(circle, var(--color-led-off) 1px, transparent 1.6px);
+
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  color-scheme: light;
+}
+
+/* Вторая светлая подряд: фон #f8f8f8, карточки белые */
+.section--light-alt {
+  --color-bg: var(--color-surface-light);
+  --color-surface: var(--color-bg-light);
+}
+
+.section--light ::selection {
+  background-color: var(--color-text-on-light);
+  color: var(--color-bg-light);
+}
+
+/* ---------- Фокус: виден всегда при работе с клавиатуры ---------- */
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+/* ---------- Служебные классы ---------- */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  top: var(--space-2);
+  left: var(--space-2);
+  z-index: 100;
+  padding: var(--space-2) var(--space-4);
+  background-color: var(--color-button-bg);
+  color: var(--color-button-text);
+  border-radius: var(--radius-button);
+  transform: translateY(-200%);
+}
+
+.skip-link:focus-visible {
+  transform: none;
+}
+
+/* ---------- Меньше движения ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

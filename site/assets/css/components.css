@@ -909,6 +909,8 @@ a.card:hover {
    Видео вписано целиком (contain), чтобы подписи внизу кадра не обрезались на телефоне. */
 .video-reveal {
   position: relative;
+  /* выше слоя линий сетки страницы (.page-lines::before, z-index 1), иначе линии видны поверх видео */
+  z-index: 2;
   padding: var(--space-7) var(--gutter);
   background-color: var(--color-bg);
 }
@@ -999,7 +1001,7 @@ a.card:hover {
 .video-reveal.is-reveal {
   height: 220vh;
   height: 220svh;
-  padding: 0;
+  padding: 0 0 var(--space-7);
 }
 
 .is-reveal .video-reveal__stage {

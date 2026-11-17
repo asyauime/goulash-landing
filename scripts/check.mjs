@@ -236,7 +236,8 @@ function checkAssets() {
     const size = fs.statSync(f).size;
     total += size;
     const ext = path.extname(f).toLowerCase();
-    if (['.mp4', '.webm', '.mov'].includes(ext) && size > 2 * 1024 * 1024) fail('AC-23', f, `видео ${(size / 1048576).toFixed(1)} МБ, максимум 2 МБ`);
+    // лимит видео 4,5 МБ (решение Аси 2026-11-17)
+    if (['.mp4', '.webm', '.mov'].includes(ext) && size > 4.5 * 1024 * 1024) fail('AC-22', f, `видео ${(size / 1048576).toFixed(1)} МБ, максимум 4,5 МБ`);
     if (['.jpg', '.jpeg', '.png', '.webp', '.svg', '.gif'].includes(ext) && size > 300 * 1024) fail('AC-23', f, `картинка ${(size / 1024).toFixed(0)} КБ, максимум 300 КБ`);
     if (ext === '.css') {
       const css = read(f);

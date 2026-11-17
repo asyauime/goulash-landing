@@ -43,7 +43,7 @@ STYLE: photorealistic, shot on a cinema camera, 35mm lens, shallow depth of fiel
 
 ---
 
-## ЧАСТЬ 2. Видео (Hailuo), 4 клипа
+## ЧАСТЬ 2. Видео (Kling), 4 клипа
 
 Для всех: Image-to-video, 6 секунд (клип 4 можно 5), качество 720p и выше. Первым кадром идёт указанная картинка.
 

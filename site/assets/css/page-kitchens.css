@@ -131,7 +131,7 @@
   align-items: center;
   gap: var(--space-3);
   min-height: 44px;
-  margin: 0 var(--space-5) var(--space-5);
+  margin: 0;
   padding: var(--space-2) var(--space-3) var(--space-2) var(--space-2);
   background: none;
   border: 1px solid var(--color-border-strong);
@@ -188,85 +188,24 @@
   color: var(--color-accent);
 }
 
-/* Телефон: вторая сторона раскрывается под названием */
-@media (max-width: 719px) {
-  .js .pain__face--then {
-    display: none;
-    border-top: 0;
-    padding-top: 0;
-    background: none;
-  }
+/* Вторая сторона раскрывается под названием (все ширины), контейнера у карточки нет */
+.js .pain__face--then {
+  display: none;
+}
 
-  .js .pain__card.is-then .pain__face--then {
-    display: grid;
-    animation: pain-open 0.4s var(--ease-out);
-  }
+.js .pain__card.is-then .pain__face--then {
+  display: grid;
+  animation: pain-open 0.4s var(--ease-out);
 }
 
 @keyframes pain-open {
   from { opacity: 0; transform: translateY(-8px); }
 }
 
-/* От 720px: шторка табло поверх названия */
-@media (min-width: 720px) {
-  .js .pain__card {
-    grid-template-rows: minmax(0, 1fr) auto;
-    min-height: 300px;
-  }
-
-  .js .pain__face {
-    grid-area: 1 / 1;
-    padding: var(--space-6) var(--space-6) var(--space-4);
-  }
-
-  .js .pain__face--now {
-    grid-template-columns: minmax(0, 1fr);
-    align-content: space-between;
-    row-gap: var(--space-6);
-    transition: opacity 0.4s ease, transform 0.55s var(--ease-out), filter 0.4s ease;
-  }
-
-  .js .pain__icon {
-    width: 72px;
-  }
-
-  .js .pain__icon.pain__icon--wide {
-    width: 96px;
-  }
-
-  /* Сторона «стало» закрывает и ряд с кнопкой, чтобы заливка шла до низа карточки */
-  .js .pain__face--then {
-    grid-area: 1 / 1 / 3 / 2;
-    padding-bottom: calc(44px + var(--space-5) + var(--space-4));
-    border-top: 0;
-    clip-path: inset(100% 0 0 0);
-    transition: clip-path 0.55s var(--ease-out);
-  }
-
-  .js .pain__card.is-then .pain__face--then {
-    clip-path: inset(0 0 0 0);
-  }
-
-  .js .pain__card.is-then .pain__face--now {
-    opacity: 0;
-    transform: translateY(-16px);
-    filter: blur(2px);
-  }
-
-  .js .pain__switch {
-    grid-area: 2 / 1;
-    margin-inline: var(--space-6);
-  }
-}
-
 @media (min-width: 960px) {
   .pains__list {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: var(--space-5);
-  }
-
-  .js .pain__card {
-    min-height: 380px;
   }
 }
 

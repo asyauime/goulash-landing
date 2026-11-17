@@ -175,10 +175,19 @@
 
 /* Телефон: вторая сторона раскрывается под названием */
 @media (max-width: 719px) {
+  .pain__face--now .pain__text {
+    grid-column: 1 / -1;
+  }
+
+  /* Боль скрывается целиком, остаётся только ответ */
+  .js .pain__card.is-then .pain__face--now {
+    display: none;
+  }
+
   .js .pain__face--then {
     display: none;
     border-top: 0;
-    padding-top: 0;
+    padding-top: var(--space-5);
     background: none;
   }
 

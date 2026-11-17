@@ -68,10 +68,10 @@
     });
 
     // Каждая карточка сама переключается на «С Goulash.tech», только когда она хорошо видна
-    // и прошла 1 с (успеть прочитать «до»); карточки, видные одновременно, идут с шагом 1,5 с.
+    // и прошло 2 с (успеть прочитать «до»); карточки, видные одновременно, идут с шагом 1,5 с.
     // Ушла с экрана раньше — таймер отменяется. Тронутые рукой не трогаем.
     if (hasIO && !reduced()) {
-      var PAIN_READ = 1000, PAIN_STEP = 1500, lastPlanned = 0;
+      var PAIN_READ = 2000, PAIN_STEP = 1500, lastPlanned = 0;
       var painTimers = [];
       var autoObs = new IntersectionObserver(function (entries) {
         entries.forEach(function (e) {

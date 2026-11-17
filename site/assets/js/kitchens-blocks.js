@@ -5,7 +5,8 @@
 
   1. «Три боли» [data-pains]: карточка «было / стало». Кнопка .pain__switch
      (aria-expanded) открывает вторую сторону: пояснение боли и ответ «С Goulash.tech».
-     Мышь над карточкой делает то же. 
+     Мышь над карточкой делает то же. Один раз при появлении
+     карточки по очереди показывают вторую сторону и возвращаются.
   2. «Кому подходит» [data-manifest]: слова оборачиваются в span.mw и загораются по мере прокрутки
      (обычные слова до приглушённого --color-text-muted; ключевые фразы получают голубой маркер,
      который наливается слева направо, когда загорелись все слова фразы).
@@ -78,6 +79,21 @@
         setPain(card, false);
       });
     });
+
+    // Подсказка один раз: карточки по очереди показывают вторую сторону и возвращаются.
+    var wide = window.matchMedia ? window.matchMedia('(min-width: 720px)') : null;
+    if (hasIO && !reduced()) {
+      var hintObs = new IntersectionObserver(function (entries) {
+        if (!entries[0].isIntersecting) return;
+        hintObs.disconnect();
+        if (!wide || !wide.matches || reduced()) return;
+        cards.forEach(function (card, i) {
+          setTimeout(function () { if (!touched[i]) setPain(card, true); }, 900 + i * 450);
+          setTimeout(function () { if (!touched[i]) setPain(card, false); }, 2900 + i * 450);
+        });
+      }, { threshold: 0.6 });
+      hintObs.observe(pains);
+    }
   }
 
   /* ---------- Общий цикл прокрутки (манифест и параллакс) ---------- */

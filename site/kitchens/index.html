@@ -13,9 +13,9 @@
       setTimeout(function () { document.documentElement.classList.remove('hero-intro'); }, 12000);
     }
   </script>
-  <link rel="stylesheet" href="../assets/css/base.css?v=20261117f">
-  <link rel="stylesheet" href="../assets/css/components.css?v=20261117f">
-  <link rel="stylesheet" href="../assets/css/page-kitchens.css?v=20261117f">
+  <link rel="stylesheet" href="../assets/css/base.css?v=20261117o">
+  <link rel="stylesheet" href="../assets/css/components.css?v=20261117o">
+  <link rel="stylesheet" href="../assets/css/page-kitchens.css?v=20261117o">
 </head>
 <body id="top">
   <a class="skip-link" href="#main">Перейти к&nbsp;содержанию</a>
@@ -119,6 +119,28 @@
       </div>
     </section>
 
+    <!-- Видео (kitchens-blocks.js, раздел 7): с JS блок закрепляется, видео вырастает из карточки
+         во весь экран по мере прокрутки и само идёт без звука, пока на экране; кнопка включает звук.
+         Без JS — обычный плеер (controls). При reduced-motion не стартует само и не раскрывается. -->
+    <section class="video-reveal" id="video" aria-label="Видео о&nbsp;Goulash.tech" data-video-reveal>
+      <div class="video-reveal__stage">
+        <div class="video-reveal__box">
+          <video class="video-reveal__video" aria-label="Видео о&nbsp;Goulash.tech" controls muted loop playsinline preload="metadata"
+                 poster="../assets/media/video-goulash-poster.jpg?v=d12" src="../assets/media/video-goulash.mp4?v=d12" width="1280" height="720"></video>
+          <div class="video-reveal__controls" hidden>
+            <button class="video-reveal__btn" type="button" data-video-pause>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path class="video-reveal__icon-pause" d="M7 5h3v14H7zM14 5h3v14h-3z"/><path class="video-reveal__icon-play" d="M7 4v16l13-8z"/></svg>
+              <span class="video-reveal__label">Пауза</span>
+            </button>
+            <button class="video-reveal__btn" type="button" data-video-sound>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path class="video-reveal__wave" d="M16 9a4 4 0 0 1 0 6"/></svg>
+              <span class="video-reveal__label">Включить звук</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="section section--light fit" id="fit" aria-labelledby="fit-title">
       <div class="container">
         <h2 class="fit__title" id="fit-title" data-reveal>Кому подходит</h2>
@@ -133,7 +155,10 @@
       </div>
     </section>
 
-    <section class="section section--surface how" id="how" aria-labelledby="how-title">
+    <section class="section section--surface how" id="how" aria-labelledby="how-title" data-how-route>
+      <!-- Шаги по маршруту (kitchens-blocks.js): с JS блок закрепляется, шаги едут вбок,
+           курьер катится по LED-линии. Без JS и при reduced-motion обычный список шагов -->
+      <div class="how__pin">
       <div class="container">
         <div class="section__head" data-reveal>
           <h2 class="section__title section__title--xl" id="how-title">Как&nbsp;это работает</h2>
@@ -152,6 +177,8 @@
             <p>Система сама распределяет заказы между курьерами с&nbsp;учётом того, где они находятся и&nbsp;как&nbsp;доставляют</p>
           </li>
         </ol>
+      </div>
+      <div class="how__route" aria-hidden="true"><canvas></canvas><span class="how__courier" data-pixel="courier"></span></div>
       </div>
     </section>
 
@@ -601,16 +628,16 @@
     </div>
   </footer>
 
-  <script src="../assets/js/lead-form-logic.js?v=20261117f"></script>
-  <script src="../assets/js/demo-logic.js?v=20261117f"></script>
-  <script src="../assets/js/led.js?v=20261117f"></script>
-  <script src="../assets/js/main.js?v=20261117f"></script>
-  <script src="../assets/js/kitchens-blocks.js?v=20261117f"></script>
-  <script src="../assets/js/lead-form.js?v=20261117f"></script>
-  <script src="../assets/js/demo-board.js?v=20261117f"></script>
-  <script src="../assets/js/demo-stoplist.js?v=20261117f"></script>
-  <script src="../assets/js/demo-route.js?v=20261117f"></script>
-  <script src="../assets/js/demo-calculator.js?v=20261117f"></script>
-  <script src="../assets/js/demo-guest-app.js?v=20261117f"></script>
+  <script src="../assets/js/lead-form-logic.js?v=20261117o"></script>
+  <script src="../assets/js/demo-logic.js?v=20261117o"></script>
+  <script src="../assets/js/led.js?v=20261117o"></script>
+  <script src="../assets/js/main.js?v=20261117o"></script>
+  <script src="../assets/js/kitchens-blocks.js?v=20261117o"></script>
+  <script src="../assets/js/lead-form.js?v=20261117o"></script>
+  <script src="../assets/js/demo-board.js?v=20261117o"></script>
+  <script src="../assets/js/demo-stoplist.js?v=20261117o"></script>
+  <script src="../assets/js/demo-route.js?v=20261117o"></script>
+  <script src="../assets/js/demo-calculator.js?v=20261117o"></script>
+  <script src="../assets/js/demo-guest-app.js?v=20261117o"></script>
 </body>
 </html>

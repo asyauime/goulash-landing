@@ -221,7 +221,10 @@ function checkPage(page) {
   if (!/Отправляем/i.test(both)) fail('AC-16', file, 'нет текста состояния загрузки «Отправляем…»');
   if (!/simulate/i.test(jsAll)) fail('AC-16', file, 'нет режима simulate=error для проверки ошибки');
 
-  // AC-22 (видео в подвале) снято решением Аси 2026-11-17: видео на странице нет
+  // AC-22 видео (возвращено решением Аси 2026-11-17): muted, loop, playsinline, poster
+  const videos = tags.filter((t) => tagName(t) === 'video');
+  if (!videos.length) fail('AC-22', file, 'на странице нет видео');
+  for (const v of videos) for (const a of ['muted', 'loop', 'playsinline', 'poster']) if (!hasAttr(v, a)) fail('AC-22', file, `у <video> нет атрибута ${a}`);
 }
 
 // --- общие проверки файлов ---

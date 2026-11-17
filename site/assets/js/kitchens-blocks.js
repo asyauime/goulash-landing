@@ -443,3 +443,215 @@
     });
   }
 })();
+
+
+/* 5. «Как это работает» [data-how-route]: шаги по маршруту. Секция получает .how-route и закрепляется,
+      шаги во всю ширину едут влево по мере прокрутки, внизу LED-линия загорается за пиксельным
+      курьером, на каждом шаге крупная точка-веха.
+   6. Пиксельная шторка: перед каждой светлой секцией, над которой тёмная, вставляется полоса
+      .pixel-curtain; светлые светодиоды прорастают по узору Байера снизу вверх по мере прокрутки.
+   7. Видео [data-video-reveal]: раскрытие из карточки во весь экран, автозапуск без звука на экране, кнопка звука.
+   prefers-reduced-motion и без JS: шагов-маршрута, шторок и раскрытия нет, видео с обычным плеером. */
+(function () {
+  'use strict';
+  if (typeof document === 'undefined' || !document.querySelector) return;
+  var motionQuery = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+  if (motionQuery && motionQuery.matches) return;
+
+  function clamp(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
+  var css = window.getComputedStyle(document.documentElement);
+  function tok(n) { return css.getPropertyValue(n).trim(); }
+  function dpr() { return Math.min(window.devicePixelRatio || 1, 2); }
+  function sizeCanvas(cv) {
+    var d = dpr(), w = cv.clientWidth, h = cv.clientHeight;
+    cv.width = Math.round(w * d); cv.height = Math.round(h * d);
+    var ctx = cv.getContext('2d'); ctx.setTransform(d, 0, 0, d, 0, 0);
+    return ctx;
+  }
+  var drawers = [];
+
+  /* 5. Шаги по маршруту. Режим включается, только если шаг целиком влезает в закреплённый блок:
+        на низком экране (повёрнутый телефон, крупный масштаб) остаётся обычный список. */
+  var how = document.querySelector('[data-how-route]');
+  if (how) {
+    var steps = how.querySelector('.steps');
+    var pin = how.querySelector('.how__pin');
+    var routeCanvas = how.querySelector('.how__route canvas');
+    var courier = how.querySelector('.how__courier');
+    if (steps && pin && routeCanvas && routeCanvas.getContext) {
+      var STEP = 12, rctx = null, colors = {}, stepsW = 0, pinTop = 0, courierW = 0, on = false;
+      var fits = function () {
+        // низ текста каждого шага должен быть выше курьера над LED-линией (с запасом 8 px),
+        // иначе на невысоком широком окне текст наезжает на линию: тогда обычный список
+        var limit = (courier || routeCanvas).getBoundingClientRect().top - 8;
+        return Array.prototype.every.call(steps.children, function (li) {
+          var last = li.lastElementChild || li;
+          return last.getBoundingClientRect().bottom <= limit;
+        });
+      };
+      var measure = function () {
+        rctx = sizeCanvas(routeCanvas);
+        colors = { accent: tok('--color-accent'), text: tok('--color-text') };
+        stepsW = steps.clientWidth;
+        pinTop = parseFloat(window.getComputedStyle(pin).top) || 0;
+        courierW = courier ? courier.offsetWidth : 0;
+      };
+      var setMode = function () {
+        how.classList.add('how-route');
+        if (!fits()) { how.classList.remove('how-route'); steps.style.transform = ''; on = false; return; }
+        on = true;
+        measure();
+      };
+      var drawRoute = function () {
+        if (!on) return;
+        var r = how.getBoundingClientRect();
+        if (r.bottom < 0 || r.top > window.innerHeight) return;
+        var span = r.height - pin.offsetHeight;
+        var p = span > 0 ? clamp((pinTop - r.top) / span) : 0;   // 0 — блок закрепился под шапкой, 1 — отпускается
+        steps.style.transform = 'translateX(' + (-p * 2 * stepsW) + 'px)';
+        var lw = routeCanvas.clientWidth, lh = routeCanvas.clientHeight, n = Math.max(2, Math.floor(lw / STEP));
+        var head = p * (n - 1), mid = Math.round((n - 1) / 2);
+        rctx.clearRect(0, 0, lw, lh);
+        for (var i = 0; i < n; i++) {
+          var lit = i <= head + 0.001, mile = i === 0 || i === mid || i === n - 1;
+          rctx.globalAlpha = lit ? 1 : 0.18;
+          rctx.fillStyle = lit ? colors.accent : colors.text;
+          rctx.beginPath(); rctx.arc(i * STEP + STEP / 2, lh / 2, mile ? 6 : 2.6, 0, 6.283); rctx.fill();
+        }
+        rctx.globalAlpha = 1;
+        if (courier) courier.style.transform = 'translateX(' + (head * STEP + STEP / 2 - courierW / 2) + 'px)';
+      };
+      setMode();
+      drawers.push({ draw: drawRoute, resize: setMode });
+      // при печати обычный список шагов
+      window.addEventListener('beforeprint', function () { how.classList.remove('how-route'); steps.style.transform = ''; on = false; });
+      window.addEventListener('afterprint', function () { setMode(); drawRoute(); });
+    }
+  }
+
+  /* 6. Пиксельные шторки */
+  function bgOf(el) {
+    while (el && el !== document.documentElement) {
+      var c = window.getComputedStyle(el).backgroundColor;
+      if (c && c !== 'transparent' && !/rgba\(.*,\s*0\)$/.test(c)) return c;
+      el = el.parentElement;
+    }
+    return tok('--color-bg');
+  }
+  var BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
+  Array.prototype.forEach.call(document.querySelectorAll('main > section.section--light'), function (light) {
+    var dark = light.previousElementSibling;
+    if (!dark || dark.tagName !== 'SECTION' || dark.classList.contains('section--light')) return;
+    var band = document.createElement('div');
+    band.className = 'pixel-curtain';
+    band.setAttribute('aria-hidden', 'true');
+    var cv = document.createElement('canvas');
+    band.appendChild(cv);
+    light.parentNode.insertBefore(band, light);
+    if (!cv.getContext) return;
+    var ctx = sizeCanvas(cv);
+    var from = bgOf(dark), to = bgOf(light);
+    var draw = function () {
+      var r = band.getBoundingClientRect(), vh = window.innerHeight;
+      if (r.bottom < 0 || r.top > vh) return;
+      var W = cv.clientWidth, H = cv.clientHeight, step = W < 600 ? 12 : 16;
+      // 0 — полоса целиком показалась снизу, 1 — её верх поднялся ещё на полэкрана
+      var boost = clamp((vh - r.bottom) / (vh * 0.5));
+      ctx.fillStyle = from; ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = to;
+      for (var y = 0, row = 0; y < H + step; y += step, row++) {
+        // нижний край полосы всегда светлый (стык со светлой секцией без шва), верх догоняет при прокрутке
+        var fr = clamp(y / H);
+        // верх полосы заполняется не до конца: стык с тёмной секцией всегда остаётся «пиксельным», без прямой линии
+        var cover = clamp(fr * fr + boost * 0.55 * (1 - fr * fr));
+        for (var x = 0, col = 0; x < W + step; x += step, col++) {
+          // узор сдвинут на строку: в первой строке Байера самые низкие пороги, край вышел бы сплошным
+          var th = BAYER[((row + 1) % 4) * 4 + (col % 4)] / 16;
+          var k = clamp((cover * 1.15 - th) / 0.15);
+          if (k <= 0) continue;
+          // вверху отдельные светодиоды, внизу точки крупнее и сливаются в светлый фон
+          ctx.beginPath(); ctx.arc(x + step / 2, y + step / 2, step * (0.4 + 0.32 * fr) * k, 0, 6.283); ctx.fill();
+        }
+      }
+    };
+    drawers.push({ draw: draw, resize: function () { ctx = sizeCanvas(cv); } });
+  });
+
+  /* 7. Видео [data-video-reveal]: убираем плеер, видео само идёт без звука, пока на экране.
+        «Пауза» останавливает ролик насовсем (пока не нажмут «Смотреть»), «Включить звук» включает
+        музыку с начала. Карточка растёт от 45% до полного размера по прокрутке. */
+  var vr = document.querySelector('[data-video-reveal]');
+  if (vr) {
+    var video = vr.querySelector('video');
+    var vbox = vr.querySelector('.video-reveal__box');
+    var vctrl = vr.querySelector('.video-reveal__controls');
+    var pauseBtn = vr.querySelector('[data-video-pause]');
+    var soundBtn = vr.querySelector('[data-video-sound]');
+    if (video && vbox && vctrl && pauseBtn && soundBtn && 'IntersectionObserver' in window) {
+      vr.classList.add('is-reveal');
+      video.controls = false;
+      video.muted = true;
+      vctrl.hidden = false;
+      var userPaused = false, inView = false;
+      var label = function (btn, text) { btn.querySelector('.video-reveal__label').textContent = text; };
+      var tryPlay = function () { var pr = video.play(); if (pr && pr.catch) pr.catch(function () {}); };
+      var setPaused = function (val) {
+        userPaused = val;
+        vr.classList.toggle('is-paused', val);
+        label(pauseBtn, val ? 'Смотреть' : 'Пауза');
+        if (val) video.pause(); else if (inView) tryPlay();
+      };
+      var setSound = function (onState) {
+        video.muted = !onState;
+        vr.classList.toggle('is-sound', onState);
+        label(soundBtn, onState ? 'Выключить звук' : 'Включить звук');
+      };
+      new IntersectionObserver(function (es) {
+        es.forEach(function (e) {
+          inView = e.isIntersecting;
+          if (inView && !userPaused) tryPlay(); else video.pause();
+        });
+      }, { threshold: 0.25 }).observe(video);
+      pauseBtn.addEventListener('click', function () { setPaused(!userPaused); });
+      soundBtn.addEventListener('click', function () {
+        if (!video.muted) { setSound(false); return; }
+        setSound(true);
+        video.currentTime = 0;
+        if (userPaused) setPaused(false);
+        var pr = video.play();
+        // браузер не дал играть со звуком: продолжаем без звука
+        if (pr && pr.catch) pr.catch(function () { setSound(false); tryPlay(); });
+      });
+      var vrStage = vr.querySelector('.video-reveal__stage'), vrTop = 0, vrRadius = 16;
+      var vrMeasure = function () {
+        vrTop = parseFloat(window.getComputedStyle(vrStage).top) || 0;
+        vrRadius = parseFloat(tok('--radius-card')) || 16;
+      };
+      var drawVideo = function () {
+        var r = vr.getBoundingClientRect();
+        if (r.bottom < 0 || r.top > window.innerHeight) return;
+        var span = r.height - vrStage.offsetHeight;
+        var p = span > 0 ? clamp((vrTop - r.top) / span) : 1;
+        var e = 1 - Math.pow(1 - clamp(p / 0.7), 3);
+        var sc = 0.45 + 0.55 * e;
+        vbox.style.transform = 'scale(' + sc + ')';
+        // скругление карточки из токена --radius-card, к полному размеру уходит в 0
+        vbox.style.borderRadius = (vrRadius * (1 - e) / sc) + 'px';
+        vctrl.style.transform = 'scale(' + (1 / sc) + ')';   // кнопки остаются своего размера
+      };
+      vrMeasure();
+      drawers.push({ draw: drawVideo, resize: vrMeasure });
+    }
+  }
+
+  if (!drawers.length) return;
+  var ticking = false;
+  function all() { drawers.forEach(function (d) { d.draw(); }); }
+  window.addEventListener('scroll', function () {
+    if (ticking) return;
+    ticking = true;
+    window.requestAnimationFrame(function () { ticking = false; all(); });
+  }, { passive: true });
+  window.addEventListener('resize', function () { drawers.forEach(function (d) { d.resize(); }); all(); });
+  all();
+})();

@@ -442,10 +442,10 @@
   function reduced() { return !!(motionQuery && motionQuery.matches); }
 
   var MAX_PACKETS = 80;
-  var MASK_FLOOR = 0.02;   // яркость стены прямо под текстом (доля от обычной): почти погашено
-  var MASK_RAMP = 7;       // за сколько клеток от текста стена набирает полную яркость (плавный спад)
+  var MASK_FLOOR = 0.06;   // яркость стены прямо под текстом (доля от обычной): почти погашено
+  var MASK_RAMP = 18;      // за сколько клеток от текста стена набирает полную яркость (плавный спад)
   var HEAT_FLOOR = 0.05;   // подсветка курсора под текстом почти не видна
-  var GRID_ALPHA = 0.13;   // погашенные светодиоды
+  var GRID_ALPHA = 0.091;   // погашенные светодиоды
 
   var colors = { text: '', accent: '' };
   var W = 0, H = 0, cols = 0, rows = 0, cell = 14, dpr = 1, ox = 0, oy = 0;
@@ -534,7 +534,7 @@
         }
         // Первую клетку у букв держим погашенной, дальше мягкий рост (квадратичный, без «ореола»)
         var t = Math.max(0, Math.min(1, (d - cell) / ramp));
-        t = t * t;
+        t = t * t * (3 - 2 * t); // плавный переход без заметной границы
         mask[y * cols + x] = MASK_FLOOR + (1 - MASK_FLOOR) * t;
         heatMask[y * cols + x] = HEAT_FLOOR + (1 - HEAT_FLOOR) * t;
       }

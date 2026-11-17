@@ -144,9 +144,19 @@
   var progress = el('ol', 'guestapp__progress');
   progress.setAttribute('aria-label', 'Статус заказа');
   progress.hidden = true;
-  STEPS.forEach(function (s) { progress.appendChild(el('li', 'guestapp__status', s)); });
+  STEPS.forEach(function (s) {
+    var li = el('li', 'guestapp__status');
+    var mark = el('span', 'guestapp__mark');
+    mark.setAttribute('aria-hidden', 'true');
+    li.appendChild(mark);
+    li.appendChild(el('span', 'guestapp__status-text', s));
+    progress.appendChild(li);
+  });
+  var summary = el('p', 'guestapp__summary');
+  summary.hidden = true;
   var bonus = el('p', 'guestapp__bonus');
   bonus.hidden = true;
+  phone.appendChild(summary);
   phone.appendChild(progress);
   phone.appendChild(bonus);
 
@@ -172,6 +182,9 @@
 
   function update() {
     var lock = locked();
+    title.hidden = lock;
+    menuList.hidden = lock;
+    cart.hidden = lock;
     ITEMS.forEach(function (item) {
       var q = qty[item.id] || 0;
       outs[item.id].textContent = String(q);
@@ -206,6 +219,8 @@
     stage = 0;
     delivered = false;
     bonus.hidden = true;
+    summary.textContent = 'Ваш заказ на ' + rub(total());
+    summary.hidden = false;
     renderProgress();
     update();
     STEPS.forEach(function (name, idx) {
@@ -229,6 +244,7 @@
     stage = -1;
     delivered = false;
     bonus.hidden = true;
+    summary.hidden = true;
     renderProgress();
     update();
   });

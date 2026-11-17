@@ -1995,32 +1995,6 @@
   }
 }
 
-/* ---------- Видео в подвале: маленький тихий экран ----------
-   В конце строки «бренды → кухня → курьер», высотой с пиксельные значки, приглушён,
-   без подписи. На телефоне скрыт. */
-.site-footer__video {
-  display: none;
-  flex: 0 0 auto;
-  width: clamp(112px, 11vw, 152px);
-  margin-left: clamp(var(--space-3), 2vw, var(--space-6));
-  overflow: hidden;
-  border-radius: var(--radius-button);
-  background-color: var(--color-surface);
-  opacity: 0.6;
-}
-
-.site-footer__video-el {
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  object-fit: cover;
-}
-
-@media (min-width: 720px) {
-  .site-footer__video {
-    display: block;
-  }
-}
-
 /* ---------- Светлые секции: только перекраска (F15) ----------
    Акцентная карточка bento на светлом фоне тёмная, как фон тёмных секций (#222). */
 .section--light .bento__card--accent {
@@ -2140,7 +2114,57 @@
    Светлая секция после демо A: боли роли, затем вкладки «Комиссии агрегаторов» и «Приложение гостя».
    Цвета только токены; светлая перекраска приходит из .section--light. */
 .own__head {
-  max-width: 52rem;
+  display: grid;
+  gap: var(--space-6);
+  margin-bottom: var(--space-7);
+}
+
+@media (min-width: 900px) {
+  .own__head {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    column-gap: var(--space-8);
+  }
+}
+
+.own__intro {
+  display: grid;
+  gap: var(--space-4);
+  max-width: 44rem;
+}
+
+/* Плашка «От 7 дней»: тёмная, как акцентная карточка bento, с крупной LED-цифрой */
+.own__badge {
+  display: grid;
+  gap: var(--space-2);
+  justify-self: start;
+  padding: var(--space-5) var(--space-6);
+  background-color: var(--color-button-bg-on-light);
+  border-radius: var(--radius-card);
+  color: var(--color-bg-light);
+}
+
+.own__badge-value {
+  display: flex;
+  align-items: baseline;
+  font-family: var(--font-heading);
+  font-weight: 800;
+  line-height: 1;
+}
+
+.own__badge-num {
+  --color-accent: var(--color-cyan);
+  font-size: clamp(3.5rem, 7vw, 5.5rem);
+}
+
+.own__badge-word {
+  font-size: clamp(1.25rem, 2vw, 1.75rem);
+  letter-spacing: -0.02em;
+}
+
+.own__badge-label {
+  color: color-mix(in srgb, var(--color-bg-light) 75%, var(--color-button-bg-on-light));
+  font-size: 1rem;
 }
 
 .own__kicker {
@@ -2150,7 +2174,9 @@
 }
 
 .own__title {
-  max-width: 20ch;
+  font-size: clamp(2.25rem, 5.5vw, 4.5rem);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
 }
 
 .own__lead {
@@ -2435,4 +2461,69 @@
 .guestapp__bonus {
   color: var(--color-text);
   font-weight: 600;
+}
+
+/* Статусы заказа с галочками */
+.guestapp__status {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.guestapp__mark {
+  position: relative;
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--color-border-strong);
+  border-radius: 50%;
+  transition: background-color var(--dur) ease, border-color var(--dur) ease;
+}
+
+.guestapp__status.is-now .guestapp__mark {
+  border-color: var(--color-text);
+  border-top-color: transparent;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .guestapp__status.is-now .guestapp__mark {
+    animation: guestapp-spin 0.9s linear infinite;
+  }
+}
+
+@keyframes guestapp-spin {
+  to { transform: rotate(360deg); }
+}
+
+.guestapp__status.is-done .guestapp__mark {
+  background-color: var(--color-text);
+  border-color: var(--color-text);
+}
+
+.guestapp__status.is-done .guestapp__mark::after {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 2px;
+  width: 6px;
+  height: 11px;
+  border: solid var(--color-bg);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.guestapp__status.is-done,
+.guestapp__status.is-now {
+  background: none;
+  border-color: transparent;
+}
+
+.guestapp__status {
+  border-color: transparent;
+  padding-inline: 0;
+}
+
+.guestapp__summary {
+  color: var(--color-text-muted);
+  font-size: 0.9375rem;
 }

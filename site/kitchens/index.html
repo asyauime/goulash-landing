@@ -293,10 +293,16 @@
 
     <section class="section section--light own" id="own" aria-labelledby="own-title">
       <div class="container">
-        <div class="section__head own__head" data-reveal>
-          <p class="own__kicker">Рестораны, кофейни и&nbsp;пекарни</p>
-          <h2 class="section__title section__title--xl own__title" id="own-title">Запустите свою доставку. Настройка от&nbsp;7&nbsp;дней.</h2>
-          <p class="own__lead">Свой канал заказов, приложение с&nbsp;бонусами, кухня и&nbsp;курьеры в&nbsp;одной системе. Подходит блюдам с&nbsp;циклом приготовления до&nbsp;30&nbsp;минут.</p>
+        <div class="own__head" data-reveal>
+          <div class="own__intro">
+            <p class="own__kicker">Рестораны, кофейни и&nbsp;пекарни</p>
+            <h2 class="own__title" id="own-title">Запустите свою доставку</h2>
+            <p class="own__lead">Свой канал заказов, приложение с&nbsp;бонусами, кухня и&nbsp;курьеры в&nbsp;одной системе. Подходит блюдам с&nbsp;циклом приготовления до&nbsp;30&nbsp;минут.</p>
+          </div>
+          <div class="own__badge">
+            <p class="own__badge-value"><span class="own__badge-word">От</span>&nbsp;<span class="own__badge-num" data-led>7</span>&nbsp;<span class="own__badge-word">дней</span></p>
+            <p class="own__badge-label">Настройка</p>
+          </div>
         </div>
         <ul class="own__pains" data-reveal>
           <li class="own__pain">
@@ -562,14 +568,6 @@
         <span class="site-footer__icon site-footer__icon--accent" data-pixel="kitchen"></span>
         <span class="site-footer__arrow" data-pixel="arrow"></span>
         <span class="site-footer__icon site-footer__icon--wide" data-pixel="courier"></span>
-        <!-- Видео (ТЗ раздел 8): LED-табло на ночной улице. Маленький приглушённый экран в конце
-             «потока», без подписи; на телефоне скрыт. Только графика, поэтому aria-hidden.
-             kitchens-blocks.js: играет только на экране, при reduced-motion стоит на постере. -->
-        <span class="site-footer__video">
-          <video class="site-footer__video-el" width="1280" height="720" autoplay muted loop playsinline preload="metadata" poster="../assets/media/video-kitchens-poster.jpg" aria-hidden="true" data-video>
-            <source src="../assets/media/video-kitchens.mp4" type="video/mp4">
-          </video>
-        </span>
       </div>
       <a class="btn btn--primary btn--lg site-footer__cta" href="#form">Обсудить за&nbsp;15&nbsp;минут</a>
       <div class="site-footer__row">

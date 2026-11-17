@@ -628,6 +628,13 @@
           if (inView && !userPaused) tryPlay(); else video.pause();
         });
       }, { threshold: 0.25 }).observe(video);
+      // ролик не грузится вместе со страницей (preload="none", видна обложка): начинаем загрузку за экран до блока
+      var preloadIO = new IntersectionObserver(function (es) {
+        if (!es.some(function (e) { return e.isIntersecting; })) return;
+        video.preload = 'auto';
+        preloadIO.disconnect();
+      }, { rootMargin: '100% 0px' });
+      preloadIO.observe(vr);
       pauseBtn.addEventListener('click', function () { setPaused(!userPaused); });
       soundBtn.addEventListener('click', function () {
         if (!video.muted) { setSound(false); return; }

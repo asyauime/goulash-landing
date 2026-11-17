@@ -20,16 +20,16 @@
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="Одна кухня. Несколько брендов. Один поток заказов.">
   <meta name="twitter:card" content="summary_large_image">
-  <!-- Заставка первого экрана (led.js): прячем текст до первой отрисовки; через 12 с показываем в любом случае -->
+  <!-- Заставка первого экрана (led.js): прячем текст до первой отрисовки; через 5 с показываем в любом случае -->
   <script>
     if (window.matchMedia && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       document.documentElement.classList.add('hero-intro');
-      setTimeout(function () { document.documentElement.classList.remove('hero-intro'); }, 12000);
+      setTimeout(function () { document.documentElement.classList.remove('hero-intro'); }, 5000);
     }
   </script>
-  <link rel="stylesheet" href="../assets/css/base.css?v=20261117x">
-  <link rel="stylesheet" href="../assets/css/components.css?v=20261117x">
-  <link rel="stylesheet" href="../assets/css/page-kitchens.css?v=20261117x">
+  <link rel="stylesheet" href="../assets/css/base.css?v=20261117y">
+  <link rel="stylesheet" href="../assets/css/components.css?v=20261117y">
+  <link rel="stylesheet" href="../assets/css/page-kitchens.css?v=20261117y">
 </head>
 <body id="top">
   <a class="skip-link" href="#main">Перейти к&nbsp;содержанию</a>
@@ -139,7 +139,7 @@
     <section class="video-reveal" id="video" aria-label="Видео о&nbsp;Goulash.tech" data-video-reveal>
       <div class="video-reveal__stage">
         <div class="video-reveal__box">
-          <video class="video-reveal__video" aria-label="Видео о&nbsp;Goulash.tech" controls muted loop playsinline preload="metadata"
+          <video class="video-reveal__video" aria-label="Видео о&nbsp;Goulash.tech" controls muted loop playsinline preload="none"
                  poster="../assets/media/video-goulash-poster.jpg?v=d12" src="../assets/media/video-goulash.mp4?v=d12q width="1280" height="720"></video>
           <div class="video-reveal__controls" hidden>
             <button class="video-reveal__btn" type="button" data-video-pause>
@@ -642,16 +642,16 @@
     </div>
   </footer>
 
-  <script src="../assets/js/lead-form-logic.js?v=20261117x"></script>
-  <script src="../assets/js/demo-logic.js?v=20261117x"></script>
-  <script src="../assets/js/led.js?v=20261117x"></script>
-  <script src="../assets/js/main.js?v=20261117x"></script>
-  <script src="../assets/js/kitchens-blocks.js?v=20261117x"></script>
-  <script src="../assets/js/lead-form.js?v=20261117x"></script>
-  <script src="../assets/js/demo-board.js?v=20261117x"></script>
-  <script src="../assets/js/demo-stoplist.js?v=20261117x"></script>
-  <script src="../assets/js/demo-route.js?v=20261117x"></script>
-  <script src="../assets/js/demo-calculator.js?v=20261117x"></script>
-  <script src="../assets/js/demo-guest-app.js?v=20261117x"></script>
+  <script src="../assets/js/lead-form-logic.js?v=20261117y"></script>
+  <script src="../assets/js/demo-logic.js?v=20261117y"></script>
+  <script src="../assets/js/led.js?v=20261117y"></script>
+  <script src="../assets/js/main.js?v=20261117y"></script>
+  <script src="../assets/js/kitchens-blocks.js?v=20261117y"></script>
+  <script src="../assets/js/lead-form.js?v=20261117y"></script>
+  <script src="../assets/js/demo-board.js?v=20261117y"></script>
+  <script src="../assets/js/demo-stoplist.js?v=20261117y"></script>
+  <script src="../assets/js/demo-route.js?v=20261117y"></script>
+  <script src="../assets/js/demo-calculator.js?v=20261117y"></script>
+  <script src="../assets/js/demo-guest-app.js?v=20261117y"></script>
 </body>
 </html>

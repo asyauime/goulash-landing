@@ -1004,14 +1004,17 @@
   var clamp = window.GLDots.clamp;
   var KITCHEN = ['..##.##..', '.#######.', '#########', '#########', '.#######.', '..#####..', '..#...#..', '..#####..', '..#####..'];
   var LOOP = 2000, TRY_MAX = 0.6;                  // попытка собраться, пока идёт загрузка
-  var T_GATHER = 1300, T_HOLD = 300, T_SCATTER = 1300, MAX_WAIT = 10000;
+  // ждём не полную загрузку (её на телефоне держат видео и картинки), а только разметку и шрифты, и не дольше 3 с
+  var T_GATHER = 1300, T_HOLD = 300, T_SCATTER = 1300, MAX_WAIT = 3000;
   var fx = window.GLDots.create(canvas, { rows: KITCHEN });
   fx.build();
 
   // performance.now() считается от начала загрузки страницы, поэтому MAX_WAIT — от открытия, а не от запуска скрипта
-  var start = performance.now(), loaded = document.readyState === 'complete';
+  var start = performance.now(), loaded = false;
   var finishAt = null, g0 = 0, gNow = 0, cycle = 0, revealed = false;
-  window.addEventListener('load', function () { loaded = true; });
+  // готово, когда загружены шрифты (иначе текст прыгнет при подмене шрифта); без Font Loading API — сразу
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { loaded = true; });
+  else loaded = true;
   window.addEventListener('resize', function () { if (!canvas.hidden) fx.build(); });
   // Tab на кнопку hero во время заставки: показываем текст сразу, фокус не попадает на невидимое
   hero.addEventListener('focusin', reveal);

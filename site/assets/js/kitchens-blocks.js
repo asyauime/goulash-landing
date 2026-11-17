@@ -5,15 +5,12 @@
 
   1. «Три боли» [data-pains]: карточка «было / стало». Кнопка .pain__switch
      (aria-expanded) открывает вторую сторону: пояснение боли и ответ «С Goulash.tech».
-     Мышь над карточкой делает то же. Один раз при появлении
-     карточки по очереди показывают вторую сторону и возвращаются.
+     Когда блок появился на экране, карточки по очереди включаются сами и остаются открытыми.
   2. «Кому подходит» [data-manifest]: слова оборачиваются в span.mw и загораются по мере прокрутки
      (обычные слова до приглушённого --color-text-muted; ключевые фразы получают голубой маркер,
      который наливается слева направо, когда загорелись все слова фразы).
   3. «Что входит» [data-bento]: живые мини-интерфейсы в карточках (очередь, стоп-лист, курьер, кабинет).
   4. Лёгкий параллакс крупных заголовков секций.
-  5. Видео в подвале [data-video]: играет только на экране и на видимой вкладке;
-     при reduced-motion стоит на постере.
 
   prefers-reduced-motion и без JS: всё сразу в итоговом состоянии, ничего не движется.
   Анимации идут, только пока блок на экране и вкладка видна.
@@ -446,26 +443,4 @@
       });
     });
   }
-
-  /* ---------- 5. Видео в подвале [data-video] ---------- */
-  each(document.querySelectorAll('video[data-video]'), function (video) {
-    var onScreen = !hasIO;
-    function sync() {
-      if (reduced()) {
-        video.removeAttribute('autoplay');
-        video.pause();
-        // Вернуть постер: перезагрузка без автозапуска показывает poster
-        if (video.currentTime) video.load();
-        return;
-      }
-      if (onScreen && !document.hidden) {
-        var pr = video.play();
-        if (pr && pr.catch) pr.catch(function () { /* автозапуск запрещён: остаётся постер */ });
-      } else video.pause();
-    }
-    if (reduced()) video.removeAttribute('autoplay');
-    video.pause();   // до первой проверки видимости не играем
-    watch(video, function (v) { onScreen = v; sync(); });
-    onEnvChange(sync);
-  });
 })();

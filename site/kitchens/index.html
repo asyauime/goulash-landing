@@ -52,7 +52,7 @@
         <h2 class="visually-hidden" id="pains-title">Три боли</h2>
         <!-- «Было / стало». Видно по умолчанию только название боли (крупно).
              Пояснение боли и ответ «С Goulash.tech» лежат во второй стороне карточки:
-             она открывается кнопкой (aria-expanded), наведением мышью или касанием.
+             она открывается кнопкой (aria-expanded) или сама по очереди, когда блок появился на экране.
              Без JS обе стороны видны одна под другой. -->
         <ul class="pains__list" data-reveal-stagger data-pains>
           <li class="pain" data-reveal>
@@ -152,7 +152,7 @@
           <h2 class="section__title section__title--xl" id="includes-title">Что входит</h2>
         </div>
         <!-- Bento: четыре модуля разного размера. Внутри каждой карточки живой мини-интерфейс
-             (kitchens-blocks.js): анимируется, только пока карточка на экране, реагирует на наведение.
+             (kitchens-blocks.js): анимируется, только пока карточка на экране.
              Мини-интерфейсы только для глаз (aria-hidden), смысл несут h3 и строка под ним.
              Номера заказов и блюда в них вымышлены, как и в демо (сноска в подвале). -->
         <ul class="bento" data-reveal-stagger>
@@ -269,19 +269,19 @@
               <span class="demo-tab__text">Маршрут и&nbsp;время доставки</span>
             </button>
           </div>
-          <div class="demo demo-board" data-demo="d1" role="tabpanel" id="panel-d1" aria-labelledby="tab-d1">
+          <div class="demo demo-board" data-demo="d1" role="tabpanel" id="panel-d1" tabindex="0" aria-labelledby="tab-d1">
             <div class="demo__bar">
               <h3 class="demo__title visually-hidden" id="d1-title">Доска заказов</h3>
             </div>
             <div class="demo__body" data-board></div>
           </div>
-          <div class="demo demo-stoplist" data-demo="d2" role="tabpanel" id="panel-d2" aria-labelledby="tab-d2" hidden>
+          <div class="demo demo-stoplist" data-demo="d2" role="tabpanel" id="panel-d2" tabindex="0" aria-labelledby="tab-d2" hidden>
             <div class="demo__bar">
               <h3 class="demo__title visually-hidden" id="d2-title">Стоп-лист и&nbsp;меню гостя</h3>
             </div>
             <div class="demo__body" data-stoplist></div>
           </div>
-          <div class="demo demo-route" data-demo="d3" role="tabpanel" id="panel-d3" aria-labelledby="tab-d3" hidden>
+          <div class="demo demo-route" data-demo="d3" role="tabpanel" id="panel-d3" tabindex="0" aria-labelledby="tab-d3" hidden>
             <div class="demo__bar">
               <h3 class="demo__title visually-hidden" id="d3-title">Маршрут и&nbsp;время доставки</h3>
             </div>
@@ -330,13 +330,13 @@
               <span class="demo-tab__text">Приложение гостя</span>
             </button>
           </div>
-          <div class="demo demo-calc" data-demo="d5" role="tabpanel" id="panel-d5" aria-labelledby="tab-d5">
+          <div class="demo demo-calc" data-demo="d5" role="tabpanel" id="panel-d5" tabindex="0" aria-labelledby="tab-d5">
             <div class="demo__bar">
               <h4 class="demo__title visually-hidden" id="d5-title">Комиссии агрегаторов</h4>
             </div>
             <div class="demo__body" data-calculator></div>
           </div>
-          <div class="demo demo-guestapp" data-demo="d4" role="tabpanel" id="panel-d4" aria-labelledby="tab-d4" hidden>
+          <div class="demo demo-guestapp" data-demo="d4" role="tabpanel" id="panel-d4" tabindex="0" aria-labelledby="tab-d4" hidden>
             <div class="demo__bar">
               <h4 class="demo__title visually-hidden" id="d4-title">Приложение гостя</h4>
             </div>

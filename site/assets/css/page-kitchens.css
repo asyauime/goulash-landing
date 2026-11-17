@@ -285,8 +285,9 @@
 }
 
 .motion .pain.is-in .pain__face--now .pixel__on {
-  animation: pain-flicker 1.1s steps(1, end) backwards;
-  animation-delay: calc(var(--d, 0s) * 4 + 0.35s + var(--i, 0) * 0.12s);
+  /* быстрее: волна точек ×1.2 вместо ×4, мерцание 0.6 с (решение Аси 2026-11-18) */
+  animation: pain-flicker 0.6s steps(1, end) backwards;
+  animation-delay: calc(var(--d, 0s) * 1.2 + 0.1s + var(--i, 0) * 0.1s);
 }
 
 @keyframes pain-flicker {
@@ -1133,7 +1134,7 @@
    В каждой карточке мини-интерфейс (aria-hidden), его оживляет kitchens-blocks.js.
    Состояние в разметке итоговое: так выглядит без JS и при reduced-motion. */
 .includes {
-  border-bottom: 1px solid var(--color-border);
+  /* без границы: стык с соседней секцией оформлен пиксельным переходом */
 }
 
 .bento {
@@ -1895,7 +1896,7 @@
    Заголовок в первой колонке сетки страницы (от 1024px). */
 .next-section {
   padding-block: var(--space-8) var(--space-6);
-  border-top: 1px solid var(--color-border);
+  /* без границы: стык с соседней секцией оформлен пиксельным переходом */
 }
 
 .next-section__inner {

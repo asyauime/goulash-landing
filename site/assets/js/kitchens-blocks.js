@@ -462,8 +462,8 @@
 /* 5. «Как это работает» [data-how-route]: шаги по маршруту. Секция получает .how-route и закрепляется,
       шаги во всю ширину едут влево по мере прокрутки, внизу LED-линия загорается за пиксельным
       курьером, на каждом шаге крупная точка-веха.
-   6. Пиксельная шторка: перед каждой светлой секцией, над которой тёмная, вставляется закреплённая полоса
-      .pixel-curtain; светлые светодиоды разрастаются по узору Байера, пока экран не станет светлым.
+   6. Пиксельные переходы: между секциями разного цвета (в обе стороны) вставляется полоса .pixel-curtain
+      с мелким полутоном из точек; при прокрутке граница перехода мягко сдвигается.
    7. Видео [data-video-reveal]: раскрытие из карточки во весь экран, автозапуск без звука на экране, кнопка звука.
    prefers-reduced-motion и без JS: шагов-маршрута, шторок и раскрытия нет, видео с обычным плеером. */
 (function () {
@@ -543,9 +543,12 @@
     }
   }
 
-  /* 6. Пиксельные шторки (как в пробнике docs/drafts/scroll-preview.html): полоса закрепляется на экране,
-        светлые светодиоды разрастаются по узору Байера, пока экран целиком не станет цветом светлой секции.
-        В начале полоса целиком цвета тёмной секции, в конце — светлой, поэтому швов нет. */
+  /* 6. Пиксельные переходы между секциями разного цвета (в обе стороны: тёмная ↔ светлая).
+        Между такими секциями скрипт вставляет полосу .pixel-curtain (без закрепления). В ней мелкий
+        полутон из точек по узору Байера: сверху цвет верхней секции, снизу — нижней, точки нижнего
+        цвета плавно растут сверху вниз. При прокрутке граница перехода мягко сдвигается (±20%).
+        Верхний край всегда целиком цвета верхней секции, нижний — нижней: швов нет. Под холстом
+        подложка из тех же двух цветов, чтобы субпиксельные щели не давали полос. */
   function bgOf(el) {
     while (el && el !== document.documentElement) {
       var c = window.getComputedStyle(el).backgroundColor;
@@ -554,57 +557,50 @@
     }
     return tok('--color-bg');
   }
+  function isLight(el) { return el.classList.contains('section--light'); }
+  function smooth(a, b, x) { var t = clamp((x - a) / (b - a)); return t * t * (3 - 2 * t); }
   var BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
-  Array.prototype.forEach.call(document.querySelectorAll('main > section.section--light'), function (light) {
-    var dark = light.previousElementSibling;
-    if (!dark || dark.tagName !== 'SECTION' || dark.classList.contains('section--light')) return;
+  Array.prototype.forEach.call(document.querySelectorAll('main > section'), function (next) {
+    var prev = next.previousElementSibling;
+    if (!prev || prev.tagName !== 'SECTION' || isLight(prev) === isLight(next)) return;
     var band = document.createElement('div');
     band.className = 'pixel-curtain';
     band.setAttribute('aria-hidden', 'true');
-    var stage = document.createElement('div');
-    stage.className = 'pixel-curtain__stage';
     var cv = document.createElement('canvas');
-    stage.appendChild(cv);
-    band.appendChild(stage);
-    light.parentNode.insertBefore(band, light);
+    band.appendChild(cv);
+    next.parentNode.insertBefore(band, next);
+    var from = bgOf(prev), to = bgOf(next);
+    band.style.backgroundImage = 'linear-gradient(' + from + ' 50%, ' + to + ' 50%)';
     if (!cv.getContext) return;
-    var ctx = sizeCanvas(cv), stageTop = 0, lastP = -1;
-    var from = bgOf(dark), to = bgOf(light);
-    var measureBand = function () {
-      ctx = sizeCanvas(cv);
-      lastP = -1;
-      stageTop = parseFloat(window.getComputedStyle(stage).top) || 0;
-    };
+    var ctx = sizeCanvas(cv), lastS = 9;
     var draw = function () {
-      var r = band.getBoundingClientRect();
-      if (r.bottom < 0 || r.top > window.innerHeight) return;
-      var span = r.height - stage.offsetHeight;
-      // 0 — полоса закрепилась под шапкой, 1 — отпускается; первые и последние 5% держат чистый цвет
-      var p = span > 0 ? clamp(((stageTop - r.top) / span - 0.05) / 0.9) : 1;
-      if (Math.abs(p - lastP) < 0.002) return;   // ничего не изменилось: не перерисовываем
-      lastP = p;
-      var W = cv.clientWidth, H = cv.clientHeight, step = W < 600 ? 14 : 20;
+      var r = band.getBoundingClientRect(), vh = window.innerHeight;
+      if (r.bottom < 0 || r.top > vh) return;
+      // полоса внизу экрана → вверху: граница перехода сдвигается на ±0.08 высоты полосы
+      var s = 0.08 * clamp((vh - (r.top + r.height / 2)) / vh) * 2 - 0.08;
+      if (Math.abs(s - lastS) < 0.003) return;
+      lastS = s;
+      var W = cv.clientWidth, H = cv.clientHeight, step = W < 600 ? 8 : 10;
       ctx.fillStyle = from; ctx.fillRect(0, 0, W, H);
       ctx.fillStyle = to;
-      if (p >= 1) { ctx.fillRect(0, 0, W, H); return; }
-      if (p <= 0) return;
-      // все точки одним контуром и одной заливкой за кадр; ряд и столбец «−1», чтобы у краёв не было зазубрин
       ctx.beginPath();
       for (var y = -step, row = 3; y < H + step; y += step, row++) {
+        // по высоте: переход идёт почти по всей полосе; у верхнего края точек почти нет, у нижнего сплошь
+        var cover = smooth(0.04, 0.96, (y + step / 2) / H + s);
+        if (cover <= 0) continue;
+        if (cover >= 1) { ctx.rect(0, y, W, step + 1); continue; }
         for (var x = -step, col = 3; x < W + step; x += step, col++) {
           var th = BAYER[(row % 4) * 4 + (col % 4)] / 16;
-          // переход растянут на всю прокрутку: последние точки загораются к p≈0.95,
-          // круги смыкаются (0.85 шага > половины диагонали клетки)
-          var k = clamp((p - th * 0.75) / 0.25);
+          // мягкий порог: точки появляются маленькими и растут, переход растянут по всей полосе
+          var k = clamp((cover * 1.4 - th * 0.9) / 0.5);
           if (k <= 0) continue;
-          var cx = x + step / 2, cy = y + step / 2, rr = step * 0.85 * k;
+          var cx = x + step / 2, cy = y + step / 2, rr = step * 0.8 * Math.sqrt(k);   // корень: маленькие точки заметны сразу
           ctx.moveTo(cx + rr, cy); ctx.arc(cx, cy, rr, 0, 6.283);
         }
       }
       ctx.fill();
     };
-    drawers.push({ draw: draw, resize: measureBand });
-    stageTop = parseFloat(window.getComputedStyle(stage).top) || 0;
+    drawers.push({ draw: draw, resize: function () { ctx = sizeCanvas(cv); lastS = 9; } });
   });
 
   /* 7. Видео [data-video-reveal]: убираем плеер, видео само идёт без звука, пока на экране.

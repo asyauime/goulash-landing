@@ -2289,21 +2289,73 @@
 .own__pain {
   display: grid;
   align-content: start;
-  gap: var(--space-2);
-  padding: var(--space-5);
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
+  gap: var(--space-3);
+  padding: var(--space-6) var(--space-5) var(--space-6);
+  border: 0;
   border-radius: var(--radius-card);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+}
+
+.own__pain-icon {
+  display: block;
+  width: 56px;
+  margin-bottom: var(--space-5);
 }
 
 .own__pain-title {
-  font-size: 1.25rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  font-size: clamp(1.375rem, 2.2vw, 1.75rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
 }
 
 .own__pain p {
+  font-size: 1.0625rem;
+}
+
+/* Три разных фона: тёмный, акцентный голубой и светлый. Подписи и иконки перекрашены под фон. */
+.own__pain--dark {
+  --color-text: #ffffff;
+  --color-led-off: color-mix(in srgb, #ffffff 12%, transparent);
+  background-color: var(--color-button-bg-on-light);
+}
+
+.own__pain--dark .own__pain-icon {
+  color: var(--color-cyan);
+}
+
+.own__pain--dark p {
+  color: #b6bfc9;
+}
+
+.own__pain--accent {
+  --color-text: #040406;
+  --color-led-off: color-mix(in srgb, #040406 14%, transparent);
+  background-color: var(--color-cyan);
+}
+
+.own__pain--accent p {
+  color: #040406;
+}
+
+.own__pain--soft {
+  background-color: var(--color-surface);
+}
+
+.own__pain--soft p {
   color: var(--color-text-muted);
+}
+
+@media (min-width: 820px) {
+  /* Лёгкий «ступенчатый» ритм: средняя карточка ниже соседних */
+  .own__pain--accent {
+    margin-top: var(--space-6);
+  }
+
+  .own__pain--soft {
+    margin-top: var(--space-3);
+  }
 }
 
 .own__demo-title {
@@ -2379,7 +2431,7 @@
   gap: var(--space-3);
   padding: var(--space-5);
   background-color: var(--color-bg);
-  border: 1px solid var(--color-border);
+  border: 0;
   border-radius: var(--radius-card);
 }
 
@@ -2389,8 +2441,8 @@
   align-items: baseline;
   justify-content: space-between;
   gap: var(--space-2) var(--space-4);
-  padding-bottom: var(--space-3);
-  border-bottom: 1px solid var(--color-border);
+  padding-bottom: var(--space-2);
+  border-bottom: 0;
 }
 
 .calc__row-label {
@@ -2612,4 +2664,47 @@
 .guestapp__summary {
   color: var(--color-text-muted);
   font-size: 0.9375rem;
+}
+
+/* Демо «Своя доставка» без обводок: поверхности отделяются заливкой */
+.own__demos .demo,
+.own__demos .phone {
+  border: 0;
+}
+
+.own__demos .phone {
+  background-color: var(--color-bg);
+}
+
+.own__demos .demo-guide {
+  border-bottom: 0;
+}
+
+.own__demos .guestapp__cart {
+  border-top: 0;
+}
+
+.own__demos .guestapp__step,
+.own__demos .guestapp__status,
+.own__demos .guest-item {
+  border: 0;
+}
+
+.own__demos .guestapp__step {
+  background-color: var(--color-surface);
+}
+
+.own__demos .guestapp__item,
+.own__demos .guest-item {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-button);
+}
+
+.own__demos .guestapp__order:disabled {
+  border: 0;
+  background-color: var(--color-surface);
+}
+
+.own__demos .guestapp__order {
+  border: 0;
 }

@@ -55,6 +55,8 @@ const forbiddenWords = (facts.forbidden_words || []).map((s) => s.toLowerCase())
 
 const PAGES = [
   { id: 'kitchens', file: 'site/kitchens/index.html', copy: 'docs/copy-kitchens.md', demos: ['d1', 'd2', 'd3', 'd5', 'd4'] },
+  // Вход в корне сайта: сразу переводит на kitchens/ (ТЗ 2.0, раздел 2)
+  { id: 'root', file: 'site/index.html', demos: [], redirectTo: 'kitchens/index.html' },
 ];
 const FORM_FIELDS = ['name', 'phone', 'email', 'city', 'points', 'consent_pd', 'consent_ads'];
 
@@ -144,6 +146,13 @@ function checkPage(page) {
   // AC-06 сноска
   if (!/Тестовое задание/i.test(text)) fail('AC-06', file, 'нет сноски «Тестовое задание…» в подвале');
 
+  // AC-01 вход в корне переводит на страницу
+  if (page.redirectTo) {
+    const refresh = tags.find((t) => tagName(t) === 'meta' && /http-equiv\s*=\s*["']refresh["']/i.test(t));
+    if (!refresh || !(attr(refresh, 'content') || '').includes(page.redirectTo)) fail('AC-01', file, `нет meta refresh на ${page.redirectTo}`);
+    if (!tags.some((t) => tagName(t) === 'a' && attr(t, 'href') === page.redirectTo)) fail('AC-01', file, `нет обычной ссылки на ${page.redirectTo}`);
+  }
+
   // AC-07 h1 совпадает с copy-файлом
   if (page.copy) {
     const copyFile = path.join(ROOT, page.copy);
@@ -191,7 +200,7 @@ function checkPage(page) {
   const resetBtns = (both.match(/Сбросить демо/gi) || []).length;
   if (page.demos.length && !/демо-данные вымышлены/i.test(text)) fail('AC-10', file, 'нет сноски «демо-данные вымышлены» в футере');
   if (resetBtns < page.demos.length) fail('AC-10', file, `кнопок «Сбросить демо» меньше, чем демо (${resetBtns} из ${page.demos.length})`);
-  if ((page.id === 'delivery' || page.id === 'kitchens') && !/Не учитывает стоимость собственного канала/i.test(both)) fail('AC-10', file, 'у калькулятора нет оговорки про допущения и стоимость канала');
+  if (page.demos.includes('d5') && !/Не учитывает стоимость собственного канала/i.test(both)) fail('AC-10', file, 'у калькулятора нет оговорки про допущения и стоимость канала');
 
   // AC-11 и AC-12 форма
   for (const f of FORM_FIELDS) {
@@ -222,7 +231,7 @@ function checkAssets() {
     const size = fs.statSync(f).size;
     total += size;
     const ext = path.extname(f).toLowerCase();
-    if (['.mp4', '.webm', '.mov'].includes(ext) && size > 2 * 1024 * 1024) fail('AC-22', f, `видео ${(size / 1048576).toFixed(1)} МБ, максимум 2 МБ`);
+    if (['.mp4', '.webm', '.mov'].includes(ext) && size > 2 * 1024 * 1024) fail('AC-23', f, `видео ${(size / 1048576).toFixed(1)} МБ, максимум 2 МБ`);
     if (['.jpg', '.jpeg', '.png', '.webp', '.svg', '.gif'].includes(ext) && size > 300 * 1024) fail('AC-23', f, `картинка ${(size / 1024).toFixed(0)} КБ, максимум 300 КБ`);
     if (ext === '.css') {
       const css = read(f);

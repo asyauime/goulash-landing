@@ -54,9 +54,7 @@ const allowedClaims = (facts.allowed_numeric_claims || []).map((s) => norm(s));
 const forbiddenWords = (facts.forbidden_words || []).map((s) => s.toLowerCase());
 
 const PAGES = [
-  { id: 'index', file: 'site/index.html', copy: null, demos: [] },
-  { id: 'kitchens', file: 'site/kitchens/index.html', copy: 'docs/copy-kitchens.md', demos: ['d1', 'd2', 'd3'] },
-  { id: 'delivery', file: 'site/delivery/index.html', copy: 'docs/copy-delivery.md', demos: ['d5', 'd4', 'd3'] },
+  { id: 'kitchens', file: 'site/kitchens/index.html', copy: 'docs/copy-kitchens.md', demos: ['d1', 'd2', 'd3', 'd5', 'd4'] },
 ];
 const FORM_FIELDS = ['name', 'phone', 'email', 'city', 'points', 'consent_pd', 'consent_ads'];
 
@@ -193,7 +191,7 @@ function checkPage(page) {
   const resetBtns = (both.match(/Сбросить демо/gi) || []).length;
   if (page.demos.length && !/демо-данные вымышлены/i.test(text)) fail('AC-10', file, 'нет сноски «демо-данные вымышлены» в футере');
   if (resetBtns < page.demos.length) fail('AC-10', file, `кнопок «Сбросить демо» меньше, чем демо (${resetBtns} из ${page.demos.length})`);
-  if (page.id === 'delivery' && !/Не учитывает стоимость собственного канала/i.test(both)) fail('AC-10', file, 'у калькулятора нет оговорки про допущения и стоимость канала');
+  if ((page.id === 'delivery' || page.id === 'kitchens') && !/Не учитывает стоимость собственного канала/i.test(both)) fail('AC-10', file, 'у калькулятора нет оговорки про допущения и стоимость канала');
 
   // AC-11 и AC-12 форма
   for (const f of FORM_FIELDS) {

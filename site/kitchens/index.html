@@ -20,6 +20,7 @@
         <ul class="site-nav__list">
           <li><a href="#demo">Демо</a></li>
           <li><a href="#how">Как это работает</a></li>
+          <li><a href="#own">Своя доставка</a></li>
           <li><a href="#faq">Вопросы</a></li>
         </ul>
       </nav>
@@ -290,6 +291,55 @@
       </div>
     </section>
 
+    <section class="section section--light own" id="own" aria-labelledby="own-title">
+      <div class="container">
+        <div class="section__head own__head" data-reveal>
+          <p class="own__kicker">Рестораны, кофейни и&nbsp;пекарни</p>
+          <h2 class="section__title section__title--xl own__title" id="own-title">Запустите свою доставку. Настройка от&nbsp;7&nbsp;дней.</h2>
+          <p class="own__lead">Свой канал заказов, приложение с&nbsp;бонусами, кухня и&nbsp;курьеры в&nbsp;одной системе. Подходит блюдам с&nbsp;циклом приготовления до&nbsp;30&nbsp;минут.</p>
+        </div>
+        <ul class="own__pains" data-reveal>
+          <li class="own__pain">
+            <h3 class="own__pain-title">Комиссии съедают маржу</h3>
+            <p>Заказы есть, а&nbsp;заметная часть выручки уходит агрегаторам.</p>
+          </li>
+          <li class="own__pain">
+            <h3 class="own__pain-title">Гости не&nbsp;ваши</h3>
+            <p>Нет своей базы гостей и&nbsp;способа вернуть их повторным заказом.</p>
+          </li>
+          <li class="own__pain">
+            <h3 class="own__pain-title">Запуск кажется сложным</h3>
+            <p>Кухня, курьеры, приложение, бонусы: непонятно, с&nbsp;чего начать и&nbsp;сколько это займёт.</p>
+          </li>
+        </ul>
+        <h3 class="own__demo-title" id="own-demo-title" data-reveal>Посчитайте и&nbsp;попробуйте</h3>
+        <div class="demos own__demos" data-reveal>
+          <div class="demo-tabs demo-tabs--two" role="tablist" aria-label="Демо для своей доставки" data-tabs>
+            <button class="demo-tab" type="button" role="tab" id="tab-d5" aria-controls="panel-d5" aria-selected="true">
+              <span class="demo-tab__icon" data-pixel="basket" aria-hidden="true"></span>
+              <span class="demo-tab__text">Комиссии агрегаторов</span>
+            </button>
+            <button class="demo-tab" type="button" role="tab" id="tab-d4" aria-controls="panel-d4" aria-selected="false" tabindex="-1">
+              <span class="demo-tab__icon" data-pixel="phone" aria-hidden="true"></span>
+              <span class="demo-tab__text">Приложение гостя</span>
+            </button>
+          </div>
+          <div class="demo demo-calc" data-demo="d5" role="tabpanel" id="panel-d5" aria-labelledby="tab-d5">
+            <div class="demo__bar">
+              <h4 class="demo__title visually-hidden" id="d5-title">Комиссии агрегаторов</h4>
+            </div>
+            <div class="demo__body" data-calculator></div>
+          </div>
+          <div class="demo demo-guestapp" data-demo="d4" role="tabpanel" id="panel-d4" aria-labelledby="tab-d4" hidden>
+            <div class="demo__bar">
+              <h4 class="demo__title visually-hidden" id="d4-title">Приложение гостя</h4>
+            </div>
+            <div class="demo__body" data-guest-app></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="section facts-section" id="facts" aria-labelledby="facts-title">
       <div class="container">
         <h2 class="visually-hidden" id="facts-title">Факты</h2>
@@ -551,5 +601,7 @@
   <script src="../assets/js/demo-board.js"></script>
   <script src="../assets/js/demo-stoplist.js"></script>
   <script src="../assets/js/demo-route.js"></script>
+  <script src="../assets/js/demo-calculator.js"></script>
+  <script src="../assets/js/demo-guest-app.js"></script>
 </body>
 </html>

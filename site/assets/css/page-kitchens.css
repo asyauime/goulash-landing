@@ -2296,3 +2296,304 @@
   background-color: var(--color-cyan);
   box-shadow: 0 0 0 2px var(--plate);
 }
+
+/* ---------- Своя доставка (вторая роль на одной странице) ----------
+   Светлая секция после демо A: боли роли, затем вкладки «Комиссии агрегаторов» и «Приложение гостя».
+   Цвета только токены; светлая перекраска приходит из .section--light. */
+.own__head {
+  max-width: 52rem;
+}
+
+.own__kicker {
+  color: var(--color-text-muted);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.own__title {
+  max-width: 20ch;
+}
+
+.own__lead {
+  max-width: 40rem;
+  color: var(--color-text-muted);
+  font-size: clamp(1.0625rem, 1.5vw, 1.25rem);
+}
+
+.own__pains {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: minmax(0, 1fr);
+  margin: 0 0 var(--space-8);
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 820px) {
+  .own__pains {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.own__pain {
+  display: grid;
+  align-content: start;
+  gap: var(--space-2);
+  padding: var(--space-5);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+}
+
+.own__pain-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.own__pain p {
+  color: var(--color-text-muted);
+}
+
+.own__demo-title {
+  margin-bottom: var(--space-5);
+  font-size: clamp(1.5rem, 2.4vw, 2rem);
+  letter-spacing: -0.03em;
+}
+
+.own__demos .demo {
+  background-color: var(--color-surface);
+}
+
+@media (min-width: 640px) {
+  .demo-tabs--two {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Калькулятор */
+.calc {
+  display: grid;
+  min-width: 0;
+}
+
+.calc__body {
+  display: grid;
+  gap: var(--space-6);
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+}
+
+@media (min-width: 900px) {
+  .calc__body {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    column-gap: var(--space-8);
+  }
+}
+
+.calc__fields {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.calc__field {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.calc__field-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.calc__label {
+  color: var(--color-text);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.calc__value {
+  color: var(--color-text);
+  font-size: 1.125rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.calc__result {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+}
+
+.calc__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-4);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.calc__row-label {
+  color: var(--color-text-muted);
+  font-size: 1rem;
+}
+
+.calc__row-value {
+  color: var(--color-text);
+  font-size: 1.375rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.calc__row--big {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.calc__row--big .calc__row-label {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.calc__row--big .calc__row-value {
+  font-size: clamp(1.75rem, 3.4vw, 2.75rem);
+  letter-spacing: -0.03em;
+}
+
+.calc__note {
+  margin-top: var(--space-2);
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+}
+
+/* Приложение гостя */
+.guestapp {
+  display: grid;
+  min-width: 0;
+}
+
+.guestapp__phone {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.guestapp__title {
+  margin-top: var(--space-2);
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.guestapp__item {
+  justify-content: space-between;
+}
+
+.guestapp__price {
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.guestapp__qty {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.guestapp__step {
+  width: 44px;
+  height: 44px;
+  background: none;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-button);
+  color: var(--color-text);
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.guestapp__step:hover:not(:disabled) {
+  background-color: var(--color-hover);
+}
+
+.guestapp__step:disabled {
+  color: var(--color-text-muted);
+  border-color: var(--color-border);
+  cursor: not-allowed;
+}
+
+.guestapp__count {
+  min-width: 1.5ch;
+  font-weight: 700;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.guestapp__cart {
+  display: grid;
+  gap: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-border);
+}
+
+.guestapp__total {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  font-weight: 600;
+}
+
+.guestapp__sum {
+  font-size: 1.25rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.guestapp__order:disabled {
+  opacity: 1;
+  background-color: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+}
+
+.guestapp__progress {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.guestapp__status {
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-button);
+  color: var(--color-text-muted);
+  transition: background-color var(--dur) ease, color var(--dur) ease, border-color var(--dur) ease;
+}
+
+.guestapp__status.is-now {
+  border-color: var(--color-accent-line);
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.guestapp__status.is-done {
+  background-color: var(--color-accent-soft);
+  border-color: var(--color-accent-line);
+  color: var(--color-text);
+}
+
+.guestapp__bonus {
+  color: var(--color-text);
+  font-weight: 600;
+}

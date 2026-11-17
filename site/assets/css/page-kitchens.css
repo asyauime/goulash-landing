@@ -32,11 +32,10 @@
   display: grid;
   height: 100%;
   overflow: hidden;
-  /* Внешней обёртки у карточки нет (решение Аси): ни фона, ни рамки, ни скругления */
-  background: none;
-  border: 0;
-  border-radius: 0;
-  transition: transform var(--dur) var(--ease-out);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  transition: transform var(--dur) var(--ease-out), border-color var(--dur) ease;
 }
 
 .pain__face {
@@ -136,18 +135,17 @@
   gap: var(--space-3);
   min-height: 44px;
   margin: 0 var(--space-5) var(--space-5);
-  padding: var(--space-2) var(--space-3) var(--space-2) var(--space-2);
+  padding: var(--space-2) 0;
   background: none;
-  border: 1px solid var(--color-border-strong);
-  border-radius: var(--radius-button);
+  border: 0;
   color: var(--color-text);
   font-size: 0.9375rem;
   font-weight: 500;
   transition: border-color var(--dur-fast) ease, background-color var(--dur-fast) ease;
 }
 
-.js .pain__switch:hover {
-  background-color: var(--color-hover);
+.js .pain__switch:hover .pain__switch-text {
+  color: var(--color-accent);
 }
 
 .js .pain__switch-track {
@@ -169,10 +167,6 @@
   border-radius: 50%;
   background-color: var(--color-text);
   transition: transform var(--dur) var(--ease-out);
-}
-
-.js .pain__switch[aria-expanded="true"] {
-  border-color: var(--color-accent-line);
 }
 
 .js .pain__switch[aria-expanded="true"] .pain__switch-track {

@@ -576,17 +576,17 @@
     var draw = function () {
       var r = band.getBoundingClientRect(), vh = window.innerHeight;
       if (r.bottom < 0 || r.top > vh) return;
-      // полоса внизу экрана → вверху: граница перехода сдвигается на ±0.08 высоты полосы
-      var s = 0.08 * clamp((vh - (r.top + r.height / 2)) / vh) * 2 - 0.08;
+      // полоса внизу экрана → вверху: граница перехода плавно «перетекает» на ±0.15 высоты полосы
+      var s = 0.15 * clamp((vh - (r.top + r.height / 2)) / vh) * 2 - 0.15;
       if (Math.abs(s - lastS) < 0.003) return;
       lastS = s;
-      var W = cv.clientWidth, H = cv.clientHeight, step = W < 600 ? 8 : 10;
+      var W = cv.clientWidth, H = cv.clientHeight, step = 6;   // мелкие точки: переход как фактура (вариант A из пробника)
       ctx.fillStyle = from; ctx.fillRect(0, 0, W, H);
       ctx.fillStyle = to;
       ctx.beginPath();
       for (var y = -step, row = 3; y < H + step; y += step, row++) {
-        // по высоте: переход идёт почти по всей полосе; у верхнего края точек почти нет, у нижнего сплошь
-        var cover = smooth(0.04, 0.96, (y + step / 2) / H + s);
+        // по высоте: при t+s ≤ 0.15 точек нет, при ≥ 0.85 сплошь — края полосы всегда цвета соседних секций
+        var cover = smooth(0.15, 0.85, (y + step / 2) / H + s);
         if (cover <= 0) continue;
         if (cover >= 1) { ctx.rect(0, y, W, step + 1); continue; }
         for (var x = -step, col = 3; x < W + step; x += step, col++) {

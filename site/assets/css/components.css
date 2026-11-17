@@ -976,8 +976,8 @@ a.card:hover {
    ставит скрипт (style), чтобы субпиксельные щели холста не давали полос. */
 .pixel-curtain {
   position: relative;
-  height: clamp(240px, 60vh, 560px);
-  height: clamp(240px, 60svh, 560px);
+  /* вариант A из пробника docs/drafts/transitions-preview.html: короткая полоса, мелкие точки */
+  height: clamp(120px, 18vh, 170px);
 }
 
 .pixel-curtain canvas {

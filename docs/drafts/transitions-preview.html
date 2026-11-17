@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Проба: переходы между секциями</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../site/assets/css/base.css">
+  <style>
+    /* Пробная страница, на сайт не выкладывается. Цвета только из токенов base.css */
+    body { background: var(--color-bg); margin: 0; }
+    .probe-note { position: fixed; right: var(--space-2); bottom: var(--space-2); z-index: 50; padding: var(--space-2) var(--space-3);
+      border-radius: var(--radius-button); background: var(--color-button-bg); color: var(--color-button-text); font-size: 13px; }
+    .label { position: sticky; top: 0; z-index: 5; padding: var(--space-3) var(--gutter); background: var(--color-accent); color: var(--color-button-text); font-weight: 600; }
+    .sec { padding: var(--space-8) var(--gutter); min-height: 55vh; }
+    .sec h2 { font-size: clamp(1.75rem, 4vw, 3rem); letter-spacing: -0.03em; margin: 0 0 var(--space-3); }
+    .sec p { max-width: 36rem; margin: 0; }
+    .dark { background: var(--color-bg); color: var(--color-text); }
+    .dark p { color: var(--color-text-muted); }
+    .light { background: var(--color-bg-light); color: var(--color-text-on-light); }
+    .light p { color: var(--color-text-muted-on-light); }
+    .band { position: relative; }
+    .band canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  </style>
+</head>
+<body>
+  <div class="probe-note">Проба: переходы, не сайт</div>
+  <div id="root"></div>
+  <script>
+  (function () {
+    var css = getComputedStyle(document.documentElement);
+    var DARK = css.getPropertyValue('--color-bg').trim(), LIGHT = css.getPropertyValue('--color-bg-light').trim();
+    var BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
+    function clamp(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
+    function smooth(a, b, x) { var t = clamp((x - a) / (b - a)); return t * t * (3 - 2 * t); }
+
+    // Варианты: высота полосы и способ рисования. draw(ctx, W, H, from, to, s) — s: сдвиг при прокрутке
+    var VARIANTS = [
+      { title: '0. Сейчас на сайте: полутон 60% экрана, точки 10 px, двигается при прокрутке', h: 'clamp(240px, 60vh, 560px)', move: 0.08,
+        draw: function (c, W, H, a, b, s) { halftone(c, W, H, a, b, s, 10, 0.04, 0.96, true); } },
+      { title: 'A. Короткий полутон: 140 px, мелкие точки 6 px, неподвижный', h: '140px', move: 0,
+        draw: function (c, W, H, a, b, s) { halftone(c, W, H, a, b, 0, 6, 0, 1, true); } },
+      { title: 'B. Пиксельная лесенка: 3 ряда квадратных «светодиодов» у стыка, 36 px', h: '36px', move: 0,
+        draw: function (c, W, H, a, b) { stairs(c, W, H, a, b, 12); } },
+      { title: 'C. Ряд точек на стыке: одна линия LED-точек, 16 px', h: '16px', move: 0,
+        draw: function (c, W, H, a, b) { dotline(c, W, H, a, b); } },
+      { title: 'D. Без перехода: ровный стык, как на goulash.tech', h: '0px', move: 0, draw: null }
+    ];
+
+    function halftone(c, W, H, from, to, s, step, a0, a1, sqrtR) {
+      c.fillStyle = from; c.fillRect(0, 0, W, H); c.fillStyle = to; c.beginPath();
+      for (var y = -step, row = 3; y < H + step; y += step, row++) {
+        var cover = smooth(a0, a1, (y + step / 2) / H + s);
+        if (cover <= 0) continue;
+        if (cover >= 1) { c.rect(0, y, W, step + 1); continue; }
+        for (var x = -step, col = 3; x < W + step; x += step, col++) {
+          var th = BAYER[(row % 4) * 4 + (col % 4)] / 16, k = clamp((cover * 1.4 - th * 0.9) / 0.5);
+          if (k <= 0) continue;
+          var r = step * 0.8 * (sqrtR ? Math.sqrt(k) : k), cx = x + step / 2, cy = y + step / 2;
+          c.moveTo(cx + r, cy); c.arc(cx, cy, r, 0, 6.283);
+        }
+      }
+      c.fill();
+    }
+    // три ряда квадратов: нижний цвет «прорастает» вверх ступенькой по узору Байера
+    function stairs(c, W, H, from, to, cell) {
+      c.fillStyle = from; c.fillRect(0, 0, W, H); c.fillStyle = to;
+      var rows = Math.round(H / cell);
+      for (var r = 0; r < rows; r++) {
+        var cover = (r + 1) / (rows + 1);   // 25%, 50%, 75%
+        for (var x = 0, col = 0; x < W; x += cell, col++) {
+          var th = BAYER[(r % 4) * 4 + (col % 4)] / 16;
+          if (th < cover) c.fillRect(x, r * cell, cell, cell);
+        }
+      }
+    }
+    // одна строка точек цвета второй секции на цвете первой, по центру стыка
+    function dotline(c, W, H, from, to) {
+      c.fillStyle = from; c.fillRect(0, 0, W, H / 2); c.fillStyle = to; c.fillRect(0, H / 2, W, H / 2);
+      c.fillStyle = to;
+      for (var x = 4; x < W; x += 12) { c.beginPath(); c.arc(x, H / 2 - 4, 2.2, 0, 6.283); c.fill(); }
+    }
+
+    var root = document.getElementById('root'), bands = [];
+    VARIANTS.forEach(function (v) {
+      var lab = document.createElement('div'); lab.className = 'label'; lab.textContent = v.title; root.appendChild(lab);
+      [['dark', 'light'], ['light', 'dark']].forEach(function (pair, k) {
+        if (k === 0) root.appendChild(sec(pair[0]));
+        if (v.draw) {
+          var b = document.createElement('div'); b.className = 'band'; b.style.height = v.h;
+          b.style.backgroundImage = 'linear-gradient(' + col(pair[0]) + ' 50%, ' + col(pair[1]) + ' 50%)';
+          var cv = document.createElement('canvas'); b.appendChild(cv); root.appendChild(b);
+          bands.push({ el: b, cv: cv, v: v, from: col(pair[0]), to: col(pair[1]) });
+        }
+        root.appendChild(sec(pair[1]));
+      });
+    });
+    function col(n) { return n === 'dark' ? DARK : LIGHT; }
+    function sec(kind) {
+      var s = document.createElement('section'); s.className = 'sec ' + kind;
+      s.innerHTML = kind === 'dark' ? '<h2>Тёмная секция</h2><p>Как это работает: три шага, демо, факты</p>' : '<h2>Светлая секция</h2><p>Кому подходит, что входит, подключение</p>';
+      return s;
+    }
+    function drawAll() {
+      var vh = innerHeight;
+      bands.forEach(function (b) {
+        var r = b.el.getBoundingClientRect(); if (r.bottom < 0 || r.top > vh) return;
+        var d = Math.min(devicePixelRatio || 1, 2), W = b.cv.clientWidth, H = b.cv.clientHeight;
+        if (b.cv.width !== Math.round(W * d)) { b.cv.width = Math.round(W * d); b.cv.height = Math.round(H * d); }
+        var c = b.cv.getContext('2d'); c.setTransform(d, 0, 0, d, 0, 0);
+        var s = b.v.move ? b.v.move * clamp((vh - (r.top + r.height / 2)) / vh) * 2 - b.v.move : 0;
+        b.v.draw(c, W, H, b.from, b.to, s);
+      });
+    }
+    var t = false;
+    addEventListener('scroll', function () { if (!t) { t = true; requestAnimationFrame(function () { t = false; drawAll(); }); } }, { passive: true });
+    addEventListener('resize', function () { bands.forEach(function (b) { b.cv.width = 0; }); drawAll(); });
+    drawAll();
+  })();
+  </script>
+</body>
+</html>

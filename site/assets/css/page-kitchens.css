@@ -10,11 +10,14 @@
   translate: 0 var(--py, 0px);
 }
 
-/* ---------- Три боли: «Сейчас / С Goulash.tech» ----------
-   Карточка из двух частей, обе видны сразу и подписаны: сверху «Сейчас» (иконка, название,
-   пояснение боли), снизу голубая плашка «С Goulash.tech» с ответом. Переключателей нет.
-   Когда блок появился на экране, плашки по очереди «включаются» (kitchens-blocks.js ставит .is-then).
-   Без JS и при reduced-motion плашка включена сразу. */
+/* ---------- Три боли: «было / стало» ----------
+   По умолчанию в карточке только пиксельная иконка и крупное название боли.
+   Вторая сторона (.pain__face--then): пояснение боли мелко и ответ «С Goulash.tech»
+   из утверждённых текстов. Её открывает переключатель «Без / С Goulash.tech» (.pain__switch, две кнопки с aria-pressed), наведение мышью
+   или касание кнопки (kitchens-blocks.js ставит .is-then).
+   Без JS: обе стороны видны одна под другой, кнопки нет.
+   Телефон с JS: вторая сторона раскрывается под названием.
+   От 720px с JS: стороны в одной ячейке, вторая выезжает снизу шторкой табло (clip-path). */
 .pains {
   padding-block: var(--space-8) var(--space-9);
 }
@@ -25,13 +28,14 @@
 }
 
 .pain__card {
+  position: relative;
   display: grid;
-  grid-template-rows: 1fr auto;
   height: 100%;
   overflow: hidden;
   background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-card);
-  transition: transform var(--dur) var(--ease-out);
+  transition: transform var(--dur) var(--ease-out), border-color var(--dur) ease;
 }
 
 .pain__face {
@@ -41,26 +45,30 @@
   padding: var(--space-5);
 }
 
-.pain__label {
-  color: var(--color-text-muted);
-  font-size: 0.8125rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+.pain__face--now {
+  grid-template-columns: 56px minmax(0, 1fr);
+  align-items: center;
+  column-gap: var(--space-4);
+}
+
+.pain__face--then {
+  background-color: color-mix(in srgb, var(--color-accent) 7%, var(--color-surface));
+  border-top: 1px dashed var(--color-accent-line);
 }
 
 .pain__icon {
   display: block;
-  width: 56px;
+  width: 44px;
   color: var(--color-text-muted);
+  transition: color var(--dur) ease;
 }
 
 .pain__icon--wide {
-  width: 72px;
+  width: 56px;
 }
 
 .pain__title {
-  font-size: clamp(1.375rem, 2.2vw, 1.875rem);
+  font-size: clamp(1.375rem, 2.4vw, 2.25rem);
   line-height: 1.15;
   letter-spacing: -0.03em;
 }
@@ -71,53 +79,169 @@
   text-wrap: pretty;
 }
 
-/* Нижняя плашка: голубая заливка, тёмный текст */
-.pain__face--then {
-  background-color: var(--color-cyan);
-  color: #040406;
-  transition: opacity 0.5s ease, filter 0.5s ease;
-}
-
 .pain__tag {
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  font-size: 0.8125rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  margin-top: var(--space-2);
+  color: var(--color-accent);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+/* С JS ту же подпись несёт кнопка, у ответа остаётся только иконка (подпись читает диктор) */
+.js .pain__tag-text {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.js .pain__tag-icon {
+  width: 30px;
 }
 
 .pain__tag-icon {
   flex: 0 0 auto;
-  width: 28px;
+  width: 22px;
 }
 
 .pain__tag-icon.pain__icon--wide {
-  width: 40px;
+  width: 30px;
+  padding: 0;
 }
 
 .pain__answer {
   font-size: clamp(1.125rem, 1.6vw, 1.375rem);
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1.3;
   letter-spacing: -0.01em;
   text-wrap: pretty;
 }
 
-/* С анимацией плашка сначала «выключена» и загорается по очереди */
-.motion .pain__card:not(.is-then) .pain__face--then {
-  opacity: 0.22;
-  filter: grayscale(1);
+/* Кнопка-переключатель: без JS не нужна */
+.pain__switch {
+  display: none;
 }
 
-@media (min-width: 720px) {
-  .pain__face {
-    padding: var(--space-6);
+.js .pain__switch {
+  position: relative;
+  z-index: 1;
+  justify-self: start;
+  display: inline-flex;
+  gap: 2px;
+  margin: 0 var(--space-5) var(--space-5);
+  padding: 3px;
+  border-radius: var(--radius-card);
+  background-color: var(--color-border);
+}
+
+/* Двухпозиционный переключатель «Без / С Goulash.tech»: активная половина залита */
+.js .pain__seg {
+  min-height: 40px;
+  padding: var(--space-2) var(--space-4);
+  border: 0;
+  border-radius: calc(var(--radius-card) - 3px);
+  background: none;
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background-color var(--dur) ease, color var(--dur) ease;
+}
+
+.js .pain__seg:hover {
+  color: var(--color-text);
+}
+
+.js .pain__seg[aria-pressed="true"] {
+  background-color: var(--color-text);
+  color: var(--color-bg);
+}
+
+.js .pain__seg--on[aria-pressed="true"] {
+  background-color: var(--color-accent);
+  color: var(--color-button-text);
+}
+
+.js .pain__card.is-then {
+  border-color: var(--color-accent-line);
+}
+
+.js .pain__card.is-then .pain__icon {
+  color: var(--color-accent);
+}
+
+/* Телефон: вторая сторона раскрывается под названием */
+@media (max-width: 719px) {
+  .js .pain__face--then {
+    display: none;
+    border-top: 0;
+    padding-top: 0;
+    background: none;
   }
 
-  .pain__face--now {
-    row-gap: var(--space-4);
+  .js .pain__card.is-then .pain__face--then {
+    display: grid;
+    animation: pain-open 0.4s var(--ease-out);
+  }
+}
+
+@keyframes pain-open {
+  from { opacity: 0; transform: translateY(-8px); }
+}
+
+/* От 720px: шторка табло поверх названия */
+@media (min-width: 720px) {
+  .js .pain__card {
+    grid-template-rows: minmax(0, 1fr) auto;
+    min-height: 300px;
+  }
+
+  .js .pain__face {
+    grid-area: 1 / 1;
+    padding: var(--space-6) var(--space-6) var(--space-4);
+  }
+
+  .js .pain__face--now {
+    grid-template-columns: minmax(0, 1fr);
+    align-content: space-between;
+    row-gap: var(--space-6);
+    transition: opacity 0.4s ease, transform 0.55s var(--ease-out), filter 0.4s ease;
+  }
+
+  .js .pain__icon {
+    width: 72px;
+  }
+
+  .js .pain__icon.pain__icon--wide {
+    width: 96px;
+  }
+
+  /* Сторона «стало» закрывает и ряд с кнопкой, чтобы заливка шла до низа карточки */
+  .js .pain__face--then {
+    grid-area: 1 / 1 / 3 / 2;
+    padding-bottom: calc(44px + var(--space-5) + var(--space-4));
+    border-top: 0;
+    clip-path: inset(100% 0 0 0);
+    transition: clip-path 0.55s var(--ease-out);
+  }
+
+  .js .pain__card.is-then .pain__face--then {
+    clip-path: inset(0 0 0 0);
+  }
+
+  .js .pain__card.is-then .pain__face--now {
+    opacity: 0;
+    transform: translateY(-16px);
+    filter: blur(2px);
+  }
+
+  .js .pain__switch {
+    grid-area: 2 / 1;
+    margin-inline: var(--space-6);
   }
 }
 
@@ -127,9 +251,8 @@
     gap: var(--space-5);
   }
 
-  /* Одинаковая высота плашек, чтобы голубая заливка начиналась на одном уровне */
-  .pain__face--then {
-    min-height: 290px;
+  .js .pain__card {
+    min-height: 380px;
   }
 }
 

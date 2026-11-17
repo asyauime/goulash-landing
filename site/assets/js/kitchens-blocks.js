@@ -3,8 +3,9 @@
   подключать после led.js и main.js. Без чисел-утверждений: номера заказов и блюда в мини-интерфейсах
   вымышлены, как в демо (сноска в подвале).
 
-  1. «Три боли» [data-pains]: карточка из двух частей «Сейчас» и «С Goulash.tech». Плашка ответа
-     включается сама по очереди, когда блок появился на экране (без переключателей).
+  1. «Три боли» [data-pains]: карточка «было / стало». Переключатель «Без / С Goulash.tech»
+     (две кнопки, aria-pressed) открывает вторую сторону: пояснение боли и ответ «С Goulash.tech».
+     Когда блок появился на экране, карточки по очереди включаются сами и остаются открытыми.
   2. «Кому подходит» [data-manifest]: слова оборачиваются в span.mw и загораются по мере прокрутки
      (обычные слова до приглушённого --color-text-muted; ключевые фразы получают голубой маркер,
      который наливается слева направо, когда загорелись все слова фразы).
@@ -45,24 +46,37 @@
     else if (motionQuery.addListener) motionQuery.addListener(envChanged);
   }
 
-  /* ---------- 1. «Сейчас / С Goulash.tech» ---------- */
+  /* ---------- 1. «Было / стало» ---------- */
   var pains = document.querySelector('[data-pains]');
   if (pains) {
     var cards = Array.prototype.slice.call(pains.querySelectorAll('.pain__card'));
+    var touched = [];
 
-    // Плашки «С Goulash.tech» включаются по очереди, когда блок появился на экране.
-    // Без IntersectionObserver и при reduced-motion включаем сразу.
+    var setPain = function (card, on) {
+      var off = card.querySelector('.pain__seg--off');
+      var onBtn = card.querySelector('.pain__seg--on');
+      card.classList.toggle('is-then', on);
+      if (off) off.setAttribute('aria-pressed', on ? 'false' : 'true');
+      if (onBtn) onBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    };
+
+    cards.forEach(function (card, i) {
+      var off = card.querySelector('.pain__seg--off');
+      var onBtn = card.querySelector('.pain__seg--on');
+      if (off) off.addEventListener('click', function () { touched[i] = true; setPain(card, false); });
+      if (onBtn) onBtn.addEventListener('click', function () { touched[i] = true; setPain(card, true); });
+    });
+
+    // Карточки сами включаются по очереди, когда блок появился на экране; тронутые рукой не трогаем.
     if (hasIO && !reduced()) {
       var autoObs = new IntersectionObserver(function (entries) {
         if (!entries[0].isIntersecting) return;
         autoObs.disconnect();
         cards.forEach(function (card, i) {
-          setTimeout(function () { card.classList.add('is-then'); }, 500 + i * 900);
+          setTimeout(function () { if (!touched[i] && !reduced()) setPain(card, true); }, 500 + i * 900);
         });
       }, { threshold: 0.35 });
       autoObs.observe(pains);
-    } else {
-      cards.forEach(function (card) { card.classList.add('is-then'); });
     }
   }
 

@@ -50,48 +50,59 @@
     <section class="section pains" id="pains" aria-labelledby="pains-title">
       <div class="container">
         <h2 class="visually-hidden" id="pains-title">Три боли</h2>
-        <!-- «Было / стало»: в карточке две части сразу, без переключателей. Сверху «Сейчас» (боль), снизу «С Goulash.tech» (ответ).
-             Ответ включается сам по очереди, когда блок появился на экране. Без JS и при reduced-motion он включён сразу. -->
+        <!-- «Было / стало». Видно по умолчанию только название боли (крупно).
+             Пояснение боли и ответ «С Goulash.tech» лежат во второй стороне карточки:
+             она открывается кнопкой (aria-expanded) или сама по очереди, когда блок появился на экране.
+             Без JS обе стороны видны одна под другой. -->
         <ul class="pains__list" data-reveal-stagger data-pains>
           <li class="pain" data-reveal>
             <div class="pain__card">
-              <div class="pain__face pain__face--now">
-                <p class="pain__label">Сейчас</p>
+              <div class="pain__face pain__face--now" id="pain-now-1">
                 <span class="pain__icon" data-pixel="tablets" aria-hidden="true"></span>
                 <h3 class="pain__title">Планшет на&nbsp;каждый бренд</h3>
-                <p class="pain__text">Заказы приходят в&nbsp;разные окна, и&nbsp;кухня теряет минуты на&nbsp;переключении между ними</p>
               </div>
-              <div class="pain__face pain__face--then">
+              <div class="pain__face pain__face--then" id="pain-more-1">
+                <p class="pain__text">Заказы приходят в&nbsp;разные окна, и&nbsp;кухня теряет минуты на&nbsp;переключении между ними</p>
                 <p class="pain__tag"><span class="pain__tag-icon" data-pixel="queue" aria-hidden="true"></span><span class="pain__tag-text">С&nbsp;Goulash.tech</span></p>
                 <p class="pain__answer">Заказы со&nbsp;всех каналов попадают в&nbsp;один контур: сайт, приложение, оператор и&nbsp;агрегаторы</p>
               </div>
+              <div class="pain__switch" role="group" aria-label="Как выглядит работа">
+                <button class="pain__seg pain__seg--off" type="button" aria-pressed="true" aria-controls="pain-now-1">Без&nbsp;Goulash.tech</button>
+                <button class="pain__seg pain__seg--on" type="button" aria-pressed="false" aria-controls="pain-more-1">С&nbsp;Goulash.tech</button>
+              </div>
             </div>
           </li>
           <li class="pain" data-reveal>
             <div class="pain__card">
-              <div class="pain__face pain__face--now">
-                <p class="pain__label">Сейчас</p>
+              <div class="pain__face pain__face--now" id="pain-now-2">
                 <span class="pain__icon" data-pixel="stoplist" aria-hidden="true"></span>
                 <h3 class="pain__title">Стоп-лист живёт отдельно</h3>
-                <p class="pain__text">Позицию остановили в&nbsp;одном месте, а&nbsp;гость продолжает заказывать её в&nbsp;другом. Дальше отмены и&nbsp;извинения</p>
               </div>
-              <div class="pain__face pain__face--then">
+              <div class="pain__face pain__face--then" id="pain-more-2">
+                <p class="pain__text">Позицию остановили в&nbsp;одном месте, а&nbsp;гость продолжает заказывать её в&nbsp;другом. Дальше отмены и&nbsp;извинения</p>
                 <p class="pain__tag"><span class="pain__tag-icon" data-pixel="stoplist" aria-hidden="true"></span><span class="pain__tag-text">С&nbsp;Goulash.tech</span></p>
                 <p class="pain__answer">Позицию остановили один раз, и&nbsp;она пропала у&nbsp;гостя везде</p>
               </div>
+              <div class="pain__switch" role="group" aria-label="Как выглядит работа">
+                <button class="pain__seg pain__seg--off" type="button" aria-pressed="true" aria-controls="pain-now-2">Без&nbsp;Goulash.tech</button>
+                <button class="pain__seg pain__seg--on" type="button" aria-pressed="false" aria-controls="pain-more-2">С&nbsp;Goulash.tech</button>
+              </div>
             </div>
           </li>
           <li class="pain" data-reveal>
             <div class="pain__card">
-              <div class="pain__face pain__face--now">
-                <p class="pain__label">Сейчас</p>
+              <div class="pain__face pain__face--now" id="pain-now-3">
                 <span class="pain__icon" data-pixel="phone" aria-hidden="true"></span>
                 <h3 class="pain__title">Курьеров распределяет человек</h3>
-                <p class="pain__text">Диспетчер звонит и&nbsp;решает на&nbsp;глаз. В&nbsp;часы пик это узкое место</p>
               </div>
-              <div class="pain__face pain__face--then">
+              <div class="pain__face pain__face--then" id="pain-more-3">
+                <p class="pain__text">Диспетчер звонит и&nbsp;решает на&nbsp;глаз. В&nbsp;часы пик это узкое место</p>
                 <p class="pain__tag"><span class="pain__tag-icon pain__icon--wide" data-pixel="courier" aria-hidden="true"></span><span class="pain__tag-text">С&nbsp;Goulash.tech</span></p>
                 <p class="pain__answer">Система сама распределяет заказы между курьерами с&nbsp;учётом того, где они находятся и&nbsp;как доставляют</p>
+              </div>
+              <div class="pain__switch" role="group" aria-label="Как выглядит работа">
+                <button class="pain__seg pain__seg--off" type="button" aria-pressed="true" aria-controls="pain-now-3">Без&nbsp;Goulash.tech</button>
+                <button class="pain__seg pain__seg--on" type="button" aria-pressed="false" aria-controls="pain-more-3">С&nbsp;Goulash.tech</button>
               </div>
             </div>
           </li>

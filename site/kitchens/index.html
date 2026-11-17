@@ -50,11 +50,8 @@
     <section class="section pains" id="pains" aria-labelledby="pains-title">
       <div class="container">
         <h2 class="visually-hidden" id="pains-title">Три боли</h2>
-        <!-- «Было / стало». Видно по умолчанию только название боли (крупно).
-             Пояснение боли и ответ «С Goulash.tech» лежат во второй стороне карточки:
-             она открывается кнопкой (aria-expanded), наведением мышью или касанием.
-             Без JS обе стороны видны одна под другой. -->
-        <ul class="pains__list" data-reveal-stagger data-pains>
+        <!-- «Было / стало»: название боли и сразу ответ «С Goulash.tech», без переключателей. -->
+        <ul class="pains__list" data-reveal-stagger>
           <li class="pain" data-reveal>
             <div class="pain__card">
               <div class="pain__face pain__face--now">
@@ -66,10 +63,6 @@
                 <p class="pain__tag"><span class="pain__tag-icon" data-pixel="queue" aria-hidden="true"></span><span class="pain__tag-text">С&nbsp;Goulash.tech</span></p>
                 <p class="pain__answer">Заказы со&nbsp;всех каналов попадают в&nbsp;один контур: сайт, приложение, оператор и&nbsp;агрегаторы</p>
               </div>
-              <button class="pain__switch" type="button" aria-expanded="false" aria-controls="pain-more-1">
-                <span class="pain__switch-track" aria-hidden="true"></span>
-                <span class="pain__switch-text">С&nbsp;Goulash.tech</span>
-              </button>
             </div>
           </li>
           <li class="pain" data-reveal>
@@ -83,10 +76,6 @@
                 <p class="pain__tag"><span class="pain__tag-icon" data-pixel="stoplist" aria-hidden="true"></span><span class="pain__tag-text">С&nbsp;Goulash.tech</span></p>
                 <p class="pain__answer">Позицию остановили один раз, и&nbsp;она пропала у&nbsp;гостя везде</p>
               </div>
-              <button class="pain__switch" type="button" aria-expanded="false" aria-controls="pain-more-2">
-                <span class="pain__switch-track" aria-hidden="true"></span>
-                <span class="pain__switch-text">С&nbsp;Goulash.tech</span>
-              </button>
             </div>
           </li>
           <li class="pain" data-reveal>
@@ -100,10 +89,6 @@
                 <p class="pain__tag"><span class="pain__tag-icon pain__icon--wide" data-pixel="courier" aria-hidden="true"></span><span class="pain__tag-text">С&nbsp;Goulash.tech</span></p>
                 <p class="pain__answer">Система сама распределяет заказы между курьерами с&nbsp;учётом того, где они находятся и&nbsp;как доставляют</p>
               </div>
-              <button class="pain__switch" type="button" aria-expanded="false" aria-controls="pain-more-3">
-                <span class="pain__switch-track" aria-hidden="true"></span>
-                <span class="pain__switch-text">С&nbsp;Goulash.tech</span>
-              </button>
             </div>
           </li>
         </ul>

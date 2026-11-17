@@ -3,14 +3,10 @@
   подключать после led.js и main.js. Без чисел-утверждений: номера заказов и блюда в мини-интерфейсах
   вымышлены, как в демо (сноска в подвале).
 
-  1. «Три боли» [data-pains]: карточка «было / стало». Кнопка .pain__switch
-     (aria-expanded) открывает вторую сторону: пояснение боли и ответ «С Goulash.tech».
-     Мышь над карточкой делает то же. Один раз при появлении
-     карточки по очереди показывают вторую сторону и возвращаются.
-  2. «Кому подходит» [data-manifest]: слова оборачиваются в span.mw и загораются по мере прокрутки
+  1. «Кому подходит» [data-manifest]: слова оборачиваются в span.mw и загораются по мере прокрутки
      (обычные слова до приглушённого --color-text-muted; ключевые фразы получают голубой маркер,
      который наливается слева направо, когда загорелись все слова фразы).
-  3. «Что входит» [data-bento]: живые мини-интерфейсы в карточках (очередь, стоп-лист, курьер, кабинет).
+  2. «Что входит» [data-bento]: живые мини-интерфейсы в карточках (очередь, стоп-лист, курьер, кабинет).
   4. Лёгкий параллакс крупных заголовков секций.
   5. Видео в подвале [data-video]: играет только на экране и на видимой вкладке;
      при reduced-motion стоит на постере.
@@ -47,53 +43,6 @@
   if (motionQuery) {
     if (motionQuery.addEventListener) motionQuery.addEventListener('change', envChanged);
     else if (motionQuery.addListener) motionQuery.addListener(envChanged);
-  }
-
-  /* ---------- 1. «Было / стало» ---------- */
-  var pains = document.querySelector('[data-pains]');
-  if (pains) {
-    var cards = Array.prototype.slice.call(pains.querySelectorAll('.pain__card'));
-    var touched = [];
-
-    var setPain = function (card, on) {
-      var btn = card.querySelector('.pain__switch');
-      card.classList.toggle('is-then', on);
-      if (btn) btn.setAttribute('aria-expanded', on ? 'true' : 'false');
-    };
-
-    cards.forEach(function (card, i) {
-      var btn = card.querySelector('.pain__switch');
-      if (btn) {
-        btn.addEventListener('click', function () {
-          touched[i] = true;
-          setPain(card, btn.getAttribute('aria-expanded') !== 'true');
-        });
-      }
-      card.addEventListener('pointerenter', function (e) {
-        if (e.pointerType !== 'mouse' || !canHover()) return;
-        touched[i] = true;
-        setPain(card, true);
-      });
-      card.addEventListener('pointerleave', function (e) {
-        if (e.pointerType !== 'mouse' || !canHover()) return;
-        setPain(card, false);
-      });
-    });
-
-    // Подсказка один раз: карточки по очереди показывают вторую сторону и возвращаются.
-    var wide = window.matchMedia ? window.matchMedia('(min-width: 720px)') : null;
-    if (hasIO && !reduced()) {
-      var hintObs = new IntersectionObserver(function (entries) {
-        if (!entries[0].isIntersecting) return;
-        hintObs.disconnect();
-        if (!wide || !wide.matches || reduced()) return;
-        cards.forEach(function (card, i) {
-          setTimeout(function () { if (!touched[i]) setPain(card, true); }, 900 + i * 450);
-          setTimeout(function () { if (!touched[i]) setPain(card, false); }, 2900 + i * 450);
-        });
-      }, { threshold: 0.6 });
-      hintObs.observe(pains);
-    }
   }
 
   /* ---------- Общий цикл прокрутки (манифест и параллакс) ---------- */

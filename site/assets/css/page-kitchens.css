@@ -89,17 +89,7 @@
   font-weight: 600;
 }
 
-/* С JS ту же подпись несёт кнопка, у ответа остаётся только иконка (подпись читает диктор) */
-.js .pain__tag-text {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  white-space: nowrap;
-}
-
-.js .pain__tag-icon {
+.pain__tag-icon {
   width: 30px;
 }
 
@@ -121,155 +111,10 @@
   text-wrap: pretty;
 }
 
-/* Кнопка-переключатель: без JS не нужна */
-.pain__switch {
-  display: none;
-}
-
-.js .pain__switch {
-  position: relative;
-  z-index: 1;
-  justify-self: start;
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-3);
-  min-height: 44px;
-  margin: 0 var(--space-5) var(--space-5);
-  padding: var(--space-2) var(--space-3) var(--space-2) var(--space-2);
-  background: none;
-  border: 1px solid var(--color-border-strong);
-  border-radius: var(--radius-button);
-  color: var(--color-text);
-  font-size: 0.9375rem;
-  font-weight: 500;
-  transition: border-color var(--dur-fast) ease, background-color var(--dur-fast) ease;
-}
-
-.js .pain__switch:hover {
-  background-color: var(--color-hover);
-}
-
-.js .pain__switch-track {
-  position: relative;
-  width: 36px;
-  height: 20px;
-  border-radius: var(--radius-card);
-  background-color: var(--color-border-strong);
-  transition: background-color var(--dur) ease;
-}
-
-.js .pain__switch-track::after {
-  content: "";
-  position: absolute;
-  top: 3px;
-  left: 3px;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background-color: var(--color-text);
-  transition: transform var(--dur) var(--ease-out);
-}
-
-.js .pain__switch[aria-expanded="true"] {
-  border-color: var(--color-accent-line);
-}
-
-.js .pain__switch[aria-expanded="true"] .pain__switch-track {
-  background-color: var(--color-accent);
-}
-
-.js .pain__switch[aria-expanded="true"] .pain__switch-track::after {
-  background-color: var(--color-button-text);
-  transform: translateX(16px);
-}
-
-.js .pain__card.is-then {
-  border-color: var(--color-accent-line);
-}
-
-.js .pain__card.is-then .pain__icon {
-  color: var(--color-accent);
-}
-
-/* Телефон: вторая сторона раскрывается под названием */
-@media (max-width: 719px) {
-  .js .pain__face--then {
-    display: none;
-    border-top: 0;
-    padding-top: 0;
-    background: none;
-  }
-
-  .js .pain__card.is-then .pain__face--then {
-    display: grid;
-    animation: pain-open 0.4s var(--ease-out);
-  }
-}
-
-@keyframes pain-open {
-  from { opacity: 0; transform: translateY(-8px); }
-}
-
-/* От 720px: шторка табло поверх названия */
-@media (min-width: 720px) {
-  .js .pain__card {
-    grid-template-rows: minmax(0, 1fr) auto;
-    min-height: 300px;
-  }
-
-  .js .pain__face {
-    grid-area: 1 / 1;
-    padding: var(--space-6) var(--space-6) var(--space-4);
-  }
-
-  .js .pain__face--now {
-    grid-template-columns: minmax(0, 1fr);
-    align-content: space-between;
-    row-gap: var(--space-6);
-    transition: opacity 0.4s ease, transform 0.55s var(--ease-out), filter 0.4s ease;
-  }
-
-  .js .pain__icon {
-    width: 72px;
-  }
-
-  .js .pain__icon.pain__icon--wide {
-    width: 96px;
-  }
-
-  /* Сторона «стало» закрывает и ряд с кнопкой, чтобы заливка шла до низа карточки */
-  .js .pain__face--then {
-    grid-area: 1 / 1 / 3 / 2;
-    padding-bottom: calc(44px + var(--space-5) + var(--space-4));
-    border-top: 0;
-    clip-path: inset(100% 0 0 0);
-    transition: clip-path 0.55s var(--ease-out);
-  }
-
-  .js .pain__card.is-then .pain__face--then {
-    clip-path: inset(0 0 0 0);
-  }
-
-  .js .pain__card.is-then .pain__face--now {
-    opacity: 0;
-    transform: translateY(-16px);
-    filter: blur(2px);
-  }
-
-  .js .pain__switch {
-    grid-area: 2 / 1;
-    margin-inline: var(--space-6);
-  }
-}
-
 @media (min-width: 960px) {
   .pains__list {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: var(--space-5);
-  }
-
-  .js .pain__card {
-    min-height: 380px;
   }
 }
 
